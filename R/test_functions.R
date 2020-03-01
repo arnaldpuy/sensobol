@@ -214,7 +214,7 @@ oakley_Fun <- function(X) {
   return(Y)
 }
 
-# METAFUNCTION ----------------------------------------------------------------
+# METAFUNCTION -----------------------------------------------------------------
 
 # Define the list of functions
 function_list <- list(
