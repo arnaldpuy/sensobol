@@ -1,0 +1,25 @@
+---
+title: "sensobol: Computation of High-Order Sobol' Sensitivity Indices"
+author: "Arnald Puy"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    keep_md: true
+vignette: >
+  %\VignetteIndexEntry{sensobol}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: REFERENCES.bib
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The `sensobol` package relies on `data.table` and parallel functions in the `boot` and `parallel` package to rapidly compute and bootstrap first, total, and if desired, second and third-order sensitivity indices. It currently uses two estimators: the @Jansen1999 (default) and the @Saltelli2010a estimator.
+
+## Creation of the sample matrix
+
+After loading the package, the first step is to define the settings of the uncertainty and sensitivity analysis, including the sample size of the sample matrix, the number of model inputs and the sensitivity indices we are interested in. As regards to the latter, `sensobol` offers the possibility to calculate up to third-order effects. Once these features are defined, we can build the sample matrix, which relies on Sobol' quasi-random number sequences, and run the desired model. In this vignette we will use the Sobol' G function as a test function.

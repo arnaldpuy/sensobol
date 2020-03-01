@@ -1,0 +1,58 @@
+Package: sensobol
+Title: Computation of High-Order Sobol' Sensitivity Indices
+Version: 0.3
+Authors@R: c(person(given = "Arnald", 
+                    family = "Puy",
+                    role = c("aut", "cre"),
+                    email = "arnald.puy@gmail.com", 
+                    comment = c(ORCID = "https://orcid.org/0000-0001-9469-2156")), 
+            person("Bertrand", "Ioos", 
+                    role = "ctb", 
+                    comment = "Author of included 'sensitivity' fragments"), 
+            person("Gilles", "Pujol", 
+                    role = "ctb", 
+                    comment = "Author of included 'sensitivity' fragments"), 
+            person("RStudio", 
+                    role = "cph", 
+                    comment = "Copyright holder of included 'sensitivity' fragments"))
+Description: It allows to rapidly compute, bootstrap and plot up to third-order Sobol' indices
+    using several state-of-the-art first and total-order estimators. Sobol' indices can be computed either for 
+    models that yield a scalar as a model output or for dynamic equations. The package also 
+    provides a suit of benchmark test functions and several options to obtain publication-ready 
+    figures of the model output uncertainty and sensitivity-related analysis.
+License: GPL-3
+Encoding: UTF-8
+Imports:
+    boot (>= 1.3.20),
+    doParallel (>= 1.0.15),
+    data.table (>= 1.12.0),
+    foreach (>= 1.4.7),
+    ggplot2 (>= 3.1.0),
+    magrittr (>= 1.5),
+    matrixStats (>= 0.54.0),
+    randtoolbox (>= 1.17.1),
+    deSolve (>= 1.27.1),
+    Rdpack (>= 0.7),
+    Rfast (>= 1.9.8),
+    rlang (>= 0.3.1),
+    scales (>= 1.0.0),
+    stats,
+    stringr (>= 1.4.0),
+    utils,
+    Rcpp
+RdMacros: Rdpack
+LazyData: true
+Depends: R (>= 3.4.0)
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.0.2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 2.1.0),
+    covr
+VignetteBuilder: knitr
+URL: http://github.com/arnaldpuy/sensobol 
+BugReports: http://github.com/arnaldpuy/sensobol/issues
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo
