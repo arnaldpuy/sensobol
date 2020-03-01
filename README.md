@@ -30,14 +30,18 @@ This brief example shows how to compute Sobol' indices. For a more detailed expl
 ## Load the package:
 library(sensobol)
 
-## Create sample matrix to compute first, total and second-order indices:
-A <- sobol_matrices(n = 1000, k = 3,  second = TRUE)
+## Define the base sample size and the parameters
+N <- 1000
+params <- paste("X", 1:3, sep = "")
+
+## Create sample matrix to compute first and total-order indices:
+mat <- sobol_matrices(N = N, params = params)
 
 ## Compute the model output (using the Ishigami test function):
-Y <- ishigami_Mapply(A)
+Y <- ishigami_Mapply(mat)
 
-## Compute the Sobol' indices (first, total and second-order):
-sens <- sobol_indices(Y = Y, params = colnames(data.frame(A)), R = 100, n = 1000, second = TRUE)
+## Compute and bootstrap the Sobol' indices:
+sens <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = 100)
 ```
 
 ## Citation
@@ -46,7 +50,7 @@ Please use the following citation if you use `sensobol` in your publications:
 
 ```r
 Arnald Puy (2019). sensobol: Computation of High-Order Sobol' Sensitivity Indices. R package
-  version 0.2.0 http://github.com/arnaldpuy/sensobol
+  version 0.2.2 http://github.com/arnaldpuy/sensobol
 ```
 
 A BibTex entry for LaTex users is:
