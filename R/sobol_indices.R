@@ -250,6 +250,9 @@ sobol_boot <- function(d, i, N, params, R, first, total, order, boot) {
 sobol_indices <- function(Y, N, params, first = "saltelli", total = "jansen",
                           order = "first", boot = FALSE, R = NULL, parallel = "no",
                           ncpus = 1, conf = 0.95, type = "norm") {
+  if(boot == FALSE & is.null(R) == FALSE | boot == TRUE & is.null(R) == TRUE) {
+    stop("Bootstrapping requires boot = TRUE and an integer in R")
+  }
   sensitivity <- parameters <- NULL
   k <- length(params)
   d <- matrix(Y, nrow = N)
@@ -289,3 +292,5 @@ sobol_indices <- function(Y, N, params, first = "saltelli", total = "jansen",
   out <- cbind(out, sensitivity, parameters)
   return(out)
 }
+
+
