@@ -21,8 +21,10 @@ conducted internally.
 \examples{
 # Define settings
 N <- 100; params <- paste("X", 1:15, sep = "")
+
 # Create sample matrix
 mat <- sobol_matrices(N = N, params = params)
+
 # Compute Oakley and O'Hagan (2004) function
 Y <- oakley_Fun(mat)
 }

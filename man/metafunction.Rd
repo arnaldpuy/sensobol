@@ -29,8 +29,10 @@ fraction of active pairwise and three-wise interactions.
 \examples{
 # Define settings (number of model inputs = 86)
 N <- 100; params <- paste("X", 1:86, sep = "")
+
 # Create sample matrix
 mat <- sobol_matrices(N = N, params = params)
+
 # Compute metafunction
 Y <- metafunction(mat)
 }

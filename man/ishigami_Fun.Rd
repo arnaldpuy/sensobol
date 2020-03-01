@@ -21,8 +21,10 @@ internally.
 \examples{
 # Define settings
 N <- 100; params <- paste("X", 1:3, sep = "")
+
 # Create sample matrix
 mat <- sobol_matrices(N = N, params = params)
+
 # Compute Ishigami function
 Y <- ishigami_Fun(mat)
 }

@@ -19,8 +19,10 @@ It implements the \insertCite{Bratley1992;textual}{sensobol} function,
 \examples{
 # Define settings (test with k = 10)
 N <- 100; params <- paste("X", 1:10, sep = "")
+
 # Create sample matrix
 mat <- sobol_matrices(N = N, params = params)
+
 # Compute Bratley et al. (1992) function
 Y <- bratley1992_Fun(mat)
 }

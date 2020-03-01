@@ -22,11 +22,14 @@ It implements the Spruce Budworm and Forest Model by \insertCite{Ludwig1976;text
 \examples{
 # Define settings
 times <- seq(0, 200, 1)
+
 # Name the parameters and give them a value
 params <- c(r_b = 1.52, K = 100, beta = 20000, alpha = 1, r_s = 0.095,
 K_s = 24000, K_e = 1, r_e = 0.92, P = 0.0015, T_e = 0.7)
+
 # Name the state variables and give them a value
 yini <- c(B = 0.1, S = 0.07, E = 1)
-# Run function with the
+
+# Run function
 Y <- budworm_Fun(y = yini, parms = params, times = times)
 }

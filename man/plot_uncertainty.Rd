@@ -4,12 +4,12 @@
 \alias{plot_uncertainty}
 \title{Plot model output uncertainty}
 \usage{
-plot_uncertainty(Y, n = NULL)
+plot_uncertainty(Y, N = NULL)
 }
 \arguments{
 \item{Y}{A numeric vector with the model output.}
 
-\item{n}{An integer with the initial sample size.}
+\item{N}{An integer with the initial sample size of the base matrix, defined in \code{\link{sobol_matrices}}.}
 }
 \value{
 a ggplot2 object.
@@ -18,5 +18,15 @@ a ggplot2 object.
 It creates an histogram with the model output distribution.
 }
 \examples{
-# Define settings:
+# Define settings
+N <- 1000; params <- paste("X", 1:3, sep = ""); R <- 10
+
+# Create sample matrix
+mat <- sobol_matrices(N = N, params = params)
+
+# Compute Ishigami function
+Y <- ishigami_Fun(mat)
+
+# Plot uncertainty
+plot_uncertainty(Y = Y, N = N)
 }

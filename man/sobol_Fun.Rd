@@ -19,8 +19,10 @@ function works with 8 model inputs.
 \examples{
 # Define settings
 N <- 100; params <- paste("X", 1:8, sep = "")
+
 # Create sample matrix
 mat <- sobol_matrices(N = N, params = params)
+
 # Compute Sobol' G
 Y <- sobol_Fun(mat)
 }

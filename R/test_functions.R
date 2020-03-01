@@ -16,8 +16,10 @@
 #' @examples
 #' # Define settings
 #' N <- 100; params <- paste("X", 1:8, sep = "")
+#'
 #' # Create sample matrix
 #' mat <- sobol_matrices(N = N, params = params)
+#'
 #' # Compute Sobol' G
 #' Y <- sobol_Fun(mat)
 sobol_Fun <- function(X) {
@@ -55,8 +57,10 @@ ishigami <- function(X1, X2, X3) {
 #' @examples
 #' # Define settings
 #' N <- 100; params <- paste("X", 1:3, sep = "")
+#'
 #' # Create sample matrix
 #' mat <- sobol_matrices(N = N, params = params)
+#'
 #' # Compute Ishigami function
 #' Y <- ishigami_Fun(mat)
 ishigami_Fun <- function(X) {
@@ -85,8 +89,10 @@ ishigami_Fun <- function(X) {
 #' @examples
 #' # Define settings (test with k = 10)
 #' N <- 100; params <- paste("X", 1:10, sep = "")
+#'
 #' # Create sample matrix
 #' mat <- sobol_matrices(N = N, params = params)
+#'
 #' # Compute Bratley et al. (1992) function
 #' Y <- bratley1992_Fun(mat)
 bratley1992_Fun <- function(X) {
@@ -121,8 +127,10 @@ bratley1992_Fun <- function(X) {
 #' @examples
 #' # Define settings (test with k = 10)
 #' N <- 100; params <- paste("X", 1:10, sep = "")
+#'
 #' # Create sample matrix
 #' mat <- sobol_matrices(N = N, params = params)
+#'
 #' # Compute Bratley and Fox (1988) function
 #' Y <- bratley1988_Fun(mat)
 bratley1988_Fun <- function(X) {
@@ -152,8 +160,10 @@ bratley1988_Fun <- function(X) {
 #' @examples
 #' # Define settings
 #' N <- 100; params <- paste("X", 1:15, sep = "")
+#'
 #' # Create sample matrix
 #' mat <- sobol_matrices(N = N, params = params)
+#'
 #' # Compute Oakley and O'Hagan (2004) function
 #' Y <- oakley_Fun(mat)
 oakley_Fun <- function(X) {
@@ -250,8 +260,10 @@ function_list <- list(
 #' @examples
 #' # Define settings (number of model inputs = 86)
 #' N <- 100; params <- paste("X", 1:86, sep = "")
+#'
 #' # Create sample matrix
 #' mat <- sobol_matrices(N = N, params = params)
+#'
 #' # Compute metafunction
 #' Y <- metafunction(mat)
 metafunction <- function(data, k_2 = 0.5, k_3 = 0.2, epsilon = NULL) {
@@ -319,12 +331,15 @@ budworm_diff <- function(time, state, parameters) {
 #' @examples
 #' # Define settings
 #' times <- seq(0, 200, 1)
+#'
 #' # Name the parameters and give them a value
 #' params <- c(r_b = 1.52, K = 100, beta = 20000, alpha = 1, r_s = 0.095,
 #' K_s = 24000, K_e = 1, r_e = 0.92, P = 0.0015, T_e = 0.7)
+#'
 #' # Name the state variables and give them a value
 #' yini <- c(B = 0.1, S = 0.07, E = 1)
-#' # Run function with the
+#'
+#' # Run function
 #' Y <- budworm_Fun(y = yini, parms = params, times = times)
 budworm_Fun <- function(y, parms, times) {
   out <- deSolve::ode(func = budworm_diff, y = y, parms = parms, times = times)

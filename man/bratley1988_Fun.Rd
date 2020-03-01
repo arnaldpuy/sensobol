@@ -19,8 +19,10 @@ which requires \emph{k} model inputs.
 \examples{
 # Define settings (test with k = 10)
 N <- 100; params <- paste("X", 1:10, sep = "")
+
 # Create sample matrix
 mat <- sobol_matrices(N = N, params = params)
+
 # Compute Bratley and Fox (1988) function
 Y <- bratley1988_Fun(mat)
 }

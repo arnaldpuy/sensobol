@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_sobol}
 \alias{plot_sobol}
-\title{Plot Sobol' first and total-order indices}
+\title{Plot Sobol' indices.}
 \usage{
 plot_sobol(data, dummy = NULL, type = 1)
 }
@@ -22,17 +22,21 @@ third-order effects. Default is \code{type = 1}.}
 A ggplot object.
 }
 \description{
-Plot Sobol' first and total-order indices
+Plot Sobol' indices.
 }
 \examples{
 # Define settings
-N <- 100; params <- paste("X", 1:3, sep = ""); R <- 10
+N <- 1000; params <- paste("X", 1:3, sep = ""); R <- 10
+
 # Create sample matrix
 mat <- sobol_matrices(N = N, params = params)
+
 # Compute Ishigami function
 Y <- ishigami_Fun(mat)
+
 # Compute and bootstrap Sobol' indices
 ind <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = R)
+
 # Plot Sobol' indices
 plot_sobol(data = ind)
 }
