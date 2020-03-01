@@ -59,12 +59,6 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
 
 sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
                         ncpus = 1, conf = 0.95, type = "norm") {
-  if(boot == FALSE & !is.null(R) == TRUE) {
-    stop("Boot shold be turned to TRUE for bootstrap if a value for R is given.")
-  }
-  if(boot == TRUE & !is.null(R) == FALSE) {
-    stop("The number of replicas in R should be specified for bootstrap.")
-  }
   k <- length(params)
   d <- matrix(Y, nrow = N)
   if(boot == TRUE) {
@@ -256,9 +250,6 @@ sobol_boot <- function(d, i, N, params, R, first, total, order, boot) {
 sobol_indices <- function(Y, N, params, first = "saltelli", total = "jansen",
                           order = "first", boot = FALSE, R = NULL, parallel = "no",
                           ncpus = 1, conf = 0.95, type = "norm") {
-  if(boot == FALSE & is.null(R) == FALSE  | boot == TRUE & is.null(R) == FALSE) {
-    stop("Bootstrapping Sobol' indices requires boot = TRUE and to define the number of replicas in R")
-  }
   sensitivity <- parameters <- NULL
   k <- length(params)
   d <- matrix(Y, nrow = N)
