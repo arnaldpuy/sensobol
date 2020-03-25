@@ -1,5 +1,5 @@
 
-scrambled_sobol <- function(matrices, A, B, order, cluster) {
+scrambled_sobol <- function(matrices, A, B, C, order, cluster) {
   first <- 1:ncol(A)
   N <- nrow(A)
   if(order == "first") {
@@ -19,6 +19,7 @@ scrambled_sobol <- function(matrices, A, B, order, cluster) {
   }
   AB.mat <- "AB" %in% matrices
   BA.mat <- "BA" %in% matrices
+  CB.mat <- "CB" %in% matrices
   if(AB.mat == TRUE) {
     X <- rbind(A, B)
     for(i in loop) {
@@ -41,7 +42,18 @@ scrambled_sobol <- function(matrices, A, B, order, cluster) {
   } else if(BA.mat == FALSE) {
     BA <- NULL
   }
-  final <- rbind(AB, BA)
+  if(CB.mat == TRUE) {
+    Z <- rbind(A, B)
+    for(i in loop) {
+      CB <- C
+      CB[, i] <- B[, i]
+      Z <- rbind(Z, CB)
+    }
+    CB <- Z[(2 * N + 1) : nrow(Z), ]
+  } else if(CB.mat == FALSE) {
+    CB <- NULL
+  }
+  final <- rbind(AB, BA, CB)
   return(final)
 }
 
@@ -115,21 +127,31 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
                            N, params, order = "first",
                            cluster = NULL) {
   k <- length(params)
-  df <- randtoolbox::sobol(n = N, dim = k * 2)
+  n.matrices <- ifelse(any(stringr::str_detect(matrices, "C")) == FALSE, 2, 3)
+  df <- randtoolbox::sobol(n = N, dim = k * n.matrices)
   A <- df[, 1:k]
   B <- df[, (k + 1) : (k * 2)]
+  if(n.matrices == 3) {
+    C <- df[, ((k * 2) + 1):(k * 3)]
+  } else {
+    C <- NULL
+  }
   out <- scrambled_sobol(matrices = matrices,
-                         A = A, B = B, order = order,
-                         cluster = cluster)
+                         A = A, B = B, C = C,
+                         order = order, cluster = cluster)
   A.mat <- "A" %in% matrices
   B.mat <- "B" %in% matrices
+  C.mat <- "C" %in% matrices
   if(A.mat == FALSE) {
     A <- NULL
   }
   if(B.mat == FALSE) {
     B <- NULL
   }
-  final <- rbind(A, B, out)
+  if(C.mat == FALSE) {
+    C <- NULL
+  }
+  final <- rbind(A, B, C, out)
   colnames(final) <- params
   return(final)
 }
