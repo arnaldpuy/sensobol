@@ -61,7 +61,8 @@ scrambled_sobol <- function(matrices, A, B, C, order, cluster) {
 #'
 #' It creates the sample matrices to compute Sobol' first and total-order indices.
 #' If needed, it also creates the sample matrices required to compute second and
-#' third-order indices. It uses \insertCite{Sobol1967;textual}{sensobol} quasi-random number sequences.
+#' third-order indices. It uses \insertCite{Sobol1967;textual}{sensobol} quasi-random number sequences,
+#' random sequences of Latin Hypercube Sampling.
 #'
 #' @param matrices Vector with the required matrices. The default
 #' is \code{matrices = c("A", "B", "AB")}.
@@ -70,6 +71,8 @@ scrambled_sobol <- function(matrices, A, B, C, order, cluster) {
 #' @param order One of "first", "second" or "third" to create a matrix to
 #' compute first, second or up to third-order Sobol' indices. The default is
 #' \code{order = "first"}.
+#' @param method One of "QRN" (Quasi-Random Numbers), "R" (Random Numbers)
+#' or "LHS" (Latin Hypercube Sampling). Default is "QRN".
 #' @param cluster List of vectors including the model inputs that form part of the
 #' cluster/s. The default is \code{cluster = NULL}
 
@@ -125,10 +128,18 @@ scrambled_sobol <- function(matrices, A, B, C, order, cluster) {
 #' mat <- sobol_matrices(N = N, params = params, order = order)
 sobol_matrices <- function(matrices = c("A", "B", "AB"),
                            N, params, order = "first",
-                           cluster = NULL) {
+                           method = "QRN", cluster = NULL) {
   k <- length(params)
   n.matrices <- ifelse(any(stringr::str_detect(matrices, "C")) == FALSE, 2, 3)
-  df <- randtoolbox::sobol(n = N, dim = k * n.matrices)
+  if(method == "QRN") {
+    df <- randtoolbox::sobol(n = N, dim = k * n.matrices)
+  } else if(method == "R") {
+    df <- replicate(k * n.matrices, stats::runif(N))
+  } else if(method == "LHS") {
+    df <- lhs::randomLHS(N, n.matrices * k)
+  } else {
+    stop("method should be either QRN, R or LHS")
+  }
   A <- df[, 1:k]
   B <- df[, (k + 1) : (k * 2)]
   if(n.matrices == 3) {

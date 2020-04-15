@@ -28,6 +28,7 @@ Imports:
     data.table (>= 1.12.0),
     foreach (>= 1.4.7),
     ggplot2 (>= 3.1.0),
+    lhs (>= 1.0.2),
     magrittr (>= 1.5),
     matrixStats (>= 0.54.0),
     randtoolbox (>= 1.17.1),

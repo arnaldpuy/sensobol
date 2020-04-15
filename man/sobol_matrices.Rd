@@ -9,6 +9,7 @@ sobol_matrices(
   N,
   params,
   order = "first",
+  method = "QRN",
   cluster = NULL
 )
 }
@@ -24,6 +25,9 @@ is \code{matrices = c("A", "B", "AB")}.}
 compute first, second or up to third-order Sobol' indices. The default is
 \code{order = "first"}.}
 
+\item{method}{One of "QRN" (Quasi-Random Numbers), "R" (Random Numbers)
+or "LHS" (Latin Hypercube Sampling). Default is "QRN".}
+
 \item{cluster}{List of vectors including the model inputs that form part of the
 cluster/s. The default is \code{cluster = NULL}}
 }
@@ -33,7 +37,8 @@ A matrix.
 \description{
 It creates the sample matrices to compute Sobol' first and total-order indices.
 If needed, it also creates the sample matrices required to compute second and
-third-order indices. It uses \insertCite{Sobol1967;textual}{sensobol} quasi-random number sequences.
+third-order indices. It uses \insertCite{Sobol1967;textual}{sensobol} quasi-random number sequences,
+random sequences of Latin Hypercube Sampling.
 }
 \details{
 The function generates a \eqn{(N, 2k)} matrix using Sobol' quasi-random
