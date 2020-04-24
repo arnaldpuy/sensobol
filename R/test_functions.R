@@ -271,7 +271,7 @@ metafunction <- function(data, k_2 = 0.5, k_3 = 0.2, epsilon = NULL) {
   set.seed(epsilon)
   all_functions <- sample(names(function_list), k, replace = TRUE)
   set.seed(epsilon)
-  components <- sample(1:2, prob = c(0.5, 0.5), size = 200, replace = TRUE)
+  components <- sample(1:2, prob = c(0.7, 0.3), size = 200, replace = TRUE)
   mus <- c(0, 0)
   sds <- sqrt(c(0.5, 5))
   set.seed(epsilon)
