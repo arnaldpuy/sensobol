@@ -286,7 +286,8 @@ metafunction <- function(data, k_2 = 0.5, k_3 = 0.2, epsilon = NULL) {
   coefD2 <- sample(coefficients, sample.size.d2M, replace = TRUE)
   d3 <- t(utils::combn(1:k, 3))
   set.seed(epsilon)
-  d3M <- d3[sample(nrow(d3), size = ceiling(k * k_3), replace = FALSE), ]
+  size.d3 <- ifelse(nrow(d3) == 1, 1, ceiling(k * k_3))
+  d3M <- d3[sample(nrow(d3), size = size.d3, replace = FALSE), ]
   sample.size <- ifelse(is.vector(d3M) == TRUE, 1, nrow(d3M))
   set.seed(epsilon)
   coefD3 <- sample(coefficients, sample.size, replace = TRUE)

@@ -280,7 +280,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #' @export
 #' @examples
 #' # Define settings
-#' N <- 100; params <- paste("X", 1:3, sep = ""); R <- 10
+#' N <- 1000; params <- paste("X", 1:3, sep = ""); R <- 10
 #'
 #' # Create sample matrix
 #' mat <- sobol_matrices(N = N, params = params)
