@@ -28,6 +28,7 @@
 #' # Plot Sobol' indices
 #' plot_sobol(data = ind)
 plot_sobol <- function(data, order = "first") {
+  sensitivity <- NULL
   if(order == "first") {
     p <- data[sensitivity == "Si" | sensitivity == "Ti"]
     gg <- ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
