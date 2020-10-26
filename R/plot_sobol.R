@@ -4,13 +4,9 @@
 #' Plot Sobol' indices.
 #'
 #' @param data The output of \code{sobol_indices}.
-#' @param dummy The output of the \code{sobol_dummy} function. If supplied and
-#' \code{type = 1}, the plot includes two horizontal dashed lines showing the
-#' highest confidence interval for the first and total-order effects of the
-#' dummy parameter.
-#' @param type An integer. If \code{type = 1}, it plots first and total effects.
-#' If \code{type = 2}, it plots second-order effects. If \code{type = 3}, it plots
-#' third-order effects. Default is \code{type = 1}.
+#' @param order If \code{order = "first"}, it plots first and total effects.
+#' If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
+#' third-order effects. Default is \code{order = "first"}.
 #'
 #' @return A ggplot object.
 #' @import ggplot2
@@ -31,55 +27,44 @@
 #'
 #' # Plot Sobol' indices
 #' plot_sobol(data = ind)
-plot_sobol <- function(data, dummy = NULL, type = 1) {
+#'
+
+plot_sobol <- function(data, order = "first") {
   sensitivity <- low.ci <- high.ci <- parameters <- original <- NULL
-  if(type == 1) {
-    if(is.null(dummy) == FALSE) {
-      plot.dummy <- geom_hline(data = dummy,
-                               aes(yintercept = high.ci,
-                                   color = sensitivity),
-                               lty = 2,
-                               show.legend = FALSE)
-    } else {
-      plot.dummy <- NULL
-    }
-    if("low.ci" %in% colnames(data) & "high.ci" %in% colnames(data)) {
-      plot.errorbar <- geom_errorbar(aes(ymin = low.ci,
-                                         ymax = high.ci),
-                                     position = position_dodge(0.6))
-    } else {
-      plot.errorbar <- NULL
-    }
+  if(order == "first") {
     p <- data.table::data.table(data)[sensitivity == "Si" | sensitivity == "Ti"]
-    gg <- ggplot2::ggplot(p, aes(parameters, original,
-                                 fill = sensitivity)) +
+    gg <- ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
       geom_bar(stat = "identity",
                position = position_dodge(0.6),
                color = "black") +
-      plot.dummy +
-      plot.errorbar +
+      geom_errorbar(aes(ymin = low.ci,
+                        ymax = high.ci),
+                    position = position_dodge(0.6)) +
+      scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
+      labs(x = "",
+           y = "Sobol' index") +
       scale_fill_discrete(name = "Sobol' indices",
                           labels = c(expression(S[italic(i)]),
                                      expression(T[italic(i)]))) +
-      labs(x = "",
-           y = "Sobol' index") +
-      theme_bw() +
-      theme(legend.position = "top",
-            panel.grid.major = element_blank(),
+      theme(panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             legend.background = element_rect(fill = "transparent",
                                              color = NA),
             legend.key = element_rect(fill = "transparent",
-                                      color = NA))
-  } else if(!type == 1) {
-    if(type == 2) {
+                                      color = NA),
+            axis.text.x = element_text(angle = 45,
+                                       hjust = 1),
+            legend.position = "top",
+            strip.text.y = element_text(size = 6))
+  } else if(!order == "first") {
+    if(order == "second") {
       plot.type <- "Sij"
-    } else if(type == 3) {
+    } else if(order == "third") {
       plot.type <- "Sijk"
     } else {
-      stop("Type should be either 1, 2 or 3")
+      stop("Order should be either first, second or third")
     }
-    p <- data[sensitivity == plot.type]
+    p <- data.table::data.table(data)[sensitivity == plot.type]
     gg <- ggplot2::ggplot(p, aes(stats::reorder(parameters, original),
                                  original)) +
       geom_point() +
@@ -87,7 +72,7 @@ plot_sobol <- function(data, dummy = NULL, type = 1) {
                         ymax = high.ci)) +
       theme_bw() +
       labs(x = "",
-           y = "Variance") +
+           y = "Sobol' index") +
       geom_hline(yintercept = 0,
                  lty = 2,
                  color = "red") +

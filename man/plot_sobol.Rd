@@ -4,19 +4,14 @@
 \alias{plot_sobol}
 \title{Plot Sobol' indices.}
 \usage{
-plot_sobol(data, dummy = NULL, type = 1)
+plot_sobol(data, order = "first")
 }
 \arguments{
 \item{data}{The output of \code{sobol_indices}.}
 
-\item{dummy}{The output of the \code{sobol_dummy} function. If supplied and
-\code{type = 1}, the plot includes two horizontal dashed lines showing the
-highest confidence interval for the first and total-order effects of the
-dummy parameter.}
-
-\item{type}{An integer. If \code{type = 1}, it plots first and total effects.
-If \code{type = 2}, it plots second-order effects. If \code{type = 3}, it plots
-third-order effects. Default is \code{type = 1}.}
+\item{order}{If \code{order = "first"}, it plots first and total effects.
+If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
+third-order effects. Default is \code{order = "first"}.}
 }
 \value{
 A ggplot object.
@@ -39,4 +34,5 @@ ind <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = R)
 
 # Plot Sobol' indices
 plot_sobol(data = ind)
+
 }

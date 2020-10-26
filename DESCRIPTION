@@ -45,7 +45,7 @@ RdMacros: Rdpack
 LazyData: true
 Depends: R (>= 3.4.0)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Suggests: 
     knitr,
     rmarkdown,
