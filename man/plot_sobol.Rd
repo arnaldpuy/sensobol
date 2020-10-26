@@ -34,5 +34,4 @@ ind <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = R)
 
 # Plot Sobol' indices
 plot_sobol(data = ind)
-
 }

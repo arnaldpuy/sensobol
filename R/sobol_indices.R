@@ -308,7 +308,7 @@ sobol_indices <- function(Y, N, params, first = "saltelli", total = "jansen",
     tmp <- boot::boot(data = d, statistic = sobol_boot, R = R, N = N, params = params,
                       first = first, total = total, order = order,
                       parallel = parallel, ncpus = ncpus, boot = TRUE)
-    out <- bootstats(tmp, conf = conf, type = type)
+    out <- data.table::data.table(bootstats(tmp, conf = conf, type = type))
   } else {
     stop("boot has to be TRUE or FALSE")
   }
