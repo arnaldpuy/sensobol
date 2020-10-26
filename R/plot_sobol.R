@@ -46,14 +46,13 @@ plot_sobol <- function(data, order = "first") {
       scale_fill_discrete(name = "Sobol' indices",
                           labels = c(expression(S[italic(i)]),
                                      expression(T[italic(i)]))) +
+      theme_bw() +
       theme(panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             legend.background = element_rect(fill = "transparent",
                                              color = NA),
             legend.key = element_rect(fill = "transparent",
                                       color = NA),
-            axis.text.x = element_text(angle = 45,
-                                       hjust = 1),
             legend.position = "top",
             strip.text.y = element_text(size = 6))
   } else if(!order == "first") {
