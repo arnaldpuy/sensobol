@@ -11,7 +11,7 @@ plot_sobol(data, order = "first")
 
 \item{order}{If \code{order = "first"}, it plots first and total effects.
 If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
-third-order effects. Default is \code{order = "first"}.}
+third-order effects. Default is \code{order = "first"}}
 }
 \value{
 A ggplot object.

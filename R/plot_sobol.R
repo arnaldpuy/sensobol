@@ -28,10 +28,9 @@
 #' # Plot Sobol' indices
 #' plot_sobol(data = ind)
 plot_sobol <- function(data, order = "first") {
-  sensitivity <- low.ci <- high.ci <- parameters <- original <- NULL
   if(order == "first") {
     p <- data[sensitivity == "Si" | sensitivity == "Ti"]
-    ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
+    gg <- ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
       geom_bar(stat = "identity",
                position = position_dodge(0.6),
                color = "black") +
@@ -54,6 +53,7 @@ plot_sobol <- function(data, order = "first") {
             legend.position = "top",
             strip.text.y = element_text(size = 6))
   }
+  return(gg)
 }
 
 # PLOT MODEL OUTPUT UNCERTAINTY -----------------------------------------------
