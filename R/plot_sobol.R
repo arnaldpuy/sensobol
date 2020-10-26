@@ -31,7 +31,7 @@ plot_sobol <- function(data, order = "first") {
   sensitivity <- low.ci <- high.ci <- parameters <- original <- NULL
   if(order == "first") {
     p <- data[sensitivity == "Si" | sensitivity == "Ti"]
-    gg <- ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
+    ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
       geom_bar(stat = "identity",
                position = position_dodge(0.6),
                color = "black") +
@@ -53,36 +53,7 @@ plot_sobol <- function(data, order = "first") {
                                       color = NA),
             legend.position = "top",
             strip.text.y = element_text(size = 6))
-  } else if(!order == "first") {
-    if(order == "second") {
-      plot.type <- "Sij"
-    } else if(order == "third") {
-      plot.type <- "Sijk"
-    } else {
-      stop("Order should be either first, second or third")
-    }
-    p <- data[sensitivity == plot.type]
-    gg <- ggplot2::ggplot(p, aes(stats::reorder(parameters, original),
-                                 original)) +
-      geom_point() +
-      geom_errorbar(aes(ymin = low.ci,
-                        ymax = high.ci)) +
-      theme_bw() +
-      labs(x = "",
-           y = "Sobol' index") +
-      geom_hline(yintercept = 0,
-                 lty = 2,
-                 color = "red") +
-      theme(panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            legend.background = element_rect(fill = "transparent",
-                                             color = NA),
-            legend.key = element_rect(fill = "transparent",
-                                      color = NA),
-            axis.text.x = element_text(angle = 45,
-                                       hjust = 1))
   }
-  return(gg)
 }
 
 # PLOT MODEL OUTPUT UNCERTAINTY -----------------------------------------------
