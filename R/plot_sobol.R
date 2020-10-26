@@ -6,7 +6,7 @@
 #' @param data The output of \code{sobol_indices}.
 #' @param order If \code{order = "first"}, it plots first and total effects.
 #' If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
-#' third-order effects. Default is \code{order = "first"}.
+#' third-order effects. Default is \code{order = "first"}
 #'
 #' @return A ggplot object.
 #' @import ggplot2
