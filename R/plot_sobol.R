@@ -30,7 +30,7 @@
 plot_sobol <- function(data, order = "first") {
   sensitivity <- low.ci <- high.ci <- parameters <- original <- NULL
   if(order == "first") {
-    p <- data.table::data.table(data)[sensitivity == "Si" | sensitivity == "Ti"]
+    p <- data[sensitivity == "Si" | sensitivity == "Ti"]
     gg <- ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
       geom_bar(stat = "identity",
                position = position_dodge(0.6),
@@ -61,7 +61,7 @@ plot_sobol <- function(data, order = "first") {
     } else {
       stop("Order should be either first, second or third")
     }
-    p <- data.table::data.table(data)[sensitivity == plot.type]
+    p <- data[sensitivity == plot.type]
     gg <- ggplot2::ggplot(p, aes(stats::reorder(parameters, original),
                                  original)) +
       geom_point() +
@@ -84,7 +84,6 @@ plot_sobol <- function(data, order = "first") {
   }
   return(gg)
 }
-
 
 # PLOT MODEL OUTPUT UNCERTAINTY -----------------------------------------------
 
