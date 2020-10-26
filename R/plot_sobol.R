@@ -27,8 +27,6 @@
 #'
 #' # Plot Sobol' indices
 #' plot_sobol(data = ind)
-#'
-
 plot_sobol <- function(data, order = "first") {
   sensitivity <- low.ci <- high.ci <- parameters <- original <- NULL
   if(order == "first") {
