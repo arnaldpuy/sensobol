@@ -30,7 +30,7 @@
 plot_sobol <- function(data, order = "first") {
   sensitivity <- low.ci <- high.ci <- parameters <- original <- NULL
   if(order == "first") {
-    p <- ind[sensitivity == "Si" | sensitivity == "Ti"]
+    p <- data[sensitivity == "Si" | sensitivity == "Ti"]
     gg <- ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
       geom_bar(stat = "identity",
                position = position_dodge(0.6),
