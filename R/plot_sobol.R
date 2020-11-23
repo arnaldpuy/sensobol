@@ -37,6 +37,7 @@ theme_AP <- function() {
 #'
 #' # Plot Sobol' indices
 #' plot_sobol(data = ind)
+
 plot_sobol <- function(data, order = "first") {
   sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
   if(order == "first") {
