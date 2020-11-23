@@ -1,4 +1,14 @@
 
+theme_AP <- function() {
+  ggplot2::theme_bw() +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+          panel.grid.minor = ggplot2::element_blank(),
+          legend.background = ggplot2::element_rect(fill = "transparent",
+                                           color = NA),
+          legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
+          strip.background = ggplot2::element_rect(fill = "white"))
+}
+
 # PLOT SOBOL' FIRST AND TOTAL-ORDER INDICES -----------------------------------
 
 #' Plot Sobol' indices.
@@ -31,28 +41,20 @@ plot_sobol <- function(data, order = "first") {
   sensitivity <- low.ci <- high.ci <- parameters <- original <- NULL
   if(order == "first") {
     p <- data[sensitivity == "Si" | sensitivity == "Ti"]
-    gg <- ggplot2::ggplot(p, aes(parameters, original, fill = sensitivity)) +
-      geom_bar(stat = "identity",
-               position = position_dodge(0.6),
+    gg <- ggplot2::ggplot(p, ggplot2::aes(parameters, original, fill = sensitivity)) +
+      ggplot2::geom_bar(stat = "identity",
+               position = ggplot2::position_dodge(0.6),
                color = "black") +
-      geom_errorbar(aes(ymin = low.ci,
+      ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
                         ymax = high.ci),
-                    position = position_dodge(0.6)) +
-      scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
-      labs(x = "",
+                    position = ggplot2::position_dodge(0.6)) +
+      ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
+      ggplot2::labs(x = "",
            y = "Sobol' index") +
-      scale_fill_discrete(name = "Sobol' indices",
+      ggplot2::scale_fill_discrete(name = "Sobol' indices",
                           labels = c(expression(S[italic(i)]),
                                      expression(T[italic(i)]))) +
-      theme_bw() +
-      theme(panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            legend.background = element_rect(fill = "transparent",
-                                             color = NA),
-            legend.key = element_rect(fill = "transparent",
-                                      color = NA),
-            legend.position = "top",
-            strip.text.y = element_text(size = 6))
+      theme_AP()
   } else if(!order == "first") {
     if(order == "second") {
       plot.type <- "Sij"
@@ -62,25 +64,17 @@ plot_sobol <- function(data, order = "first") {
       stop("Order should be either first, second or third")
     }
     p <- data[sensitivity == plot.type]
-    gg <- ggplot2::ggplot(p, aes(stats::reorder(parameters, original),
+    gg <- ggplot2::ggplot(p, ggplot2::aes(stats::reorder(parameters, original),
                                  original)) +
-      geom_point() +
-      geom_errorbar(aes(ymin = low.ci,
+      ggplot2::geom_point() +
+      ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
                         ymax = high.ci)) +
-      theme_bw() +
-      labs(x = "",
+      ggplot2::labs(x = "",
            y = "Sobol' index") +
-      geom_hline(yintercept = 0,
+      ggplot2::geom_hline(yintercept = 0,
                  lty = 2,
                  color = "red") +
-      theme(panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            legend.background = element_rect(fill = "transparent",
-                                             color = NA),
-            legend.key = element_rect(fill = "transparent",
-                                      color = NA),
-            axis.text.x = element_text(angle = 45,
-                                       hjust = 1))
+      theme_AP()
   }
   return(gg)
 }
@@ -120,18 +114,12 @@ plot_uncertainty <- function(Y, N = NULL) {
   }
   Y <- Y[1:(2 * N)]
   df <- data.frame(Y)
-  gg <- ggplot2::ggplot(df, aes(Y)) +
-    geom_histogram(color = "black",
+  gg <- ggplot2::ggplot(df, ggplot2::aes(Y)) +
+    ggplot2::geom_histogram(color = "black",
                    fill = "white") +
-    labs(x = "Y",
+    ggplot2::labs(x = "y",
          y = "Count") +
-    theme_bw() +
-    theme(panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          legend.background = element_rect(fill = "transparent",
-                                           color = NA),
-          legend.key = element_rect(fill = "transparent",
-                                    color = NA))
+    theme_AP()
   return(gg)
 }
 
