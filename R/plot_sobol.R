@@ -38,42 +38,41 @@ theme_AP <- function() {
 #' # Plot Sobol' indices
 #' plot_sobol(data = ind)
 plot_sobol <- function(data, order = "first") {
-  sensitivity <- low.ci <- high.ci <- parameters <- original <- NULL
   if(order == "first") {
-    p <- data[sensitivity == "Si" | sensitivity == "Ti"]
-    gg <- ggplot2::ggplot(p, ggplot2::aes(parameters, original, fill = sensitivity)) +
+    dt <- data[sensitivity %in% c("Si", "Ti")]
+    gg <- ggplot2::ggplot(dt, ggplot2::aes(parameters, original, fill = sensitivity)) +
       ggplot2::geom_bar(stat = "identity",
-               position = ggplot2::position_dodge(0.6),
-               color = "black") +
+                        position = ggplot2::position_dodge(0.6),
+                        color = "black") +
       ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
-                        ymax = high.ci),
-                    position = ggplot2::position_dodge(0.6)) +
+                                          ymax = high.ci),
+                             position = ggplot2::position_dodge(0.6)) +
       ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
       ggplot2::labs(x = "",
-           y = "Sobol' index") +
+                    y = "Sobol' index") +
       ggplot2::scale_fill_discrete(name = "Sobol' indices",
-                          labels = c(expression(S[italic(i)]),
-                                     expression(T[italic(i)]))) +
+                                   labels = c(expression(S[italic(i)]),
+                                              expression(T[italic(i)]))) +
       theme_AP()
-  } else if(!order == "first") {
+  }
+  if(!order == "first") {
     if(order == "second") {
-      plot.type <- "Sij"
+      dt <- data[sensitivity %in% "Sij"][low.ci > 0]
     } else if(order == "third") {
-      plot.type <- "Sijk"
-    } else {
-      stop("Order should be either first, second or third")
+      dt <- data[sensitivity %in% "Sijk"][low.ci > 0]
+    } else if(!order == "second" | !order == "third") {
+      stop("Order should be first, second or third")
     }
-    p <- data[sensitivity == plot.type]
-    gg <- ggplot2::ggplot(p, ggplot2::aes(stats::reorder(parameters, original),
-                                 original)) +
+    gg <- ggplot2::ggplot(dt, ggplot2::aes(stats::reorder(parameters, original),
+                                           original)) +
       ggplot2::geom_point() +
       ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
-                        ymax = high.ci)) +
+                                          ymax = high.ci)) +
       ggplot2::labs(x = "",
-           y = "Sobol' index") +
+                    y = "Sobol' index") +
       ggplot2::geom_hline(yintercept = 0,
-                 lty = 2,
-                 color = "red") +
+                          lty = 2,
+                          color = "red") +
       theme_AP()
   }
   return(gg)
