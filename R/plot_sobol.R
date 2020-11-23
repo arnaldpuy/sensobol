@@ -42,7 +42,7 @@ plot_sobol <- function(data, order = "first") {
   sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
   if(order == "first") {
     dt <- data[sensitivity %in% c("Si", "Ti")]
-    ggplot2::ggplot(dt, ggplot2::aes(parameters, original, fill = sensitivity)) +
+    gg <- ggplot2::ggplot(dt, ggplot2::aes(parameters, original, fill = sensitivity)) +
       ggplot2::geom_bar(stat = "identity",
                         position = ggplot2::position_dodge(0.6),
                         color = "black") +
@@ -71,7 +71,7 @@ plot_sobol <- function(data, order = "first") {
     } else if(!order == "second" | !order == "third") {
       stop("Order should be first, second or third")
     }
-    ggplot2::ggplot(dt, ggplot2::aes(stats::reorder(parameters, original),
+    gg <- ggplot2::ggplot(dt, ggplot2::aes(stats::reorder(parameters, original),
                                            original)) +
       ggplot2::geom_point() +
       ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
@@ -89,6 +89,7 @@ plot_sobol <- function(data, order = "first") {
                      legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
                      strip.background = ggplot2::element_rect(fill = "white"))
   }
+  gg
 }
 
 # PLOT MODEL OUTPUT UNCERTAINTY -----------------------------------------------
