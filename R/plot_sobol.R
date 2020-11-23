@@ -54,7 +54,13 @@ plot_sobol <- function(data, order = "first") {
       ggplot2::scale_fill_discrete(name = "Sobol' indices",
                                    labels = c(expression(S[italic(i)]),
                                               expression(T[italic(i)]))) +
-      theme_AP()
+      ggplot2::theme_bw() +
+      ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank(),
+                     legend.background = ggplot2::element_rect(fill = "transparent",
+                                                               color = NA),
+                     legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
+                     strip.background = ggplot2::element_rect(fill = "white"))
   }
   if(!order == "first") {
     if(order == "second") {
@@ -74,7 +80,13 @@ plot_sobol <- function(data, order = "first") {
       ggplot2::geom_hline(yintercept = 0,
                           lty = 2,
                           color = "red") +
-      theme_AP()
+      ggplot2::theme_bw() +
+      ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank(),
+                     legend.background = ggplot2::element_rect(fill = "transparent",
+                                                               color = NA),
+                     legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
+                     strip.background = ggplot2::element_rect(fill = "white"))
   }
   return(gg)
 }
