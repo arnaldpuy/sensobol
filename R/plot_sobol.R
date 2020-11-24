@@ -166,7 +166,7 @@ plot_uncertainty <- function(Y, N = NULL) {
 #' plot_scatter(data = mat, Y = Y, N = N, params = params)
 plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha = 0.2) {
   value <- y <- NULL
-  dt <- data.table::data.table(cbind(data, Y))
+  dt <- data.table::data.table(cbind(data, Y))[1:N]
   colnames(dt)[length(colnames(dt))] <- "y"
   out <- data.table::melt(dt, measure.vars = params)
   gg <- ggplot2::ggplot(out, ggplot2::aes(value, y)) +
