@@ -89,7 +89,7 @@ plot_sobol <- function(data, order = "first") {
                      legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
                      strip.background = ggplot2::element_rect(fill = "white"))
   }
-  gg
+  return(gg)
 }
 
 # PLOT MODEL OUTPUT UNCERTAINTY -----------------------------------------------
