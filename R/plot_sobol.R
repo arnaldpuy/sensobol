@@ -125,7 +125,7 @@ plot_uncertainty <- function(Y, N = NULL) {
   if(is.null(N) == TRUE) {
     stop("The size of the base sample matrix N should be specified")
   }
-  Y <- Y[1:(2 * N)]
+  Y <- Y[1:N]
   df <- data.frame(Y)
   gg <- ggplot2::ggplot(df, ggplot2::aes(Y)) +
     ggplot2::geom_histogram(color = "black",
@@ -136,4 +136,114 @@ plot_uncertainty <- function(Y, N = NULL) {
   return(gg)
 }
 
+#' Scatterplots of model inputs against model output
+#'
+#'
+#' @param data A matrix, data frame or data.table, the output of \code{\link{sobol_matrices}}.
+#' @param N The sample size of the base sample matrix used in \code{\link{sobol_matrices}}.
+#' @param Y A numeric vector with the model output.
+#' @param params A character vector with the name of the parameters.
+#' @param method The type of plot. If \code{method = "point"} (the default), each simulation is a point.
+#' If \code{method = "bin"}, bins are used to aggregate simulationd. This option is appropriate to prevent
+#' overplotting.
+#' @param size Number between 0 and 1, argument of \code{geom_point()}. Default is 0.7.
+#' @param alpha Number between 0 and 1, transparency scale of \code{geom_point()}. Default is 0.2.
+#' @return A ggplot2 object
+#' @import ggplot2
+#' @export
+#'
+#' @examples
+#' # Define settings
+#' N <- 1000; params <- paste("X", 1:3, sep = ""); R <- 10
+#'
+#' # Create sample matrix
+#' mat <- sobol_matrices(N = N, params = params)
+#'
+#' # Compute Ishigami function
+#' Y <- ishigami_Fun(mat)
+#'
+#' # Plot scatter
+#' plot_scatter(data = mat, Y = Y, N = N, params = params)
+plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha = 0.2) {
+  value <- y <- NULL
+  dt <- data.table::data.table(cbind(data, Y))
+  colnames(dt)[length(colnames(dt))] <- "y"
+  out <- data.table::melt(dt, measure.vars = params)
+  gg <- ggplot2::ggplot(out, ggplot2::aes(value, y)) +
+    ggplot2::facet_wrap(~variable) +
+    ggplot2::labs(x = "Value", y = "y") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   legend.background = ggplot2::element_rect(fill = "transparent",
+                                                             color = NA),
+                   legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
+                   strip.background = ggplot2::element_rect(fill = "white"),
+                   legend.position = "top")
+  if(method == "point") {
+    gg <- gg + ggplot2::geom_point(size = size, alpha = alpha) +
+      ggplot2::stat_summary_bin(fun = "mean", geom = "point", colour = "red", size = 0.7)
+  } else if(method == "bin") {
+    gg <- gg + ggplot2::geom_hex() +
+      ggplot2::stat_summary_bin(fun = "mean", geom = "point", colour = "red", size = 0.7)
+  } else {
+    stop("Method should be either point or bin")
+  }
+  return(gg)
+}
 
+
+
+#' Scatterplot matrix of model inputs and model output.
+#'
+#' @param data A matrix, data frame or data.table, the output of \code{\link{sobol_matrices}}.
+#' @param N The sample size of the base sample matrix used in \code{\link{sobol_matrices}}.
+#' @param Y A numeric vector with the model output.
+#' @param params A character vector with the name of the parameters.
+#'
+#' @importFrom data.table .SD
+#'
+#' @return
+#' @import ggplot2
+#' @export
+#'
+#' @examples
+#' # Define settings
+#' N <- 1000; params <- paste("X", 1:3, sep = ""); R <- 10
+#'
+#' # Create sample matrix
+#' mat <- sobol_matrices(N = N, params = params)
+#'
+#' # Compute Ishigami function
+#' Y <- ishigami_Fun(mat)
+#'
+#' # Plot scatterplot matrix
+#' plot_multiscatter(data = mat, N = N, Y = Y, params = params)
+plot_multiscatter <- function(data, N, Y, params) {
+  xvar <- yvar <- NULL
+  dt <- data.table::data.table(data)
+  out <- t(utils::combn(params, 2))
+  da <- list()
+  for(i in 1:nrow(out)) {
+    cols <- out[i, ]
+    da[[i]] <- cbind(dt[1:N, .SD, .SDcols = (cols)], cols[1], cols[2], Y[1:N])
+    data.table::setnames(da[[i]], colnames(da[[i]]), c("xvar", "yvar", "x", "y", "output"))
+  }
+  output <- data.table::rbindlist(da)
+  gg <- ggplot2::ggplot(output, ggplot2::aes(xvar, yvar, color = output)) +
+    ggplot2::geom_point() +
+    ggplot2::scale_colour_gradientn(colours = grDevices::terrain.colors(10), name = "y") +
+    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 3)) +
+    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
+    ggplot2::facet_grid(x~y, scales = "free_y") +
+    ggplot2::theme_bw() +
+    ggplot2::labs(x = "", y = "") +
+    ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   legend.background = ggplot2::element_rect(fill = "transparent",
+                                                             color = NA),
+                   legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
+                   strip.background = ggplot2::element_rect(fill = "white"),
+                   legend.position = "top")
+  return(gg)
+}
