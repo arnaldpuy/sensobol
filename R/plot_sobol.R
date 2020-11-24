@@ -231,7 +231,7 @@ plot_multiscatter <- function(data, N, Y, params) {
   }
   output <- data.table::rbindlist(da)
   gg <- ggplot2::ggplot(output, ggplot2::aes(xvar, yvar, color = output)) +
-    ggplot2::geom_point() +
+    ggplot2::geom_point(size = 0.5) +
     ggplot2::scale_colour_gradientn(colours = grDevices::terrain.colors(10), name = "y") +
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 3)) +
     ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
