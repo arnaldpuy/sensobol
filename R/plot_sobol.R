@@ -61,14 +61,14 @@ plot_sobol <- function(data, order = "first") {
                      legend.background = ggplot2::element_rect(fill = "transparent",
                                                                color = NA),
                      legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
-                     strip.background = ggplot2::element_rect(fill = "white"))
-  }
-  if(!order == "first") {
+                     strip.background = ggplot2::element_rect(fill = "white"),
+                     legend.position = "top")
+  } else if(!order == "first") {
     if(order == "second") {
-      dt <- data[sensitivity %in% "Sij"][low.ci > 0]
+      dt <- data[sensitivity %in% "Sij"][low.ci > 0.005]
     } else if(order == "third") {
-      dt <- data[sensitivity %in% "Sijk"][low.ci > 0]
-    } else if(!order == "second" | !order == "third") {
+      dt <- data[sensitivity %in% "Sijk"][low.ci > 0.005]
+    } else {
       stop("Order should be first, second or third")
     }
     gg <- ggplot2::ggplot(dt, ggplot2::aes(stats::reorder(parameters, original),
@@ -170,7 +170,7 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
   colnames(dt)[length(colnames(dt))] <- "y"
   out <- data.table::melt(dt, measure.vars = params)
   gg <- ggplot2::ggplot(out, ggplot2::aes(value, y)) +
-    ggplot2::facet_wrap(~variable) +
+    ggplot2::facet_wrap(~variable, scales = "free_x") +
     ggplot2::labs(x = "Value", y = "y") +
     ggplot2::theme_bw() +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
