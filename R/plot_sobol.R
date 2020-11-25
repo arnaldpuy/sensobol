@@ -235,7 +235,7 @@ plot_multiscatter <- function(data, N, Y, params) {
     ggplot2::scale_colour_gradientn(colours = grDevices::terrain.colors(10), name = "y") +
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(n = 3)) +
     ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
-    ggplot2::facet_grid(x~y, scales = "free_x") +
+    ggplot2::facet_wrap(x~y, scales = "free") +
     ggplot2::theme_bw() +
     ggplot2::labs(x = "", y = "") +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
