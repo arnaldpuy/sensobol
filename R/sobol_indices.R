@@ -219,8 +219,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     Vij <- apply(mat2, 1, function(x) Reduce("-", x))
     if(first == "azzini") {
       VY <- Rfast::colsums((Y_A - Y_B) ^ 2 + (Y_BA - Y_AB) ^ 2)
-      Sij <- Vij / VY[(length(params) + 1):
-                        (length(VY) - length(utils::combn(params, 3, simplify = FALSE)))]
+      Sij <- Vij / VY[(length(params) + 1):(length(params) + ncol(utils::combn(1:length(params), 2)))]
     } else {
       Sij <- Vij / VY
     }
