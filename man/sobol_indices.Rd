@@ -5,6 +5,7 @@
 \title{Computation of Sobol' indices}
 \usage{
 sobol_indices(
+  matrices = c("A", "B", "AB"),
   Y,
   N,
   params,
@@ -20,33 +21,37 @@ sobol_indices(
 )
 }
 \arguments{
+\item{matrices}{Vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.}
+
 \item{Y}{Numeric vector, model output.}
 
 \item{N}{Integer, base sample size of the sample matrix created with \code{\link{sobol_matrices}}.}
 
 \item{params}{Vector with the name of the model inputs.}
 
-\item{first}{Estimator used to compute first order indices. Options are:
+\item{first}{Estimator to compute first order indices. Options are:
 \itemize{
-\item \code{first = "saltelli"} \insertCite{Saltelli2010a}{sensobol} (Default).
+\item \code{first = "saltelli"} \insertCite{Saltelli2010a}{sensobol}.
 \item \code{first = "jansen"} \insertCite{Jansen1999}{sensobol}.
-\item \code{first = "janon"}  \insertCite{Janon2014}{sensobol}.
-\item \code{first = "azzini"}.
+\item \code{first = "sobol"}  \insertCite{Sobol1993}{sensobol}.
+\item \code{first = "azzini"} \insertCite{Azzini2020}{sensobol}.
 }}
 
-\item{total}{Estimator used to compute total order indices. Options are:
+\item{total}{Estimator to compute total order indices. Options are:
 \itemize{
-\item \code{total = "jansen"} \insertCite{Jansen1999}{sensobol} (Default).
+\item \code{total = "jansen"} \insertCite{Jansen1999}{sensobol}.
 \item \code{total = "sobol"} \insertCite{Sobol2001}{sensobol}.
 \item \code{total = "homma"} \insertCite{Homma1996}{sensobol}.
 \item \code{total = "janon"} \insertCite{Janon2014}{sensobol}.
-\item \code{total = "azzini"}.
+\item \code{total = "glen"} \insertCite{Glen2012}{sensobol}.
+\item \code{total = "azzini"} \insertCite{Azzini2020}{sensobol}.
+\item \code{total = "saltelli"} \insertCite{Saltelli2008}{sensobol}.
 }}
 
 \item{order}{Whether to compute "first", "second", or "third" order Sobol' indices. Default
 is \code{order = "first"}.}
 
-\item{boot}{Logical. If TRUE, bootstraps the Sobol' indices. If FALSE, it provides point
+\item{boot}{Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
 estimates. Default is \code{boot = FALSE}.}
 
 \item{R}{Integer, number of bootstrap replicas. Default is NULL.}
@@ -70,6 +75,11 @@ A data.table object.
 }
 \description{
 It allows to compute Sobol' indices up to the third order using state-of-the-art estimators.
+}
+\details{
+Any first and total-order estimator can be combined with the appropriate sampling design.
+Check the vignette for a summary of all possible combinations. If the analyst mismatches estimators and sampling designs
+the function will throw and error and urge to redefine the sample matrices or the estimators.
 }
 \examples{
 # Define settings

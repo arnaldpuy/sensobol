@@ -240,22 +240,32 @@ function_list <- list(
   Trigonometric = function(x) cos(x)
 )
 
-#' Becker (2020) metafunction
+#' Random metafunction
 #'
 #' Metafunction that randomly combines 10 univariate functions in a
 #' multivariate function of dimension \eqn{k}. It also allows to randomize the
 #' fraction of active pairwise and three-wise interactions.
 #'
-#' @param data A matrix where each column is a model input.
+#' @param data A matrix where each column is a model input and each row a samplinf point.
 #' @param k_2 Numeric, fraction of active pairwise interactions. The number
 #' has to be between (0, 1). Default is \code{k_2 = 0.5}.
-#' @param k_3 Numeric, fraction of active threewise interactions. The number
+#' @param k_3 Numeric, fraction of active three-wise interactions. The number
 #' has to be between (0, 1). Default is \code{k_2 = 0.2}.
 #' @param epsilon Integer. It fixes the seed for the random number generator.
 #' The default is \code{epsilon = NULL}.
+#' @return A vector with the function output.
+#' @seealso
 #'
-#' @return A vector.
+#' See \insertCite{Puyj;textual}{sensobol} and \insertCite{Becker2020;textual}{sensobol}
+#' and for a mathematical description of the metafunction.
 #' @export
+#'
+#' @importFrom Rdpack reprompt
+#'
+#' @details The metafunction randomly combines a linear,
+#' quadratic, cubic, exponential, periodic, discontinuous, non-monotonic,
+#' inverse, no-effect and trigonometric functions. See \insertCite{Puyj}{sensobol}
+#' and \insertCite{Becker2020}{sensobol} for a mathematical description of the approach.
 #'
 #' @examples
 #' # Define settings (number of model inputs = 86)

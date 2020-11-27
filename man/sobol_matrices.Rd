@@ -9,69 +9,48 @@ sobol_matrices(
   N,
   params,
   order = "first",
-  method = "QRN",
-  cluster = NULL
+  type = "QRN",
+  ...
 )
 }
 \arguments{
 \item{matrices}{Vector with the required matrices. The default
 is \code{matrices = c("A", "B", "AB")}.}
 
-\item{N}{Integer, initial ample size of the base Sobol' matrix.}
+\item{N}{Integer, initial ample size of the base sample matrix.}
 
-\item{params}{Vector with the name of the model inputs.}
+\item{params}{Character vector with the name of the model inputs.}
 
 \item{order}{One of "first", "second" or "third" to create a matrix to
-compute first, second or up to third-order Sobol' indices. The default is
+compute first, second or up to third-order Sobol indices. The default is
 \code{order = "first"}.}
 
-\item{method}{One of "QRN" (Quasi-Random Numbers), "R" (Random Numbers)
-or "LHS" (Latin Hypercube Sampling). Default is "QRN".}
+\item{type}{Approach to construct the sample matrix. Options are:
+\itemize{
+\item \code{type = "QRN"}: It uses Sobol' Quasi-Random Numbers \insertCite{Sobol1967}{sensobol}
+through a call to the function \code{\link{sobol}} of the \code{randtoolbox} package.
+\item \code{type = "LHS"}: It uses a Latin Hypercube Sampling Design
+\insertCite{McKay1979}{sensobol} through a call
+to the function \code{\link{randomLHS}} of the \code{lhs} package.
+\item \code{type = "R"}: It uses random numbers.
+}}
 
-\item{cluster}{List of vectors including the model inputs that form part of the
-cluster/s. The default is \code{cluster = NULL}}
+\item{...}{Further arguments in \code{\link{sobol}}.}
 }
 \value{
-A matrix.
+A matrix where each column is a model input and each row a sampling point.
 }
 \description{
 It creates the sample matrices to compute Sobol' first and total-order indices.
 If needed, it also creates the sample matrices required to compute second and
-third-order indices. It uses \insertCite{Sobol1967;textual}{sensobol} quasi-random number sequences,
-random sequences of Latin Hypercube Sampling.
+third-order indices.
 }
 \details{
-The function generates a \eqn{(N, 2k)} matrix using Sobol' quasi-random
-number sequences, for \eqn{i=1,2,...,k} parameters. The first \emph{k}-matrix is
-the \strong{A} matrix and the remaining \emph{k}-matrix, the \strong{B}
-matrix. If \code{matrices} includes an "AB" ("BA") matrix and \code{order = "first"},
-the function also generates \emph{k} \strong{A}_B^{j} (\strong{B}_A^{j})
-matrices, where all collumns come from \strong{A} (\strong{B}) except the
-\emph{j}-th, which comes from \strong{B} (\strong{A}).
-
-If \code{matrices} includes an "AB" ("BA") matrix and \code{order = "second"}
-or \code{order = "third"}, the function will also create \eqn{n} extra
-matrices, where \eqn{n = k! / 2!(k-2)!} or \eqn{n = k! /3!(k-3)!} respectively.
-These are needed to compute second or third-order Sobol' indices.
-
-The argument \code{matrices} can include either a single element
-(i.e. \code{matrices = "A"}, " \code{matrices = "B"},  \code{matrices = "AB"}
-or \code{matrices = "BA"}), or a vector with a combination of matrices;
-for instance, \code{matrices = c("A", "AB")}, \code{matrices = c("A", "AB", "BA")},
-etc. The selection of the estimator to compute first and total-order indices
-will define which matrices are required:
-\itemize{
-\item If the estimator of choice in \code{\link{sobol_indices}} is the Azzini estimator,
-\code{matrices = c("A", "B", "AB", "BA")}.
-\item If the estimator in \code{\link{sobol_indices}} is the \insertCite{Janon2014;textual}{sensobol},
-\code{matrices = c("A", "AB", "BA")}.
-\item If the estimator in \code{\link{sobol_indices}} for first-order indices is either the
-\insertCite{Saltelli2010a;textual}{sensobol} or the \insertCite{Jansen1999;textual}{sensobol},
-and the estimator for total order indices is either the
-\insertCite{Homma1996;textual}{sensobol}, the
-\insertCite{Jansen1999;textual}{sensobol} or the
-\insertCite{Sobol2001;textual}{sensobol}, \code{matrices = c("A", "B", "AB")}.
-}
+Before calling \code{sobol_matrices}, the user must decide which estimators
+will be used to compute first and total-order indices, for this option conditions
+the design of the sample matrix and therefore the argument \code{matrices}.
+See the vignette for further details on the specific sampling designs required by
+the estimators.
 }
 \examples{
 # Define settings
@@ -82,8 +61,4 @@ mat <- sobol_matrices(N = N, params = params, order = order)
 }
 \references{
 \insertAllCited{}
-}
-\seealso{
-Check the function \code{\link{sobol}} in the package \code{randtoolbox}
-to see how the Sobol' quasi-random number sequences are constructed.
 }

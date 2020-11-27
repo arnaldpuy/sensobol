@@ -203,7 +203,7 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
 #'
 #' @importFrom data.table .SD
 #'
-#' @return
+#' @return A ggplot2 object
 #' @import ggplot2
 #' @export
 #'

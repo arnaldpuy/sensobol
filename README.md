@@ -1,13 +1,9 @@
  [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/arnaldpuy/sensobol?branch=master&svg=true)](https://ci.appveyor.com/project/arnaldpuy/sensobol) [![Travis build status](https://travis-ci.org/arnaldpuy/sensobol.svg?branch=master)](https://travis-ci.org/arnaldpuy/sensobol) [![Codecov test coverage](https://codecov.io/gh/arnaldpuy/sensobol/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaldpuy/sensobol?branch=master)
  
  
-# sensobol
+# sensobol: an R package to compute variance-based sensitivity indices
 
-The goal of `sensobol` is to provide a set of functions to swiftly compute and visualize up to third-order Sobol' sensitivity indices. The functions allow to: 
-- Create the sample matrices for the model evaluation.
-- Compute and bootstrap up to third-order effects.
-- Assess the approximation error of Sobol' indices.
-- Plot the model uncertainty and the Sobol' indices.
+The ``R`` package ``sensobol`` provides several functions to conduct variance-based uncertainty and sensitivity analysis, from the estimation of sensitivity indices to the visual representation of the results. It implements several state-of-the-art first and total-order estimators and allows the computation of up to third-order effects, as well as of the approximation error, in a swift and user-friendly way.
 
 ## Installation
 To install the stable version on [CRAN](https://CRAN.R-project.org/package=sensobol), use
@@ -31,17 +27,17 @@ This brief example shows how to compute Sobol' indices. For a more detailed expl
 library(sensobol)
 
 ## Define the base sample size and the parameters
-N <- 1000
+N <- 2 ^ 8
 params <- paste("X", 1:3, sep = "")
 
 ## Create sample matrix to compute first and total-order indices:
 mat <- sobol_matrices(N = N, params = params)
 
 ## Compute the model output (using the Ishigami test function):
-Y <- ishigami_Mapply(mat)
+Y <- ishigami_Fun(mat)
 
 ## Compute and bootstrap the Sobol' indices:
-sens <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = 100)
+ind <- sobol_indices(Y = Y, N = N, params = params)
 ```
 
 ## Citation

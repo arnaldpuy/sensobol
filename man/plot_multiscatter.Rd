@@ -16,7 +16,7 @@ plot_multiscatter(data, N, Y, params)
 \item{params}{A character vector with the name of the parameters.}
 }
 \value{
-
+A ggplot2 object
 }
 \description{
 Scatterplot matrix of model inputs and model output.

@@ -2,29 +2,35 @@
 % Please edit documentation in R/test_functions.R
 \name{metafunction}
 \alias{metafunction}
-\title{Becker (2020) metafunction}
+\title{Random metafunction}
 \usage{
 metafunction(data, k_2 = 0.5, k_3 = 0.2, epsilon = NULL)
 }
 \arguments{
-\item{data}{A matrix where each column is a model input.}
+\item{data}{A matrix where each column is a model input and each row a samplinf point.}
 
 \item{k_2}{Numeric, fraction of active pairwise interactions. The number
 has to be between (0, 1). Default is \code{k_2 = 0.5}.}
 
-\item{k_3}{Numeric, fraction of active threewise interactions. The number
+\item{k_3}{Numeric, fraction of active three-wise interactions. The number
 has to be between (0, 1). Default is \code{k_2 = 0.2}.}
 
 \item{epsilon}{Integer. It fixes the seed for the random number generator.
 The default is \code{epsilon = NULL}.}
 }
 \value{
-A vector.
+A vector with the function output.
 }
 \description{
 Metafunction that randomly combines 10 univariate functions in a
 multivariate function of dimension \eqn{k}. It also allows to randomize the
 fraction of active pairwise and three-wise interactions.
+}
+\details{
+The metafunction randomly combines a linear,
+quadratic, cubic, exponential, periodic, discontinuous, non-monotonic,
+inverse, no-effect and trigonometric functions. See \insertCite{Puyj}{sensobol}
+and \insertCite{Becker2020}{sensobol} for a mathematical description of the approach.
 }
 \examples{
 # Define settings (number of model inputs = 86)
@@ -35,4 +41,8 @@ mat <- sobol_matrices(N = N, params = params)
 
 # Compute metafunction
 Y <- metafunction(mat)
+}
+\seealso{
+See \insertCite{Puyj;textual}{sensobol} and \insertCite{Becker2020;textual}{sensobol}
+and for a mathematical description of the metafunction.
 }

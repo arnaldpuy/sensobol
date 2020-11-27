@@ -1,5 +1,5 @@
 
-scrambled_sobol <- function(matrices, A, B, C, order, cluster) {
+scrambled_sobol <- function(matrices, A, B, C, order) {
   first <- 1:ncol(A)
   N <- nrow(A)
   if(order == "first") {
@@ -13,9 +13,6 @@ scrambled_sobol <- function(matrices, A, B, C, order, cluster) {
     loop <- third
   } else {
     stop("order should be either first, second or third")
-  }
-  if(is.null(cluster) == FALSE) {
-    loop <- cluster
   }
   AB.mat <- "AB" %in% matrices
   BA.mat <- "BA" %in% matrices
@@ -61,59 +58,32 @@ scrambled_sobol <- function(matrices, A, B, C, order, cluster) {
 #'
 #' It creates the sample matrices to compute Sobol' first and total-order indices.
 #' If needed, it also creates the sample matrices required to compute second and
-#' third-order indices. It uses \insertCite{Sobol1967;textual}{sensobol} quasi-random number sequences,
-#' random sequences of Latin Hypercube Sampling.
+#' third-order indices.
 #'
 #' @param matrices Vector with the required matrices. The default
 #' is \code{matrices = c("A", "B", "AB")}.
-#' @param N Integer, initial ample size of the base Sobol' matrix.
-#' @param params Vector with the name of the model inputs.
+#' @param N Integer, initial ample size of the base sample matrix.
+#' @param params Character vector with the name of the model inputs.
 #' @param order One of "first", "second" or "third" to create a matrix to
-#' compute first, second or up to third-order Sobol' indices. The default is
+#' compute first, second or up to third-order Sobol indices. The default is
 #' \code{order = "first"}.
-#' @param method One of "QRN" (Quasi-Random Numbers), "R" (Random Numbers)
-#' or "LHS" (Latin Hypercube Sampling). Default is "QRN".
-#' @param cluster List of vectors including the model inputs that form part of the
-#' cluster/s. The default is \code{cluster = NULL}
-
-#' @seealso Check the function \code{\link{sobol}} in the package \code{randtoolbox}
-#' to see how the Sobol' quasi-random number sequences are constructed.
-#' @return A matrix.
+#' @param type Approach to construct the sample matrix. Options are:
+#' * \code{type = "QRN"}: It uses Sobol' Quasi-Random Numbers \insertCite{Sobol1967}{sensobol}
+#' through a call to the function \code{\link{sobol}} of the \code{randtoolbox} package.
+#' * \code{type = "LHS"}: It uses a Latin Hypercube Sampling Design
+#' \insertCite{McKay1979}{sensobol} through a call
+#' to the function \code{\link{randomLHS}} of the \code{lhs} package.
+#' * \code{type = "R"}: It uses random numbers.
+#' @param ... Further arguments in \code{\link{sobol}}.
+#' @return A matrix where each column is a model input and each row a sampling point.
 #' @export
 
-#' @details The function generates a \eqn{(N, 2k)} matrix using Sobol' quasi-random
-#'    number sequences, for \eqn{i=1,2,...,k} parameters. The first \emph{k}-matrix is
-#'    the \strong{A} matrix and the remaining \emph{k}-matrix, the \strong{B}
-#'    matrix. If \code{matrices} includes an "AB" ("BA") matrix and \code{order = "first"},
-#'    the function also generates \emph{k} \strong{A}_B^{j} (\strong{B}_A^{j})
-#'    matrices, where all collumns come from \strong{A} (\strong{B}) except the
-#'    \emph{j}-th, which comes from \strong{B} (\strong{A}).
-#'
-#'  If \code{matrices} includes an "AB" ("BA") matrix and \code{order = "second"}
-#'    or \code{order = "third"}, the function will also create \eqn{n} extra
-#'    matrices, where \eqn{n = k! / 2!(k-2)!} or \eqn{n = k! /3!(k-3)!} respectively.
-#'    These are needed to compute second or third-order Sobol' indices.
-#'
-#'  The argument \code{matrices} can include either a single element
-#'   (i.e. \code{matrices = "A"}, " \code{matrices = "B"},  \code{matrices = "AB"}
-#'   or \code{matrices = "BA"}), or a vector with a combination of matrices;
-#'   for instance, \code{matrices = c("A", "AB")}, \code{matrices = c("A", "AB", "BA")},
-#'   etc. The selection of the estimator to compute first and total-order indices
-#'   will define which matrices are required:
+#' @details Before calling \code{sobol_matrices}, the user must decide which estimators
+#' will be used to compute first and total-order indices, for this option conditions
+#' the design of the sample matrix and therefore the argument \code{matrices}.
+#' See the vignette for further details on the specific sampling designs required by
+#' the estimators.
 
-#' * If the estimator of choice in \code{\link{sobol_indices}} is the Azzini estimator,
-#'   \code{matrices = c("A", "B", "AB", "BA")}.
-#'
-#' * If the estimator in \code{\link{sobol_indices}} is the \insertCite{Janon2014;textual}{sensobol},
-#'   \code{matrices = c("A", "AB", "BA")}.
-#'
-#' * If the estimator in \code{\link{sobol_indices}} for first-order indices is either the
-#'   \insertCite{Saltelli2010a;textual}{sensobol} or the \insertCite{Jansen1999;textual}{sensobol},
-#'   and the estimator for total order indices is either the
-#'   \insertCite{Homma1996;textual}{sensobol}, the
-#'   \insertCite{Jansen1999;textual}{sensobol} or the
-#'   \insertCite{Sobol2001;textual}{sensobol}, \code{matrices = c("A", "B", "AB")}.
-#'
 #' @importFrom Rdpack reprompt
 #'
 #' @references
@@ -128,14 +98,14 @@ scrambled_sobol <- function(matrices, A, B, C, order, cluster) {
 #' mat <- sobol_matrices(N = N, params = params, order = order)
 sobol_matrices <- function(matrices = c("A", "B", "AB"),
                            N, params, order = "first",
-                           method = "QRN", cluster = NULL) {
+                           type = "QRN", ...) {
   k <- length(params)
   n.matrices <- ifelse(any(stringr::str_detect(matrices, "C")) == FALSE, 2, 3)
-  if(method == "QRN") {
-    df <- randtoolbox::sobol(n = N, dim = k * n.matrices)
-  } else if(method == "R") {
+  if(type == "QRN") {
+    df <- randtoolbox::sobol(n = N, dim = k * n.matrices, ...)
+  } else if(type == "R") {
     df <- replicate(k * n.matrices, stats::runif(N))
-  } else if(method == "LHS") {
+  } else if(type == "LHS") {
     df <- lhs::randomLHS(N, n.matrices * k)
   } else {
     stop("method should be either QRN, R or LHS")
@@ -149,7 +119,7 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   }
   out <- scrambled_sobol(matrices = matrices,
                          A = A, B = B, C = C,
-                         order = order, cluster = cluster)
+                         order = order)
   A.mat <- "A" %in% matrices
   B.mat <- "B" %in% matrices
   C.mat <- "C" %in% matrices

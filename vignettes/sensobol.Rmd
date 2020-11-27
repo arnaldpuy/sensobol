@@ -1,25 +1,145 @@
 ---
-title: "sensobol: Computation of High-Order Sobol' Sensitivity Indices"
+title: "sensobol: an R package to compute variance-based sensitivity indices"
 author: "Arnald Puy"
-date: "`r Sys.Date()`"
-output: 
-  html_document:
-    keep_md: true
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{sensobol}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+preamble: >
+  \usepackage{amsmath}
+  \usepackage{framed}
+  \usepackage{amsmath}
+  \usepackage{amssymb}
+  \usepackage{float}
+  \floatplacement{figure}{H}
+  \usepackage{bm}
+  \usepackage{makecell}
+  \usepackage{booktabs}
+  \usepackage{tikz}
+  \usetikzlibrary{matrix,decorations.pathreplacing, calc, positioning,fit}
 bibliography: REFERENCES.bib
+---
 
-```{r setup, include = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-The `sensobol` package relies on `data.table` and parallel functions in the `boot` and `parallel` package to rapidly compute and bootstrap first, total, and if desired, second and third-order sensitivity indices. It currently uses two estimators: the @Jansen1999 (default) and the @Saltelli2010a estimator.
+## Usage
+In this section we illustrate the functionality of ``sensobol`` through three different examples. Let us first load the required libraries:
 
-## Creation of the sample matrix
+```{r setup}
+library("sensobol")
+library("data.table")
+library("ggplot2")
+```
 
-After loading the package, the first step is to define the settings of the uncertainty and sensitivity analysis, including the sample size of the sample matrix, the number of model inputs and the sensitivity indices we are interested in. As regards to the latter, `sensobol` offers the possibility to calculate up to third-order effects. Once these features are defined, we can build the sample matrix, which relies on Sobol' quasi-random number sequences, and run the desired model. In this vignette we will use the Sobol' G function as a test function.
+\begingroup
+\renewcommand{\arraystretch}{1.9}
+\begin{table}[!ht]
+\centering
+\begin{tabular}{llll}
+\toprule
+\code{first} & \code{total} & \code{matrices} & Nº model runs \\
+\midrule
+\makecell{\code{"saltelli"} \\ \code{"jansen"}} & \makecell{\code{"jansen"}\\ \code{"sobol"} \\ \code{"homma"} \\ \code{"janon"} \\ \code{"glen"}} & \code{c("A", "B", "AB")} & $N(k + 2)$ \\
+\midrule
+\code{"sobol"} & \code{"saltelli"} & \code{c("A", "B", "BA")} & $N(k + 2)$ \\
+\midrule
+\code{"azzini"} & \makecell{\code{"jansen"} \\ \code{"sobol"} \\ \code{"homma"} \\ \code{"janon"} \\ \code{"glen"}\\ \code{"azzini"} \\ \code{"saltelli"}} & \code{c("A", "B", "AB", "BA")} & $2N(k + 1)$ \\
+\midrule
+\makecell{\code{"saltelli"} \\ \code{"jansen"}\\ \code{"sobol"} \\ \code{"azzini"}} & \code{"azzini"} & \code{c("A", "B", "AB", "BA")} & $2N(k + 1)$ \\
+\bottomrule
+\end{tabular}
+\caption{\label{tab:combinations} Available combinations of first and total-order estimators.}
+\end{table}
+\endgroup
+
+## Example 1: The Sobol' G function
+The \cite{Sobol1998} G function and has been widely applied in many studies to check the accuracy of sensitivity estimators [@LoPiano2020; @Puy2020; @Saltelli2010a]. ``sensobol`` includes the Sobol' G function jointly with other four classic sensitivity test functions [@Ishigami1990; @Bratley1992b; @Bratley1988a; @Oakley2004], as well as the @Becker2020 metafunction. In its current implementation, the Sobol' G function is an eight-dimension function with $S_1>S_2>S_3>S_4$ and $(S_5,...,S_8)\approx0$ (Table \ref{tab:test_functions}, Nº 2), and can be classified as a Type A function (i.e. functions with few important factors and minor interactions, see \cite{Kucherenko2011}).
+
+We first define the settings of the uncertainty and sensitivity analysis: we set the sample size $N$ of the base sample matrix and the number of uncertain parameters $k$, and create a vector with the parameters' name. Since we will bootstrap the indices to get confidence intervals, we also set the number of bootstrap samples $R$ and define the bootstrap confidence interval method, which in this case will be the normal method. Finally, we set the confidence intervals at 0.95:
+
+```{r settings_sobolg, cache=TRUE}
+N <- 2 ^ 10
+k <- 8
+params <- paste("x_", 1:k, sep = "")
+R <- 10^3
+type <- "norm"
+conf <- 0.95
+```
+
+The next step is to create the sample matrix. In this specific case we will use an $\textbf{A}$, $\textbf{B}$, $\textbf{A}_B^{(i)}$ design and Sobol' Quasi-Random numbers to compute first and total-order indices. All these settings are the default in ``sobol_matrices()``. In our call to the function we only need to define the sample size and the parameters:
+
+```{r matrix_sobolg, cache=TRUE, dependson="settings_sobolg"}
+mat <- sobol_matrices(N = N, params = params)
+```
+
+Once the sample matrix is defined, we can run our model. Note that in ``mat`` each column is a model input and each row a sample point, so the model needs to run rowwise. This is already the case of the Sobol' G function included in ``sensobol``:
+
+```{r model_sobolg, cache=TRUE, dependson="matrix_sobolg"}
+y <- sobol_Fun(mat)
+```
+
+The package also allows the user to swiftly visualize the model output uncertainty by plotting an histogram of the model output obtained from the $\textbf{A}$ matrix:
+
+```{r unc_sobolg, cache=TRUE, dependson="model_sobolg", fig.cap="Empirical distribution of the Sobol' G model output.", message = FALSE, fig.width=5}
+plot_uncertainty(Y = y, N = N) 
+```
+
+Before computing Sobol' indices, it is recommended to explore how the model output maps onto the model input space. ``sensobol`` includes two functions to that aim, ``plot_scatter()`` and ``plot_multiscatter()``. The first displays the model output $y$ against $x_i$ while showing $E_{x_i} \left [ V_{\textbf{x}_{\sim i}}(y | x_i) \right]$ (i.e. as in Figures 1--2), and allows the user to identify patterns denoting sensitivity [@Pianosi2016]
+
+```{r scatter_sobolg, cache=TRUE, dependson=c("model_sobolg", "matrix_sobolg", "settings_sobolg"), fig.height=7, fig.width=5, fig.cap="Scatterplot of model inputs against the model output for the Sobol' G function."}
+plot_scatter(data = mat, N = N, Y = y, params = params)
+```
+
+Figure 6 evidences that $x_1$ and $x_3$ have more *shape* than the rest and that therefore have a higher influence on $y$ than $(x_4,...,x_8)$. However, scatterplots do not always permit to detect which parameters have a joint effect on the model output. To gain a first insight on these second-order interactions, the function ``plot_multiscatter()`` plots $x_i$ against $x_j$ and maps the resulting coordinate to its respective model output value. Interactions are then visible by the emergence of colored patterns.
+
+By default, ``plot_multiscatter()`` plots all possible combinations of $x_i$ and $x_j$, which equal $\frac{k!}{2!(k-2)!}$. In high-dimensional models this will lead to overplotting, making the detection of patterns a difficult affair. To avoid this drawback, the user can subset the parameters she wishes to focus on following the results obtained with ``plot_scatter``: if $x_i$ does not show *shape* in the scatterplots of $x_i$ against $y$, then it might be dropped from ``plot_multiscatter()``.
+
+Below we plot all possible combinations of pairs of inputs between $x_1,...,x_4$, which are influential according to the previous figure:
+
+```{r multiscatter_sobolg, cache=TRUE, dependson=c("model_sobolg", "matrix_sobolg", "settings_sobolg"), fig.height=5, fig.width=5, fig.cap="Scatterplot matrix of pairs of model inputs for the Sobol' G function."}
+plot_multiscatter(data = mat, N = N, Y = y, 
+                  params = paste("x_", 1:4, sep = ""))
+```
+
+The results suggest that $x_1$ might interact with $x_2$ given the colored pattern of the $x_1, x_2$ facet.
+
+And finally, the computation of sobol' indices. In this specific case, we set ``boot = TRUE`` to bootstrap the Sobol' indices and get confidence intervals:
+
+```{r indices_sobolg, cache=TRUE, dependson="model_sobolg"}
+ind <- sobol_indices(Y = y, N = N, params = params, boot = TRUE, 
+                     R = R, type = type, conf = conf)
+```
+
+Let's have a look at the output of ``sobol_indices()``: to improve the visualization, we set the number of digits in each numerical column to 3:
+
+```{r print_sobolg, cache=TRUE, dependson="indices_sobolg"}
+cols <- colnames(ind)[1:5]
+ind[, (cols):= round(.SD, 3), .SDcols = (cols)]
+print(ind)
+```
+ 
+The output when ``boot = TRUE`` is a ``data.table`` with the statistics of the bootstrap in the five leftmost columns, and two extra columns linking each statistic to a sensitivity index (``sensitivity``) and a parameter (``parameters``). If ``boot = FALSE``, ``sobol_indices()`` computes a point estimate of the indices and the output includes only the columns ``original``, ``sensitivity`` and ``parameters``.
+
+The last stage is to plot the Sobol' indices and their confidence intervals with the function ``plot_sobol()``:
+
+```{r plot_indices_sobolg, cache=TRUE, dependson="indices_sobolg", fig.height=4, fig.width=5, fig.cap="Sobol' indices of the Sobol' G function."}
+plot_sobol(data = ind)
+```
+
+Note that the errorbars of $S_i$ overlap with those of $T_i$. In the case of the Sobol' G function we know that $x_1$ interacts with $x_2$ and therefore that $T_1>S_1$ and $T_2>S_2$, but in other models without an analytical solution such overlap might not be desirable from an interpretative point of view. Under these circumstances, narrower confidence intervals can be obtained by increasing the sample size $N$ and rerunning the analysis from the creation of the sample matrix onwards.
+
+Note that we can also detect the presence of interactions with $\sum_{i=1}^{k}S_i$:
+
+```{r sum_si_sobolg, cache=TRUE, dependson="indices_sobolg"}
+ind[sensitivity == "Si", sum(original)]
+```
+
+with $(\sum_{i=1}^{k}S_i) < 1$ indicating a non-additive model.
+
+## Bibliography
