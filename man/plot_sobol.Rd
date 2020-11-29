@@ -4,7 +4,7 @@
 \alias{plot_sobol}
 \title{Plot Sobol' indices.}
 \usage{
-plot_sobol(data, order = "first")
+plot_sobol(data, order = "first", dummy = NULL)
 }
 \arguments{
 \item{data}{The output of \code{sobol_indices}.}
@@ -12,6 +12,8 @@ plot_sobol(data, order = "first")
 \item{order}{If \code{order = "first"}, it plots first and total effects.
 If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
 third-order effects. Default is \code{order = "first"}}
+
+\item{dummy}{the output of \code{sobol_dummy}. Default is NULL.}
 }
 \value{
 A ggplot object.

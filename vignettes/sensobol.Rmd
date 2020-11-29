@@ -132,7 +132,7 @@ The last stage is to plot the Sobol' indices and their confidence intervals with
 plot_sobol(data = ind)
 ```
 
-Note that the errorbars of $S_i$ overlap with those of $T_i$. In the case of the Sobol' G function we know that $x_1$ interacts with $x_2$ and therefore that $T_1>S_1$ and $T_2>S_2$, but in other models without an analytical solution such overlap might not be desirable from an interpretative point of view. Under these circumstances, narrower confidence intervals can be obtained by increasing the sample size $N$ and rerunning the analysis from the creation of the sample matrix onwards.
+Note that the error bars of $S_i$ overlap with those of $T_i$. In the case of the Sobol' G function we know that $x_1$ interacts with $x_2$ and therefore that $T_1>S_1$ and $T_2>S_2$, but in other models without an analytical solution such overlap might not be desirable from an interpretative point of view. Under these circumstances, narrower confidence intervals can be obtained by increasing the sample size $N$ and rerunning the analysis from the creation of the sample matrix onwards.
 
 Note that we can also detect the presence of interactions with $\sum_{i=1}^{k}S_i$:
 

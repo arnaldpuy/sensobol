@@ -17,6 +17,7 @@ theme_AP <- function() {
 #' @param order If \code{order = "first"}, it plots first and total effects.
 #' If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
 #' third-order effects. Default is \code{order = "first"}
+#' @param dummy the output of \code{sobol_dummy}. Default is NULL.
 #'
 #' @return A ggplot object.
 #' @import ggplot2
@@ -38,7 +39,7 @@ theme_AP <- function() {
 #' # Plot Sobol' indices
 #' plot_sobol(data = ind)
 
-plot_sobol <- function(data, order = "first") {
+plot_sobol <- function(data, order = "first", dummy = NULL) {
   sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
   if(order == "first") {
     dt <- data[sensitivity %in% c("Si", "Ti")]
@@ -63,6 +64,19 @@ plot_sobol <- function(data, order = "first") {
                      legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
                      strip.background = ggplot2::element_rect(fill = "white"),
                      legend.position = "top")
+    if(is.null(dummy) == FALSE) {
+      col_names <- colnames(dummy)
+      if(any(grepl("high.ci", col_names)) == TRUE) {
+        lmt <- dummy$high.ci
+      } else {
+        lmt <- dummy$original
+      }
+      gg <- gg +
+        ggplot2::geom_hline(data = dummy,
+                            ggplot2::aes(yintercept = high.ci, color = sensitivity),
+                            lty = 2) +
+        ggplot2::guides(linetype = FALSE, color = FALSE)
+    }
   } else if(!order == "first") {
     if(order == "second") {
       dt <- data[sensitivity %in% "Sij"][low.ci > 0.005]
