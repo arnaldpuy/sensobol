@@ -4,7 +4,7 @@
 \alias{plot_multiscatter}
 \title{Scatterplot matrix of model inputs and model output.}
 \usage{
-plot_multiscatter(data, N, Y, params)
+plot_multiscatter(data, N, Y, params, smpl = NULL)
 }
 \arguments{
 \item{data}{A matrix, data frame or data.table, the output of \code{\link{sobol_matrices}}.}
@@ -14,6 +14,9 @@ plot_multiscatter(data, N, Y, params)
 \item{Y}{A numeric vector with the model output.}
 
 \item{params}{A character vector with the name of the parameters.}
+
+\item{smpl}{The number of simulations to plot (needed only to avoid overplotting).
+The default is NULL.}
 }
 \value{
 A ggplot2 object

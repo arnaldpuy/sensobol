@@ -73,7 +73,7 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
       }
       gg <- gg +
         ggplot2::geom_hline(data = dummy,
-                            ggplot2::aes(yintercept = high.ci, color = sensitivity),
+                            ggplot2::aes(yintercept = lmt, color = sensitivity),
                             lty = 2) +
         ggplot2::guides(linetype = FALSE, color = FALSE)
     }
@@ -214,8 +214,10 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
 #' @param N The sample size of the base sample matrix used in \code{\link{sobol_matrices}}.
 #' @param Y A numeric vector with the model output.
 #' @param params A character vector with the name of the parameters.
+#' @param smpl The number of simulations to plot (needed only to avoid overplotting).
+#' The default is NULL.
 #'
-#' @importFrom data.table .SD
+#' @importFrom data.table .SD .N
 #'
 #' @return A ggplot2 object
 #' @import ggplot2
@@ -233,8 +235,8 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
 #'
 #' # Plot scatterplot matrix
 #' plot_multiscatter(data = mat, N = N, Y = Y, params = params)
-plot_multiscatter <- function(data, N, Y, params) {
-  xvar <- yvar <- NULL
+plot_multiscatter <- function(data, N, Y, params, smpl = NULL) {
+  xvar <- yvar <- x <- y <- NULL
   dt <- data.table::data.table(data)
   out <- t(utils::combn(params, 2))
   da <- list()
@@ -244,6 +246,13 @@ plot_multiscatter <- function(data, N, Y, params) {
     data.table::setnames(da[[i]], colnames(da[[i]]), c("xvar", "yvar", "x", "y", "output"))
   }
   output <- data.table::rbindlist(da)
+  if(is.null(smpl) == FALSE) {
+    if(is.numeric(smpl) == FALSE) {
+      stop("smpl should be a number")
+    } else {
+      output <- output[,.SD[sample(.N, min(smpl,.N))], by = list(x, y)]
+    }
+  }
   gg <- ggplot2::ggplot(output, ggplot2::aes(xvar, yvar, color = output)) +
     ggplot2::geom_point(size = 0.5) +
     ggplot2::scale_colour_gradientn(colours = grDevices::terrain.colors(10), name = "y") +
