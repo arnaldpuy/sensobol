@@ -13,7 +13,7 @@ theme_AP <- function() {
 
 #' Plot Sobol' indices.
 #'
-#' @param data The output of \code{sobol_indices}.
+#' @param data The matrix created with \code{\link{sobol_matrices}}.
 #' @param order If \code{order = "first"}, it plots first and total effects.
 #' If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
 #' third-order effects. Default is \code{order = "first"}
@@ -113,7 +113,7 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
 #' It creates an histogram with the model output distribution.
 #'
 #' @param Y A numeric vector with the model output.
-#' @param N An integer with the initial sample size of the base matrix, defined in \code{\link{sobol_matrices}}.
+#' @param N The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #'
 #' @return a ggplot2 object.
 #' @import ggplot2
@@ -153,10 +153,10 @@ plot_uncertainty <- function(Y, N = NULL) {
 #' Scatterplots of model inputs against model output
 #'
 #'
-#' @param data A matrix, data frame or data.table, the output of \code{\link{sobol_matrices}}.
-#' @param N The sample size of the base sample matrix used in \code{\link{sobol_matrices}}.
+#' @param data The matrix created with \code{\link{sobol_matrices}}.
+#' @param N The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #' @param Y A numeric vector with the model output.
-#' @param params A character vector with the name of the parameters.
+#' @param params Character vector with the name of the model inputs.
 #' @param method The type of plot. If \code{method = "point"} (the default), each simulation is a point.
 #' If \code{method = "bin"}, bins are used to aggregate simulationd. This option is appropriate to prevent
 #' overplotting.
@@ -210,10 +210,10 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
 
 #' Scatterplot matrix of model inputs and model output.
 #'
-#' @param data A matrix, data frame or data.table, the output of \code{\link{sobol_matrices}}.
-#' @param N The sample size of the base sample matrix used in \code{\link{sobol_matrices}}.
+#' @param data The matrix created with \code{\link{sobol_matrices}}.
+#' @param N The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #' @param Y A numeric vector with the model output.
-#' @param params A character vector with the name of the parameters.
+#' @param params Character vector with the name of the model inputs.
 #' @param smpl The number of simulations to plot (needed only to avoid overplotting).
 #' The default is NULL.
 #'

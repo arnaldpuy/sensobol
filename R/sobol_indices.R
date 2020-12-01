@@ -305,8 +305,8 @@ bootstats <- function(b, conf = conf, type = type) {
 #'
 #'@param matrices Vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
 #' @param Y Numeric vector, model output.
-#' @param N Integer, base sample size of the sample matrix created with \code{\link{sobol_matrices}}.
-#' @param params Vector with the name of the model inputs.
+#' @param N The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
+#' @param params Character vector with the name of the model inputs.
 #' @param first Estimator to compute first order indices. Options are:
 #' * \code{first = "saltelli"} \insertCite{Saltelli2010a}{sensobol}.
 #' * \code{first = "jansen"} \insertCite{Jansen1999}{sensobol}.

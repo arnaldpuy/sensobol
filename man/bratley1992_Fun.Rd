@@ -2,7 +2,7 @@
 % Please edit documentation in R/test_functions.R
 \name{bratley1992_Fun}
 \alias{bratley1992_Fun}
-\title{Bratley, Fox and Niederreiter (1992) function}
+\title{Bratley, Fox and Niederreiter (1992) function.}
 \usage{
 bratley1992_Fun(X)
 }
@@ -13,8 +13,12 @@ bratley1992_Fun(X)
 A numeric vector with the model output.
 }
 \description{
-It implements the \insertCite{Bratley1992;textual}{sensobol} function,
-#' which requires \emph{k} model inputs.
+It implements the \insertCite{Bratley1992;textual}{sensobol} function.
+}
+\details{
+The function requires \eqn{k} model inputs and reads as:
+\deqn{y=\sum_{i=1}^{k}(-1)^i\prod_{j=1}^{i}x_j\,,}
+where \eqn{x_i\sim\mathcal{U}(0,1)}.
 }
 \examples{
 # Define settings (test with k = 10)

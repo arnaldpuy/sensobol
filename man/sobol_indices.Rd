@@ -25,9 +25,9 @@ sobol_indices(
 
 \item{Y}{Numeric vector, model output.}
 
-\item{N}{Integer, base sample size of the sample matrix created with \code{\link{sobol_matrices}}.}
+\item{N}{The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
-\item{params}{Vector with the name of the model inputs.}
+\item{params}{Character vector with the name of the model inputs.}
 
 \item{first}{Estimator to compute first order indices. Options are:
 \itemize{

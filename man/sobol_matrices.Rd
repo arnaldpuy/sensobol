@@ -27,7 +27,7 @@ compute first, second or up to third-order Sobol indices. The default is
 
 \item{type}{Approach to construct the sample matrix. Options are:
 \itemize{
-\item \code{type = "QRN"}: It uses Sobol' Quasi-Random Numbers \insertCite{Sobol1967}{sensobol}
+\item \code{type = "QRN"}: It uses \insertCite{Sobol1967;textual}{sensobol} Quasi-Random Numbers.
 through a call to the function \code{\link{sobol}} of the \code{randtoolbox} package.
 \item \code{type = "LHS"}: It uses a Latin Hypercube Sampling Design
 \insertCite{McKay1979}{sensobol} through a call
@@ -51,6 +51,20 @@ will be used to compute first and total-order indices, for this option condition
 the design of the sample matrix and therefore the argument \code{matrices}.
 See the vignette for further details on the specific sampling designs required by
 the estimators.
+
+The function can select one of the following sampling designs:
+\itemize{
+\item \eqn{\mathbf{A}}, \eqn{\mathbf{B}}, \eqn{\mathbf{A}_B^{(i)}}.
+\item \eqn{\mathbf{A}}, \eqn{\mathbf{B}}, \eqn{\mathbf{B}_A^{(i)}}.
+\item \eqn{\mathbf{A}}, \eqn{\mathbf{B}}, \eqn{\mathbf{A}_B^{(i)}}, \eqn{\mathbf{B}_A^{(i)}}.
+}
+
+The function initially creates an \eqn{(N, 2k)} matrix according to the approach defined by
+\code{type}, where the leftmost and the rightmost \eqn{k} columns are respectively allocated
+to the \eqn{\mathbf{A}} and the \eqn{\mathbf{B}} matrix. Depending on the sampling design, it
+also creates \eqn{k} \eqn{\mathbf{A}_B^{(i)}} (\eqn{\mathbf{B}_A^{(i)}}) matrices, where all
+columns come from \eqn{\mathbf{A}} (\eqn{\mathbf{B}}) except the \eqn{i}-th, which comes from
+\eqn{\mathbf{B}} (\eqn{\mathbf{A}}).
 }
 \examples{
 # Define settings

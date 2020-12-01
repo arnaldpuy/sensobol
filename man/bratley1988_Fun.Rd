@@ -13,8 +13,12 @@ bratley1988_Fun(X)
 A numeric vector with the model output.
 }
 \description{
-It implements the \insertCite{Bratley1988;textual}{sensobol} function,
-which requires \emph{k} model inputs.
+It implements the \insertCite{Bratley1988;textual}{sensobol} function.
+}
+\details{
+The function requires \eqn{k} model inputs and reads as follows:
+\deqn{y=\prod_{i=1}^{k} |4x_i - 2 |\,,}
+where \eqn{x_i\sim\mathcal{U}(0,1)}.
 }
 \examples{
 # Define settings (test with k = 10)

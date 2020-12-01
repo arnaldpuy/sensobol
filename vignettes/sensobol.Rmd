@@ -37,6 +37,7 @@ library("data.table")
 library("ggplot2")
 ```
 
+```{=latex}
 \begingroup
 \renewcommand{\arraystretch}{1.9}
 \begin{table}[!ht]
@@ -57,6 +58,7 @@ library("ggplot2")
 \caption{\label{tab:combinations} Available combinations of first and total-order estimators.}
 \end{table}
 \endgroup
+```
 
 ## Example 1: The Sobol' G function
 The \cite{Sobol1998} G function and has been widely applied in many studies to check the accuracy of sensitivity estimators [@LoPiano2020; @Puy2020; @Saltelli2010a]. ``sensobol`` includes the Sobol' G function jointly with other four classic sensitivity test functions [@Ishigami1990; @Bratley1992b; @Bratley1988a; @Oakley2004], as well as the @Becker2020 metafunction. In its current implementation, the Sobol' G function is an eight-dimension function with $S_1>S_2>S_3>S_4$ and $(S_5,...,S_8)\approx0$ (Table \ref{tab:test_functions}, Nº 2), and can be classified as a Type A function (i.e. functions with few important factors and minor interactions, see \cite{Kucherenko2011}).

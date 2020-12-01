@@ -7,13 +7,13 @@
 plot_scatter(data, N, Y, params, method = "point", size = 0.7, alpha = 0.2)
 }
 \arguments{
-\item{data}{A matrix, data frame or data.table, the output of \code{\link{sobol_matrices}}.}
+\item{data}{The matrix created with \code{\link{sobol_matrices}}.}
 
-\item{N}{The sample size of the base sample matrix used in \code{\link{sobol_matrices}}.}
+\item{N}{The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
 \item{Y}{A numeric vector with the model output.}
 
-\item{params}{A character vector with the name of the parameters.}
+\item{params}{Character vector with the name of the model inputs.}
 
 \item{method}{The type of plot. If \code{method = "point"} (the default), each simulation is a point.
 If \code{method = "bin"}, bins are used to aggregate simulationd. This option is appropriate to prevent

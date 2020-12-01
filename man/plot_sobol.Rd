@@ -7,7 +7,7 @@
 plot_sobol(data, order = "first", dummy = NULL)
 }
 \arguments{
-\item{data}{The output of \code{sobol_indices}.}
+\item{data}{The matrix created with \code{\link{sobol_matrices}}.}
 
 \item{order}{If \code{order = "first"}, it plots first and total effects.
 If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots

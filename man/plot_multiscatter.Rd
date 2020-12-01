@@ -7,13 +7,13 @@
 plot_multiscatter(data, N, Y, params, smpl = NULL)
 }
 \arguments{
-\item{data}{A matrix, data frame or data.table, the output of \code{\link{sobol_matrices}}.}
+\item{data}{The matrix created with \code{\link{sobol_matrices}}.}
 
-\item{N}{The sample size of the base sample matrix used in \code{\link{sobol_matrices}}.}
+\item{N}{The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
 \item{Y}{A numeric vector with the model output.}
 
-\item{params}{A character vector with the name of the parameters.}
+\item{params}{Character vector with the name of the model inputs.}
 
 \item{smpl}{The number of simulations to plot (needed only to avoid overplotting).
 The default is NULL.}

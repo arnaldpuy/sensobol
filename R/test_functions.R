@@ -3,8 +3,7 @@
 
 #' Sobol' G function
 #'
-#' It implements the \insertCite{Sobol1998;textual}{sensobol} function. The
-#' function works with 8 model inputs.
+#' It implements the \insertCite{Sobol1998;textual}{sensobol} G function.
 #'
 #' @param X A data frame or numeric matrix.
 #'
@@ -13,6 +12,11 @@
 #'
 #' @references
 #' \insertAllCited{}
+#'
+#' @details The function requires 8 model inputs and reads as
+#' \deqn{y=\prod_{i=1}^{k} \frac{|4 x_i - 2| + a_i}{1 + a_i}\,,}
+#' where \eqn{k=8}, \eqn{x_i\sim\mathcal{U}(0,1)} and \eqn{a=(0, 1, 4.5, 9, 99, 99, 99, 99)}.
+#'
 #' @examples
 #' # Define settings
 #' N <- 100; params <- paste("X", 1:8, sep = "")
@@ -41,10 +45,7 @@ ishigami <- function(X1, X2, X3) {
 
 #' Ishigami function
 #'
-#' It implements the \insertCite{Ishigami1990;textual}{sensobol} function,
-#' which requires 3 model inputs. The transformation of the
-#' distribution of the model inputs (from \eqn{U(0, 1)} to\eqn{U(-pi, +pi)}) is conducted
-#' internally.
+#' It implements the \insertCite{Ishigami1990;textual}{sensobol} function.
 #'
 #' @param X A data frame or numeric matrix.
 #'
@@ -53,6 +54,12 @@ ishigami <- function(X1, X2, X3) {
 #'
 #' @references
 #' \insertAllCited{}
+#'
+#' @details The function requires 3 model inputs and reads as
+#' \deqn{y=\sin(x_1) +a \sin(x_2) ^ 2 + b x_3 ^4 \sin(x_1)\,,}
+#' where \eqn{a=2}, \eqn{b=1} and \eqn{(x_1,x_2,x_3)\sim\mathcal{U}(-\pi, +\pi)}. The
+#' transformation of the distribution of the model inputs from \eqn{U\sim(0, 1)} to
+#' \eqn{U\sim(-\pi, +\pi)}) is conducted internally.
 #'
 #' @examples
 #' # Define settings
@@ -74,10 +81,9 @@ ishigami_Fun <- function(X) {
 # Bratley et al. function -----------------------------------------------------
 
 
-#' Bratley, Fox and Niederreiter (1992) function
+#' Bratley, Fox and Niederreiter (1992) function.
 #'
-#' It implements the \insertCite{Bratley1992;textual}{sensobol} function,
-#' #' which requires \emph{k} model inputs.
+#' It implements the \insertCite{Bratley1992;textual}{sensobol} function.
 #'
 #' @param X A data frame or numeric matrix.
 #'
@@ -85,6 +91,10 @@ ishigami_Fun <- function(X) {
 #' @export
 #' @references
 #' \insertAllCited{}
+#'
+#' @details The function requires \eqn{k} model inputs and reads as:
+#' \deqn{y=\sum_{i=1}^{k}(-1)^i\prod_{j=1}^{i}x_j\,,}
+#' where \eqn{x_i\sim\mathcal{U}(0,1)}.
 #'
 #' @examples
 #' # Define settings (test with k = 10)
@@ -115,12 +125,15 @@ bratley1992_Fun <- function(X) {
 
 #' Bratley and Fox (1988) function
 #'
-#' It implements the \insertCite{Bratley1988;textual}{sensobol} function,
-#' which requires \emph{k} model inputs.
+#' It implements the \insertCite{Bratley1988;textual}{sensobol} function.
 #'
 #' @param X A data frame or numeric matrix.
 #'
 #' @return A numeric vector with the model output.
+#'
+#' @details The function requires \eqn{k} model inputs and reads as follows:
+#' \deqn{y=\prod_{i=1}^{k} |4x_i - 2 |\,,}
+#' where \eqn{x_i\sim\mathcal{U}(0,1)}.
 #'
 #' @export
 #'
@@ -156,6 +169,11 @@ bratley1988_Fun <- function(X) {
 #' @export
 #' @references
 #' \insertAllCited{}
+#'
+#' @details The function requires 15 model inputs and reads as
+#' \deqn{y=\mathbf{a}_1^T \bm{x} + \mathbf{a}_2 ^ T \sin(\mathbf{x}) + \mathbf{a}_3 ^ T \cos(\mathbf{x}) + \mathbf{x}^T \mathbf{M}\mathbf{x}\,,}
+#' where \eqn{\mathbf{x}=x_1,x_2,...,x_k}, \eqn{k=15}, and values
+#' for \eqn{\mathbf{a}^T_i,i=1,2,3} and \eqn{\mathbf{M}} are defined by the authors.
 #'
 #' @examples
 #' # Define settings
@@ -240,11 +258,7 @@ function_list <- list(
   Trigonometric = function(x) cos(x)
 )
 
-#' Random metafunction
-#'
-#' Metafunction that randomly combines 10 univariate functions in a
-#' multivariate function of dimension \eqn{k}. It also allows to randomize the
-#' fraction of active pairwise and three-wise interactions.
+#' Random metafunction based on \insertCite{Becker2020;textual}{sensobol}'s metafunction.
 #'
 #' @param data A matrix where each column is a model input and each row a samplinf point.
 #' @param k_2 Numeric, fraction of active pairwise interactions. The number
@@ -254,19 +268,34 @@ function_list <- list(
 #' @param epsilon Integer. It fixes the seed for the random number generator.
 #' The default is \code{epsilon = NULL}.
 #' @return A vector with the function output.
-#' @seealso
-#'
-#' See \insertCite{Puyj;textual}{sensobol} and \insertCite{Becker2020;textual}{sensobol}
-#' and for a mathematical description of the metafunction.
 #' @export
 #'
 #' @importFrom Rdpack reprompt
 #'
-#' @details The metafunction randomly combines a linear,
-#' quadratic, cubic, exponential, periodic, discontinuous, non-monotonic,
-#' inverse, no-effect and trigonometric functions. See \insertCite{Puyj}{sensobol}
-#' and \insertCite{Becker2020}{sensobol} for a mathematical description of the approach.
+#' @details The metafunction randomly combines the following functions in a metafunction of dimension \eqn{k}:
+#' * \eqn{f(x) = x ^ 3} (cubic).
+#' * \eqn{f(x) = 1~\mbox{if}(x > 0.5), 0\mbox{otherwise}} (discontinuous).
+#' * \eqn{f(x) = \frac{e ^ x}{e - 1}} (exponential).
+#' * \eqn{f(x) = \frac{10 - 1}{1.1} ^ {-1} (x + 0.1) ^ {-1}} (inverse).
+#' * \eqn{f(x) = x} (linear)
+#' * \eqn{f(x) = 0} (no effect).
+#' * \eqn{f(x) = 4(x - 0.5) ^  2} (non-monotonic).
+#' * \eqn{f(x) = \frac{\sin (2 \pi x)}{2}} (periodic).
+#' * \eqn{f(x) = x ^ 2} (quadratic).
+#' * \eqn{f(x) = \cos(x)} (trigonometric).
 #'
+#' It reads as follows:
+#' \deqn{y=\sum_{i=1}^{k}\alpha_i f^{u_i}(x_i) \\
+#'  + \sum_{i=1}^{k_2}\beta_i f^{u_{V_{i,1}}}(x_{V_{i,1}}) f^{u_{V_{i,2}}} (x_{V_{i,2}}) \\
+#' + \sum_{i=1}^{k_3}\gamma_i f^{u_{W_{i,1}}}(x_{W_{i,1}}) f^{u_{W_{i,2}}}(x_{W_{i,2}}) f^{u_{W_{i,3}}} (x_{W_{i,3}})}
+#'
+#' where \eqn{\mathbf{\alpha}, \mathbf{\beta}, \mathbf{\gamma}} are three vectors generated by sampling
+#' from a mixture of two normal distributions \eqn{\Psi=0.3\mathcal{N}(0, 5) + 0.7\mathcal{N}(0, 0.5)}.
+#' See \insertCite{Puyj;textual}{sensobol} and \insertCite{Becker2020;textual}{sensobol} for a full
+#' description of the approach.
+#'
+#' @references
+#' \insertAllCited{}
 #' @examples
 #' # Define settings (number of model inputs = 86)
 #' N <- 100; params <- paste("X", 1:86, sep = "")
