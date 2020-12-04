@@ -27,7 +27,7 @@ through a call to the function \code{\link{sobol}} of the \code{randtoolbox} pac
 A matrix where each column is a model input and each row a sampling point.
 }
 \description{
-It creates the STAR-VARS matrix needed to compute VARS-TO following \insertCite{Razavi2016b;textual}{sensobol}.
+It creates the STAR-VARS matrix needed to compute VARS-TO following \insertCite{Razavi2016a;textual}{sensobol}.
 }
 \details{
 The user randomly selects \eqn{N_{star}} points across the factor space using

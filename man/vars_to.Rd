@@ -23,11 +23,11 @@ only the pairs \eqn{\Delta h} away are used. The default is \code{method = "all.
 A data table with the VARS-TO indices of each parameter.
 }
 \description{
-It computes VARS-TO following \insertCite{Razavi2016a;textual}{sensobol} and \insertCite{Razavi2016b;textual}{sensobol}.
+It computes VARS-TO following \insertCite{Razavi2016a;textual}{sensobol}.
 }
 \details{
 VARS is based on variogram analysis to characterize the spatial structure and variability
-of a given model output across the input space \insertCite{Razavi2016a, Razavi2016b}{sensobol}. Variance-
+of a given model output across the input space \insertCite{Razavi2016a}{sensobol}. Variance-
 based total-order effects can be computed as by-products of the VARS framework. The total-order index
 is related to the variogram \eqn{\gamma(.)} and co-variogram \eqn{C(.)} functions by the
 following equation:

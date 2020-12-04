@@ -2,7 +2,7 @@
 
 #' STAR-VARS sampling strategy
 #'
-#' It creates the STAR-VARS matrix needed to compute VARS-TO following \insertCite{Razavi2016b;textual}{sensobol}.
+#' It creates the STAR-VARS matrix needed to compute VARS-TO following \insertCite{Razavi2016a;textual}{sensobol}.
 #'
 #' @param star.centers Number of star centers.
 #' @param params Character vector with the name of the model inputs.
