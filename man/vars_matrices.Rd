@@ -4,14 +4,15 @@
 \alias{vars_matrices}
 \title{STAR-VARS sampling strategy}
 \usage{
-vars_matrices(star.centers, params, h, type = "QRN", ...)
+vars_matrices(star.centers, params, h = 0.1, type = "QRN", ...)
 }
 \arguments{
 \item{star.centers}{Number of star centers.}
 
 \item{params}{Character vector with the name of the model inputs.}
 
-\item{h}{Distance between pairs.}
+\item{h}{Distance between pairs. The user should select between 0.001, 0.002, 0.005, 0.01,
+0.02, 0.05, 0.1, 0.2. Default is \code{h = 0.1}.}
 
 \item{type}{Approach to construct the STAR-VARS. Options are:
 \itemize{

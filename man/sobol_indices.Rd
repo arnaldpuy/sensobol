@@ -21,7 +21,8 @@ sobol_indices(
 )
 }
 \arguments{
-\item{matrices}{Vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.}
+\item{matrices}{Vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
+See \code{\link{sobol_matrices}}.}
 
 \item{Y}{Numeric vector, model output.}
 
@@ -71,15 +72,28 @@ Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boo
 Check the \code{type} option in the \code{boot} function of the \code{\link{boot}} package.}
 }
 \value{
-A data.table object.
+A \code{data.table} object.
 }
 \description{
 It allows to compute Sobol' indices up to the third order using state-of-the-art estimators.
 }
 \details{
 Any first and total-order estimator can be combined with the appropriate sampling design.
-Check the vignette for a summary of all possible combinations. If the analyst mismatches estimators and sampling designs
+Check the vignette for a summary of all possible combinations. If the analyst mismatches estimators and sampling designs,
 the function will throw and error and urge to redefine the sample matrices or the estimators.
+
+For all estimators except \insertCite{Azzini2020;textual}{sensobol}'s and \insertCite{Janon2014;textual}{sensobol}'s,
+\code{sobol_indices()} calculates the sample mean as \deqn{\hat{f}_0=\frac{1}{2N} \sum{v=1}^{N}(f(\mathbf{A})_v + f(\mathbf{B})_v)\,,}
+and the unconditional sample variance as
+\deqn{\hat{V}(y) = \frac{1}{2N-1} \sum{v=1}^{N} ((f(\mathbf{A})_v - \hat{f})^2 + (f(\mathbf{B})_v - \hat{f})^2)\,,}
+where, for instance, \eqn{f(\mathbf{A})_v} indicates the model output \eqn{y} obtained after running the model \eqn{f}
+in the \eqn{v}-th row of the \eqn{\mathbf{A}} matrix.
+
+For the Azzini estimator,
+\deqn{\hat{V}(y) = \sum_{v=1}^{N} (f(\mathbf{A})_v - f(\mathbf{B})_v)^2 + (f(\mathbf{B}_A^{(i)})_v - f(\mathbf{A}_B^{(i)})_v) ^ 2}
+
+and for the Janon estimator,
+\deqn{\hat{V}(y)=\frac{1}{N} \sum_{v=1}^{N} \frac{f(\mathbf{A})_v^2 + f(\mathbf{A}_B^{(i)})_v^2}{2}-f_0^2}
 }
 \examples{
 # Define settings

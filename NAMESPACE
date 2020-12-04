@@ -2,7 +2,6 @@
 
 export(bratley1988_Fun)
 export(bratley1992_Fun)
-export(budworm_Fun)
 export(ishigami_Fun)
 export(metafunction)
 export(oakley_Fun)

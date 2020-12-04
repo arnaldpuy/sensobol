@@ -79,9 +79,9 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
     }
   } else if(!order == "first") {
     if(order == "second") {
-      dt <- data[sensitivity %in% "Sij"][low.ci > 0.005]
+      dt <- data[sensitivity %in% "Sij"][low.ci > 0]
     } else if(order == "third") {
-      dt <- data[sensitivity %in% "Sijk"][low.ci > 0.005]
+      dt <- data[sensitivity %in% "Sijk"][low.ci > 0]
     } else {
       stop("Order should be first, second or third")
     }

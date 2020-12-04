@@ -15,11 +15,11 @@ Authors@R: c(person(given = "Arnald",
             person("RStudio", 
                     role = "cph", 
                     comment = "Copyright holder of included 'sensitivity' fragments"))
-Description: It allows to rapidly compute, bootstrap and plot up to third-order Sobol' indices
+Description: It allows to rapidly compute, bootstrap and plot up to third-order Sobol'-based sensitivity indices
     using several state-of-the-art first and total-order estimators. Sobol' indices can be computed either for 
-    models that yield a scalar as a model output or for dynamic equations. The package also 
-    provides a suit of benchmark tests functions and several options to obtain publication-ready 
-    figures of the model output uncertainty and sensitivity-related analysis.
+    models that yield a scalar as a model output or for dynamic equations. The package also provides a suit 
+    of benchmark tests functions and several options to obtain publication-ready figures of the model 
+    output uncertainty and sensitivity-related analysis.
 License: GPL-3
 Encoding: UTF-8
 Imports:

@@ -6,7 +6,8 @@
 #'
 #' @param star.centers Number of star centers.
 #' @param params Character vector with the name of the model inputs.
-#' @param h Distance between pairs.
+#' @param h Distance between pairs. The user should select between 0.001, 0.002, 0.005, 0.01,
+#' 0.02, 0.05, 0.1, 0.2. Default is \code{h = 0.1}.
 #' @param type Approach to construct the STAR-VARS. Options are:
 #' * \code{type = "QRN"}: It uses \insertCite{Sobol1967;textual}{sensobol} Quasi-Random Numbers
 #' through a call to the function \code{\link{sobol}} of the \code{randtoolbox} package.
@@ -37,8 +38,12 @@
 #'
 #' # Create STAR-VARS
 #' mat <- vars_matrices(star.centers = star.centers, params = params, h = h)
-vars_matrices <- function(star.centers, params, h, type = "QRN",...) {
+vars_matrices <- function(star.centers, params, h = 0.1, type = "QRN",...) {
   out <- center <- sections <- A <- B <- AB <- X <- out <- list()
+  h.values <- c(0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2)
+  if(h %in% h.values == FALSE) {
+    stop("Revise the selection of h")
+  }
   if(type == "QRN") {
     mat <- randtoolbox::sobol(n = star.centers, dim = length(params),...)
   } else if(type == "R") {

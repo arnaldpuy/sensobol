@@ -8,7 +8,6 @@ CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
   cbind(lower, upper, size)
 }
 
-
 #' Computation of VARS Total order index (VARS-TO)
 #'
 #' It computes VARS-TO following \insertCite{Razavi2016a;textual}{sensobol} and \insertCite{Razavi2016b;textual}{sensobol}.
@@ -17,7 +16,19 @@ CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
 #' @param star.centers Number of star centers.
 #' @param params Character vector with the name of the model inputs.
 #' @param h Distance between pairs.
-#' @param method Type of computation.
+#' @param method Type of computation. If \code{method = "all.step"}, all pairs of points with values
+#' \eqn{\Delta h, 2\Delta h, 3\Delta h,...} are used in each dimension. If \code{method = "one.step"},
+#' only the pairs \eqn{\Delta h} away are used. The default is \code{method = "all.step"}.
+#'
+#' @details VARS is based on variogram analysis to characterize the spatial structure and variability
+#' of a given model output across the input space \insertCite{Razavi2016a, Razavi2016b}{sensobol}. Variance-
+#' based total-order effects can be computed as by-products of the VARS framework. The total-order index
+#' is related to the variogram \eqn{\gamma(.)} and co-variogram \eqn{C(.)} functions by the
+#' following equation:
+#'
+#' \deqn{T_i = \frac{\gamma (h_i) + E \left [C_{\mathbf{x}_{\sim i}} (h_i) \right]}{\hat{V}(y)} }
+#'
+#' where \eqn{x^*_{\sim i}} is a vector of all \eqn{k} factors except \eqn{x_i}.
 #'
 #' @return A data table with the VARS-TO indices of each parameter.
 #'
@@ -43,6 +54,9 @@ CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
 #' ind <- vars_to(Y = y, star.centers = star.centers, params = params, h = h)
 vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   parameters <- NULL
+
+  # REORGANIZE THE POINTS ------------------------------------------------
+
   n.cross.points <- length(params) * ((1 / h) - 1) + 1
   index.centers <- seq(1, length(Y), n.cross.points)
   mat <- matrix(Y[-index.centers], ncol = star.centers)
@@ -51,6 +65,9 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   for(i in 1:nrow(indices)) {
     out[[i]] <- mat[indices[i, "lower"]:indices[i, "upper"], ]
   }
+
+  # EXTRACT PAIRS OF POINTS SEPARATED h ----------------------------------
+
   if(method == "one.step") {
     d <- lapply(1:length(params), function(x)
       lapply(1:ncol(out[[x]]), function(j) {
@@ -58,6 +75,9 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
                 rep(out[[x]][, j][-c(1, length(out[[x]][, j]))], each = 2),
                 out[[x]][, j][length(out[[x]][, j])])
       }))
+
+  # EXTRACT PAIRS OF POINTS SEPARATED h, 2h, 3h, ... -------------------
+
   } else if(method == "all.step") {
     d <- lapply(1:length(params), function(x)
       lapply(1:ncol(out[[x]]), function(j) {
@@ -68,13 +88,22 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   }
   out <- lapply(d, function(x)
     lapply(x, function(y) matrix(y, nrow = length(y) / 2, byrow = TRUE)))
+
+  # COMPUTATION OF THE VARIOGRAM -----------------------------------------
+
   variogr <- lapply(out, function(x) lapply(x, function(y)
     mean(0.5 * (y[, 1] - y[, 2]) ^ 2)))
   variogr <- lapply(variogr, function(x) do.call(rbind, x))
   variogr <- unlist(lapply(variogr, mean))
+
+  # COMPUTATION OF THE COVARIOGRAM ---------------------------------------
+
   covariogr <- lapply(out, function(x)
     lapply(x, function(y) stats::cov(y[, 1], y[, 2])))
   covariogr <- unlist(lapply(covariogr, function(x) Rfast::colmeans(do.call(rbind, x))))
+
+  # VARS-TO --------------------------------------------------------------
+
   VY <- var(Y[index.centers])
   Ti <- (variogr + covariogr) / VY
   output <- data.table::data.table(Ti)

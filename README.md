@@ -1,4 +1,4 @@
- [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/arnaldpuy/sensobol?branch=master&svg=true)](https://ci.appveyor.com/project/arnaldpuy/sensobol) [![Travis build status](https://travis-ci.org/arnaldpuy/sensobol.svg?branch=master)](https://travis-ci.org/arnaldpuy/sensobol) [![Codecov test coverage](https://codecov.io/gh/arnaldpuy/sensobol/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaldpuy/sensobol?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/arnaldpuy/sensobol/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaldpuy/sensobol?branch=master)
  
  
 # sensobol: an R package to compute variance-based sensitivity indices
@@ -45,8 +45,8 @@ ind <- sobol_indices(Y = Y, N = N, params = params)
 Please use the following citation if you use `sensobol` in your publications:
 
 ```r
-Arnald Puy (2019). sensobol: Computation of High-Order Sobol' Sensitivity Indices. R package
-  version 0.2.2 http://github.com/arnaldpuy/sensobol
+Arnald Puy (2020). sensobol: Computation of High-Order Sobol' Sensitivity Indices. R package
+  version 0.3.0 http://github.com/arnaldpuy/sensobol
 ```
 
 A BibTex entry for LaTex users is:
@@ -55,8 +55,8 @@ A BibTex entry for LaTex users is:
 @Manual{,
     title = {sensobol: Computation of High-Order Sobol' Sensitivity Indices},
     author = {Arnald Puy},
-    year = {2019},
-    note = {R package version 0.2.0},
+    year = {2020},
+    note = {R package version 0.3.0},
     url = {http://github.com/arnaldpuy/sensobol},
   }
 ```
