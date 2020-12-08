@@ -6,7 +6,8 @@ theme_AP <- function() {
           legend.background = ggplot2::element_rect(fill = "transparent",
                                            color = NA),
           legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
-          strip.background = ggplot2::element_rect(fill = "white"))
+          strip.background = ggplot2::element_rect(fill = "white"),
+          legend.position = "top")
 }
 
 # PLOT SOBOL' FIRST AND TOTAL-ORDER INDICES -----------------------------------
@@ -41,29 +42,26 @@ theme_AP <- function() {
 
 plot_sobol <- function(data, order = "first", dummy = NULL) {
   sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
+  colNames <- colnames(data)
   if(order == "first") {
     dt <- data[sensitivity %in% c("Si", "Ti")]
     gg <- ggplot2::ggplot(dt, ggplot2::aes(parameters, original, fill = sensitivity)) +
       ggplot2::geom_bar(stat = "identity",
                         position = ggplot2::position_dodge(0.6),
                         color = "black") +
-      ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
-                                          ymax = high.ci),
-                             position = ggplot2::position_dodge(0.6)) +
       ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(n = 3)) +
       ggplot2::labs(x = "",
                     y = "Sobol' index") +
       ggplot2::scale_fill_discrete(name = "Sobol' indices",
                                    labels = c(expression(S[italic(i)]),
                                               expression(T[italic(i)]))) +
-      ggplot2::theme_bw() +
-      ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
-                     panel.grid.minor = ggplot2::element_blank(),
-                     legend.background = ggplot2::element_rect(fill = "transparent",
-                                                               color = NA),
-                     legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
-                     strip.background = ggplot2::element_rect(fill = "white"),
-                     legend.position = "top")
+      theme_AP()
+    if(any(grepl("high.ci", colNames)) == TRUE) {
+      gg <- gg +
+        ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
+                                            ymax = high.ci),
+                               position = ggplot2::position_dodge(0.6))
+    }
     if(is.null(dummy) == FALSE) {
       col_names <- colnames(dummy)
       if(any(grepl("high.ci", col_names)) == TRUE) {
@@ -95,13 +93,7 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
       ggplot2::geom_hline(yintercept = 0,
                           lty = 2,
                           color = "red") +
-      ggplot2::theme_bw() +
-      ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
-                     panel.grid.minor = ggplot2::element_blank(),
-                     legend.background = ggplot2::element_rect(fill = "transparent",
-                                                               color = NA),
-                     legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
-                     strip.background = ggplot2::element_rect(fill = "white"))
+      theme_AP()
   }
   return(gg)
 }
