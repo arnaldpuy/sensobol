@@ -4,10 +4,10 @@
 \alias{sobol_ode}
 \title{Solver for ordinary differential equations}
 \usage{
-sobol_ode(params, times, state, func, ...)
+sobol_ode(d, times, state, func, ...)
 }
 \arguments{
-\item{params}{Vector with the name of the model inputs.}
+\item{d}{Vector with the name of the model inputs.}
 
 \item{times}{Vector with the time sequences at which the model output is wanted.}
 
