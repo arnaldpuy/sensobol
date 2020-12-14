@@ -7,6 +7,10 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
   } else if(boot == FALSE) {
     m <- d
   }
+
+  # COMPUTATION OF E(Y), V(Y), SI AND TI
+  # -----------------------------------------------------------------
+
   f0 <- (1 / N) * sum(m[, 1] * m[, 2])
   VY <- 1 / (2 * N - 1) * sum(m[, 1] ^ 2 + m[, 2] ^ 2) - f0
   Si <- (1 / (N - 1) * sum(m[, 1] * m[, 2]) - f0) / VY
@@ -61,12 +65,20 @@ sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
                         ncpus = 1, conf = 0.95, type = "norm") {
   k <- length(params)
   d <- matrix(Y, nrow = N)
+
+  # COMPUTE WITH BOOTSTRAP
+  # -----------------------------------------------------------------
+
   if(boot == TRUE) {
     out <- boot::boot(data = d, statistic = sobol_dummy_boot,
                       R = R, N = N, params = params,
                       parallel = parallel, ncpus = ncpus,
                       boot = boot)
     out <- bootstats(out, conf = conf, type = type)
+
+  # COMPUTE WITHOUT BOOTSTRAP
+  # -----------------------------------------------------------------
+
   } else if(boot == FALSE) {
     tmp <- sobol_dummy_boot(d = d, N = N, params = params, boot = FALSE)
     out <- data.table::data.table(tmp)

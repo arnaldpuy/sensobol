@@ -1,4 +1,7 @@
 
+# PERSONALIZED GGPLOT2 THEME
+##################################################################################
+
 theme_AP <- function() {
   ggplot2::theme_bw() +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
@@ -10,7 +13,8 @@ theme_AP <- function() {
           legend.position = "top")
 }
 
-# PLOT SOBOL' FIRST AND TOTAL-ORDER INDICES -----------------------------------
+# PLOT SOBOL' FIRST AND TOTAL-ORDER INDICES
+##################################################################################
 
 #' Plot Sobol' indices.
 #'
@@ -98,7 +102,8 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
   return(gg)
 }
 
-# PLOT MODEL OUTPUT UNCERTAINTY -----------------------------------------------
+# PLOT MODEL OUTPUT UNCERTAINTY
+##################################################################################
 
 #' Plot model output uncertainty
 #'
@@ -142,8 +147,10 @@ plot_uncertainty <- function(Y, N = NULL) {
   return(gg)
 }
 
-#' Scatterplots of model inputs against model output
-#'
+# PLOT SCATTERPLOTS OF MODEL OUTPUT AGAINST MODEL INPUTS
+##################################################################################
+
+#' Scatterplots of model inputs against model output.
 #'
 #' @param data The matrix created with \code{\link{sobol_matrices}}.
 #' @param N The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
@@ -198,7 +205,8 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
   return(gg)
 }
 
-
+# PLOT SCATTERPLOT MATRIX OF PAIRS OF PARAMETERS
+##################################################################################
 
 #' Scatterplot matrix of model inputs and model output.
 #'

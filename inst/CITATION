@@ -1,0 +1,16 @@
+citHeader("To cite reports in publications, please use:")
+
+
+citEntry(entry = "manual",
+    title = "{sensobol}: {C}omputation of Variance-Based Sensitivity Indices",
+    author = "Arnald Puy",
+    organization = "Princeton University",
+    address = "Princeton, New Jersey",
+    note = "version 1.0.0",
+    year = "2020",
+    url = "https://github.com/arnaldpuy/sensobol",
+    textVersion  = paste("Puy, A. (2020).",
+        "sensobol: Computation of Variance-Based Sensitivity Indices.",
+        "version 1.0.0 Princeton University. Princeton, New Jersey.",
+        "https://github.com/arnaldpuy/sensobol")
+)

@@ -1,4 +1,6 @@
 
+# FUNCTION TO CUT BY SIZE TO BE USED IN VARS-TO
+##################################################################################
 
 CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
   int <- m / nb
@@ -7,6 +9,9 @@ CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
   size <- c(upper[1], diff(upper))
   cbind(lower, upper, size)
 }
+
+# COMPUTATION OF VARS-TO
+##################################################################################
 
 #' Computation of VARS Total order index (VARS-TO)
 #'

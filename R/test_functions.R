@@ -1,5 +1,6 @@
 
-# Sobol ' G function -----------------------------------------------------------
+# SOBOL' G FUNCTION
+##################################################################################
 
 #' Sobol' G function
 #'
@@ -35,7 +36,8 @@ sobol_Fun <- function(X) {
   return(y)
 }
 
-# Ishigami function -----------------------------------------------------------
+# ISHIGAMI FUNCTION
+##################################################################################
 
 ishigami <- function(X1, X2, X3) {
   A <- 2
@@ -78,7 +80,8 @@ ishigami_Fun <- function(X) {
                 X[, 3]))
 }
 
-# Bratley et al. function -----------------------------------------------------
+# BRATLEY ET AL 1992 FUNCTION
+##################################################################################
 
 
 #' Bratley, Fox and Niederreiter (1992) function.
@@ -121,7 +124,8 @@ bratley1992_Fun <- function(X) {
   return(Y)
 }
 
-# Bratley and Fox (1988) function ---------------------------------------------
+# BRATLEY AND FOX 1988 FUNCTION
+##################################################################################
 
 #' Bratley and Fox (1988) function
 #'
@@ -153,7 +157,8 @@ bratley1988_Fun <- function(X) {
   return(y)
 }
 
-# Oakley and O'Hagan function -------------------------------------------------
+# OAKLEY AND O'HAGAN FUNCTION
+##################################################################################
 
 #' Oakley & O'Hagan (2004) function
 #'
@@ -241,7 +246,8 @@ oakley_Fun <- function(X) {
   return(Y)
 }
 
-# METAFUNCTION -----------------------------------------------------------------
+# BECKER 2020 METAFUNCTION
+##################################################################################
 
 # Define the list of functions
 function_list <- list(

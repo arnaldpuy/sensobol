@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_scatter}
 \alias{plot_scatter}
-\title{Scatterplots of model inputs against model output}
+\title{Scatterplots of model inputs against model output.}
 \usage{
 plot_scatter(data, N, Y, params, method = "point", size = 0.7, alpha = 0.2)
 }
@@ -27,7 +27,7 @@ overplotting.}
 A ggplot2 object
 }
 \description{
-Scatterplots of model inputs against model output
+Scatterplots of model inputs against model output.
 }
 \examples{
 # Define settings

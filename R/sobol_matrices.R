@@ -1,7 +1,14 @@
 
+# CREATION OF THE AB, BA, CB matrices
+##################################################################################
+
 scrambled_sobol <- function(matrices, A, B, C, order) {
   first <- 1:ncol(A)
   N <- nrow(A)
+
+  # VECTORS WITH THE COLUMNS
+  # -----------------------------------------------------------------
+
   if(order == "first") {
     loop <- first
   } else if(order == "second") {
@@ -14,9 +21,17 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
   } else {
     stop("order should be either first, second or third")
   }
+
+  # CHECK WHICH MATRICES HAVE BEEN SELECTED
+  # -----------------------------------------------------------------
+
   AB.mat <- "AB" %in% matrices
   BA.mat <- "BA" %in% matrices
   CB.mat <- "CB" %in% matrices
+
+  # CONSTRUCT AB, BA, ETC
+  # -----------------------------------------------------------------
+
   if(AB.mat == TRUE) {
     X <- rbind(A, B)
     for(i in loop) {
@@ -50,9 +65,16 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
   } else if(CB.mat == FALSE) {
     CB <- NULL
   }
+
+  # MERGE AND OUTPUT
+  # -----------------------------------------------------------------
+
   final <- rbind(AB, BA, CB)
   return(final)
 }
+
+# FUNCTION TO CREATE THE SAMPLE MATRICES
+##################################################################################
 
 #' Creation of the sample matrices
 #'
@@ -135,6 +157,10 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
                            type = "QRN", ...) {
   k <- length(params)
   n.matrices <- ifelse(any(stringr::str_detect(matrices, "C")) == FALSE, 2, 3)
+
+  # SELECTION OF THE TYPE OF SAMPLE MATRIX
+  # -----------------------------------------------------------------
+
   if(type == "QRN") {
     df <- randtoolbox::sobol(n = N, dim = k * n.matrices, ...)
   } else if(type == "R") {
@@ -144,6 +170,10 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   } else {
     stop("method should be either QRN, R or LHS")
   }
+
+  # CONSTRUCTION OF A, B AND C MATICES
+  # -----------------------------------------------------------------
+
   A <- df[, 1:k]
   B <- df[, (k + 1) : (k * 2)]
   if(n.matrices == 3) {
@@ -151,12 +181,20 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   } else {
     C <- NULL
   }
+
+  # CONSTRUCTION OF AB, BA, ETC
+  # -----------------------------------------------------------------
+
   out <- scrambled_sobol(matrices = matrices,
                          A = A, B = B, C = C,
                          order = order)
   A.mat <- "A" %in% matrices
   B.mat <- "B" %in% matrices
   C.mat <- "C" %in% matrices
+
+  # SET NULL TO THOSE NOT USED
+  # -----------------------------------------------------------------
+
   if(A.mat == FALSE) {
     A <- NULL
   }
@@ -166,6 +204,10 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   if(C.mat == FALSE) {
     C <- NULL
   }
+
+  # BIND AND OUTPUT
+  # -----------------------------------------------------------------
+
   final <- rbind(A, B, C, out)
   colnames(final) <- params
   return(final)
