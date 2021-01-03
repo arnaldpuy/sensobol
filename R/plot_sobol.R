@@ -148,7 +148,7 @@ plot_uncertainty <- function(Y, N = NULL) {
 }
 
 # PLOT SCATTERPLOTS OF MODEL OUTPUT AGAINST MODEL INPUTS
-##################################################################################
+#################################################################################
 
 #' It creates scatter plots of the model output against the model inputs
 #'
