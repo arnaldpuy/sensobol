@@ -6,7 +6,7 @@
 #'
 #' It creates the STAR-VARS matrix needed to compute VARS-TO following \insertCite{Razavi2016a;textual}{sensobol}.
 #'
-#' @param star.centers Number of star centers.
+#' @param star.centers Positive integer, number of star centers.
 #' @param params Character vector with the name of the model inputs.
 #' @param h Distance between pairs. The user should select between 0.001, 0.002, 0.005, 0.01,
 #' 0.02, 0.05, 0.1, 0.2. Default is \code{h = 0.1}.

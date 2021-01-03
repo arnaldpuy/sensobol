@@ -17,8 +17,9 @@ CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
 #'
 #' It computes VARS-TO following \insertCite{Razavi2016a;textual}{sensobol}.
 #'
-#' @param Y Numeric vector, model output.
-#' @param star.centers Number of star centers.
+#' @param Y A numeric vector with the model output obtained from the matrix created with
+#' \code{\link{vars_matrices}}.
+#' @param star.centers Positive integer, number of star centers.
 #' @param params Character vector with the name of the model inputs.
 #' @param h Distance between pairs.
 #' @param method Type of computation. If \code{method = "all.step"}, all pairs of points with values

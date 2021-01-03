@@ -24,9 +24,10 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
 #' parameter following the formulae shown
 #' in \insertCite{KhorashadiZadeh2017;textual}{sensobol}.
 #'
-#' @param Y Numeric vector, model output.
+#' @param Y A numeric vector with the model output obtained from the matrix created with
+#' \code{\link{sobol_matrices}}.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
-#' @param params Vector with the name of the model inputs.
+#' @param params A character vector with the name of the model inputs.
 #' @param boot Logical. Default is \code{boot = FALSE}.
 #' @param R Positive integer, number of bootstrap replicas.
 #' @param parallel The type of parallel operation to be used (if any).
@@ -36,7 +37,7 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
 #' @param ncpus Positive integer: number of processes to be used in parallel operation:
 #' typically one would chose this to the number of available CPUs.
 #' Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boot}} package.
-#' @param conf Number between 0 and 1. Default is \code{conf = 0.95}.
+#' @param conf Confidence intervals, number between 0 and 1. Default is \code{conf = 0.95}.
 #' @param type Method to compute the confidence intervals. Default is \code{type = "norm"}.
 #' Check the \code{type} option in the \code{boot} function of the \code{\link{boot}} package.
 #'
@@ -315,9 +316,10 @@ bootstats <- function(b, conf = conf, type = type) {
 #'
 #' It allows to compute Sobol' indices up to the third order using state-of-the-art estimators.
 #'
-#'@param matrices Vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
+#'@param matrices Character vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
 #' See \code{\link{sobol_matrices}}.
-#' @param Y Numeric vector, model output.
+#' @param Y  numeric vector with the model output obtained from the matrix created with
+#' \code{\link{sobol_matrices}}.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #' @param params Character vector with the name of the model inputs.
 #' @param first Estimator to compute first order indices. Options are:
@@ -337,7 +339,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #' is \code{order = "first"}.
 #' @param boot Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
 #' estimates. Default is \code{boot = FALSE}.
-#' @param R Integer, number of bootstrap replicas. Default is NULL.
+#' @param R Positive integer, number of bootstrap replicas. Default is NULL.
 #' @param parallel The type of parallel operation to be used (if any).
 #' If missing, the default is taken from the option "boot.parallel"
 #' (and if that is not set, "no"). For more information, check the
@@ -356,7 +358,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #'
 #' @return A \code{data.table} object.
 #' @seealso Check the function \code{\link{boot}} for further details on the bootstrapping
-#' with regards to the methods available for the computation of confidence intervals in \code{type}.
+#' with regards to the methods available for the computation of confidence intervals in the \code{type} argument.
 #' @export
 #'
 #' @details Any first and total-order estimator can be combined with the appropriate sampling design.
@@ -365,7 +367,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #' the function will generate an error and urge to redefine the sample matrices or the estimators.
 #'
 #' For all estimators except \insertCite{Azzini2020;textual}{sensobol}'s and \insertCite{Janon2014;textual}{sensobol}'s,
-#' \code{sobol_indices()} calculates the sample mean as \deqn{\hat{f}_0=\frac{1}{2N} \sum{v=1}^{N}(f(\mathbf{A})_v + f(\mathbf{B})_v)\,,}
+#' \code{sobol_indices()} calculates the sample mean as \deqn{\hat{f}_0=\frac{1}{2N} \sum_{v=1}^{N}(f(\mathbf{A})_v + f(\mathbf{B})_v)\,,}
 #' and the unconditional sample variance as
 #'
 #' \deqn{\hat{V}(y) = \frac{1}{2N-1} \sum{v=1}^{N} ((f(\mathbf{A})_v - \hat{f})^2 + (f(\mathbf{B})_v - \hat{f})^2)\,,}

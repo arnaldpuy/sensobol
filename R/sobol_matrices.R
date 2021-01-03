@@ -82,7 +82,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 #' If needed, it also creates the sample matrices required to compute second and
 #' third-order indices.
 #'
-#' @param matrices Vector with the required matrices. The default
+#' @param matrices Character vector with the required matrices. The default
 #' is \code{matrices = c("A", "B", "AB")}.
 #' @param N Positive integer, initial sample size of the base sample matrix.
 #' @param params Character vector with the name of the model inputs.
@@ -104,7 +104,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 #' @details Before calling \code{sobol_matrices}, the user must decide which estimators
 #' will be used to compute first and total-order indices, for this option conditions
 #' the design of the sample matrix and therefore the argument \code{matrices}.
-#' See the vignette for further details on the specific sampling designs required by
+#' See Table 3 in the vignette for further details on the specific sampling designs required by
 #' the estimators.
 #'
 #' The user can select one of the following sampling designs:

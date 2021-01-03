@@ -10,8 +10,8 @@
 #' @param d Character vector with the name of the model inputs.
 #' @param times Numeric vector with the time sequences at which the model output is wanted.
 #' @param state Initial values of the state variables.
-#' @param func An R function as defined by \code{ode}.
-#' @param ... Additional arguments passed to \code{ode}.
+#' @param func An R function as defined by \code{\link{ode}}.
+#' @param ... Additional arguments passed to \code{\link{ode}}.
 #'
 #' @return A matrix with the output values.
 #' @export

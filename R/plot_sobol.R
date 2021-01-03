@@ -109,10 +109,11 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
 #'
 #' It creates an histogram with the model output distribution.
 #'
-#' @param Y A numeric vector with the model output.
+#' @param Y A numeric vector with the model output obtained from the matrix created with
+#' \code{\link{sobol_matrices}}.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #'
-#' @return a ggplot2 object.
+#' @return A \code{ggplot2} object.
 #' @import ggplot2
 #' @export
 #'
@@ -154,13 +155,14 @@ plot_uncertainty <- function(Y, N = NULL) {
 #'
 #' @param data The matrix created with \code{\link{sobol_matrices}}.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
-#' @param Y A numeric vector with the model output.
+#' @param Y A numeric vector with the model output obtained from the matrix created with
+#' \code{\link{sobol_matrices}}.
 #' @param params Character vector with the name of the model inputs.
 #' @param method The type of plot. If \code{method = "point"} (the default), each simulation is a point.
 #' If \code{method = "bin"}, bins are used to aggregate simulations.
-#' @param size Number between 0 and 1, argument of \code{geom_point()}. Default is 0.7.
-#' @param alpha Number between 0 and 1, transparency scale of \code{geom_point()}. Default is 0.2.
-#' @return A ggplot2 object.
+#' @param size Number between 0 and 1, argument of \code{\link{geom_point()}}. Default is 0.7.
+#' @param alpha Number between 0 and 1, transparency scale of \code{\link{geom_point()}}. Default is 0.2.
+#' @return A \code{ggplot2} object.
 #' @import ggplot2
 #' @export
 #'
@@ -207,19 +209,20 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
 # PLOT SCATTERPLOT MATRIX OF PAIRS OF PARAMETERS
 ##################################################################################
 
-#' It plots all possible combinations of \eqn{x_i} against \eqn{x_j} with the colour
+#' It plots all pairwise combinations of model inputs with the colour
 #' proportional the model output value.
 #'
 #' @param data The matrix created with \code{\link{sobol_matrices}}.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
-#' @param Y A numeric vector with the model output.
+#' @param Y A numeric vector with the model output obtained from the matrix created with
+#' \code{\link{sobol_matrices}}.
 #' @param params Character vector with the name of the model inputs.
 #' @param smpl The number of simulations to plot.
 #' The default is NULL.
 #'
 #' @importFrom data.table .SD .N
 #'
-#' @return A ggplot2 object.
+#' @return A \code{ggplot2} object.
 #' @import ggplot2
 #' @export
 #'
