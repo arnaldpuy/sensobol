@@ -19,8 +19,8 @@ It implements the \insertCite{Ishigami1990;textual}{sensobol} function.
 The function requires 3 model inputs and reads as
 \deqn{y=\sin(x_1) +a \sin(x_2) ^ 2 + b x_3 ^4 \sin(x_1)\,,}
 where \eqn{a=2}, \eqn{b=1} and \eqn{(x_1,x_2,x_3)\sim\mathcal{U}(-\pi, +\pi)}. The
-transformation of the distribution of the model inputs from \eqn{U\sim(0, 1)} to
-\eqn{U\sim(-\pi, +\pi)}) is conducted internally.
+transformation of the distribution of the model inputs from \eqn{U(0, 1)} to
+\eqn{U(-\pi, +\pi)}) is conducted internally.
 }
 \examples{
 # Define settings

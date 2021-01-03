@@ -2,32 +2,31 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_scatter}
 \alias{plot_scatter}
-\title{Scatterplots of model inputs against model output.}
+\title{It creates scatter plots of the model output against the model inputs}
 \usage{
 plot_scatter(data, N, Y, params, method = "point", size = 0.7, alpha = 0.2)
 }
 \arguments{
 \item{data}{The matrix created with \code{\link{sobol_matrices}}.}
 
-\item{N}{The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
+\item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
 \item{Y}{A numeric vector with the model output.}
 
 \item{params}{Character vector with the name of the model inputs.}
 
 \item{method}{The type of plot. If \code{method = "point"} (the default), each simulation is a point.
-If \code{method = "bin"}, bins are used to aggregate simulationd. This option is appropriate to prevent
-overplotting.}
+If \code{method = "bin"}, bins are used to aggregate simulations.}
 
 \item{size}{Number between 0 and 1, argument of \code{geom_point()}. Default is 0.7.}
 
 \item{alpha}{Number between 0 and 1, transparency scale of \code{geom_point()}. Default is 0.2.}
 }
 \value{
-A ggplot2 object
+A ggplot2 object.
 }
 \description{
-Scatterplots of model inputs against model output.
+It creates scatter plots of the model output against the model inputs
 }
 \examples{
 # Define settings

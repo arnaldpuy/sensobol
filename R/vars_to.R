@@ -35,7 +35,7 @@ CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
 #'
 #' where \eqn{x^*_{\sim i}} is a vector of all \eqn{k} factors except \eqn{x_i}.
 #'
-#' @return A data table with the VARS-TO indices of each parameter.
+#' @return A \code{data.table} with the VARS-TO indices of each parameter.
 #'
 #' @importFrom magrittr "%>%"
 #' @importFrom rlang ":="

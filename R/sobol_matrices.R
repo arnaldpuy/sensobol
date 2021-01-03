@@ -84,7 +84,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 #'
 #' @param matrices Vector with the required matrices. The default
 #' is \code{matrices = c("A", "B", "AB")}.
-#' @param N Integer, initial ample size of the base sample matrix.
+#' @param N Positive integer, initial sample size of the base sample matrix.
 #' @param params Character vector with the name of the model inputs.
 #' @param order One of "first", "second" or "third" to create a matrix to
 #' compute first, second or up to third-order Sobol indices. The default is

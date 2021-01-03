@@ -2,27 +2,29 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_multiscatter}
 \alias{plot_multiscatter}
-\title{Scatterplot matrix of model inputs and model output.}
+\title{It plots all possible combinations of \eqn{x_i} against \eqn{x_j} with the colour
+proportional the model output value.}
 \usage{
 plot_multiscatter(data, N, Y, params, smpl = NULL)
 }
 \arguments{
 \item{data}{The matrix created with \code{\link{sobol_matrices}}.}
 
-\item{N}{The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
+\item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
 \item{Y}{A numeric vector with the model output.}
 
 \item{params}{Character vector with the name of the model inputs.}
 
-\item{smpl}{The number of simulations to plot (needed only to avoid overplotting).
+\item{smpl}{The number of simulations to plot.
 The default is NULL.}
 }
 \value{
-A ggplot2 object
+A ggplot2 object.
 }
 \description{
-Scatterplot matrix of model inputs and model output.
+It plots all possible combinations of \eqn{x_i} against \eqn{x_j} with the colour
+proportional the model output value.
 }
 \examples{
 # Define settings

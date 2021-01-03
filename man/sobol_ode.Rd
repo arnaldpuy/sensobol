@@ -2,14 +2,14 @@
 % Please edit documentation in R/sobol_ode.R
 \name{sobol_ode}
 \alias{sobol_ode}
-\title{Solver for ordinary differential equations}
+\title{Wrapper around \code{deSolve} \code{\link{ode}}.}
 \usage{
 sobol_ode(d, times, state, func, ...)
 }
 \arguments{
-\item{d}{Vector with the name of the model inputs.}
+\item{d}{Character vector with the name of the model inputs.}
 
-\item{times}{Vector with the time sequences at which the model output is wanted.}
+\item{times}{Numeric vector with the time sequences at which the model output is wanted.}
 
 \item{state}{Initial values of the state variables.}
 
@@ -21,7 +21,8 @@ sobol_ode(d, times, state, func, ...)
 A matrix with the output values.
 }
 \description{
-Solver for ordinary differential equations
+It solves a system of ordinary differential equations and extracts the model output
+at the selected times.
 }
 \examples{
 # Define the model: the Lotka-Volterra system of equations
@@ -36,13 +37,30 @@ with(as.list(c(state, parameters)), {
 # Define the settings of the sensitivity analysis
 N <- 2 ^ 5 # Sample size of sample matrix
 params <- c("r", "alpha", "m", "theta", "K", "X", "Y") # Parameters
-R <- 100 # Number of bootstrap replicas
-
-# Construct the sample matrix
-mat <- sobol_matrices(N = N, params = params)
 
 # Define the timesteps
 times <- seq(5, 15, 5)
 
+# Construct the sample matrix
+mat <- sobol_matrices(N = N, params = params)
+
+# Transform to appropriate distributions
+mat[, "r"] <- qunif(mat[, "r"], 0.8, 1.8)
+mat[, "alpha"] <- qunif(mat[, "alpha"], 0.2, 1)
+mat[, "m"] <- qunif(mat[, "m"], 0.6, 1)
+mat[, "theta"] <- qunif(mat[, "theta"], 0.05, 0.15)
+mat[, "K"] <- qunif(mat[, "K"], 47, 53)
+mat[, "X"] <- floor(mat[, "X"] * (15 - 8 + 1) + 8)
+mat[, "Y"] <- floor(mat[, "Y"] * (2 - 6 + 1) + 6)
+
 # Run the model
+y <- list()
+for (j in 1:length(times)) {
+ for (i in 1:nrow(mat)) {
+   y[[j]] <- sobol_ode(d = mat[i, ],
+                       times = seq(0, j, 1),
+                       state = c(X = mat[[i, "X"]], Y = mat[[i, "Y"]]),
+                       func = lotka_volterra_fun)
+ }
+}
 }

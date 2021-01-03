@@ -26,7 +26,7 @@ See \code{\link{sobol_matrices}}.}
 
 \item{Y}{Numeric vector, model output.}
 
-\item{N}{The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
+\item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
 \item{params}{Character vector with the name of the model inputs.}
 
@@ -62,7 +62,7 @@ If missing, the default is taken from the option "boot.parallel"
 (and if that is not set, "no"). For more information, check the
 \code{parallel} option in the \code{boot} function of the \code{\link{boot}} package.}
 
-\item{ncpus}{Integer: number of processes to be used in parallel operation:
+\item{ncpus}{Positive integer: number of processes to be used in parallel operation:
 typically one would chose this to the number of available CPUs.
 Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boot}} package.}
 
@@ -79,21 +79,27 @@ It allows to compute Sobol' indices up to the third order using state-of-the-art
 }
 \details{
 Any first and total-order estimator can be combined with the appropriate sampling design.
-Check the vignette for a summary of all possible combinations. If the analyst mismatches estimators and sampling designs,
-the function will throw and error and urge to redefine the sample matrices or the estimators.
+Check Table 3 of the vignette for a summary of all possible combinations, and Tables 1 and 2 for a
+mathematical description of the estimators. If the analyst mismatches estimators and sampling designs,
+the function will generate an error and urge to redefine the sample matrices or the estimators.
 
 For all estimators except \insertCite{Azzini2020;textual}{sensobol}'s and \insertCite{Janon2014;textual}{sensobol}'s,
 \code{sobol_indices()} calculates the sample mean as \deqn{\hat{f}_0=\frac{1}{2N} \sum{v=1}^{N}(f(\mathbf{A})_v + f(\mathbf{B})_v)\,,}
 and the unconditional sample variance as
+
 \deqn{\hat{V}(y) = \frac{1}{2N-1} \sum{v=1}^{N} ((f(\mathbf{A})_v - \hat{f})^2 + (f(\mathbf{B})_v - \hat{f})^2)\,,}
-where, for instance, \eqn{f(\mathbf{A})_v} indicates the model output \eqn{y} obtained after running the model \eqn{f}
-in the \eqn{v}-th row of the \eqn{\mathbf{A}} matrix.
+where \eqn{f(\mathbf{A})_v} (\eqn{f(\mathbf{B})_v}) indicates the model output \eqn{y} obtained after running the model \eqn{f}
+in the \eqn{v}-th row of the \eqn{\mathbf{A}} (\eqn{\mathbf{B}}) matrix.
 
 For the Azzini estimator,
 \deqn{\hat{V}(y) = \sum_{v=1}^{N} (f(\mathbf{A})_v - f(\mathbf{B})_v)^2 + (f(\mathbf{B}_A^{(i)})_v - f(\mathbf{A}_B^{(i)})_v) ^ 2}
 
 and for the Janon estimator,
 \deqn{\hat{V}(y)=\frac{1}{N} \sum_{v=1}^{N} \frac{f(\mathbf{A})_v^2 + f(\mathbf{A}_B^{(i)})_v^2}{2}-f_0^2}
+
+where \eqn{f(\mathbf{A}_B^{(i)})_v} (\eqn{f(\mathbf{B}_A^{(i)})_v}) is the model output obtained after running the model \eqn{f} in
+the \eqn{v}-th row of an \eqn{\mathbf{A}_B^{(i)})_v} (\eqn{\mathbf{B}_A^{(i)})_v}) matrix, where all columns come from \eqn{\mathbf{A}} (\eqn{\mathbf{B}})
+except the \eqn{i}-th, which comes from \eqn{\mathbf{B}} (\eqn{\mathbf{A}}).
 }
 \examples{
 # Define settings

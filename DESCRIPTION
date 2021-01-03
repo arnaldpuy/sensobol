@@ -4,7 +4,7 @@ Version: 1.0.0
 Authors@R: c(person(given = "Arnald", 
                     family = "Puy",
                     role = c("aut", "cre"),
-                    email = "arnald.puy@gmail.com", 
+                    email = "arnald.puy@pm.me", 
                     comment = c(ORCID = "https://orcid.org/0000-0001-9469-2156")), 
             person("Bertrand", "Ioos", 
                     role = "ctb", 
@@ -15,18 +15,13 @@ Authors@R: c(person(given = "Arnald",
             person("RStudio", 
                     role = "cph", 
                     comment = "Copyright holder of included 'sensitivity' fragments"))
-Description: It allows to rapidly compute, bootstrap and plot up to third-order Sobol'-based sensitivity indices
-    using several state-of-the-art first and total-order estimators. Sobol' indices can be computed either for 
-    models that yield a scalar as a model output or for dynamic equations. The package also provides a suit 
-    of benchmark tests functions and several options to obtain publication-ready figures of the model 
-    output uncertainty and sensitivity-related analysis.
+Maintainer: Arnald Puy <arnald.puy@pm.me>
+Description: It allows to rapidly compute, bootstrap and plot up to third-order Sobol'-based sensitivity indices using several state-of-the-art first and total-order estimators. Sobol' indices can be computed either for models that yield a scalar as a model output or for dynamic equations. The package also provides a suit of benchmark tests functions and several options to obtain publication-ready figures of the model output uncertainty and sensitivity-related analysis.
 License: GPL-3
 Encoding: UTF-8
 Imports:
     boot (>= 1.3.20),
-    doParallel (>= 1.0.15),
     data.table (>= 1.12.0),
-    foreach (>= 1.4.7),
     ggplot2 (>= 3.1.0),
     lhs (>= 1.0.2),
     magrittr (>= 1.5),
@@ -52,8 +47,8 @@ Suggests:
     testthat (>= 2.1.0),
     covr
 VignetteBuilder: knitr
-URL: http://github.com/arnaldpuy/sensobol 
-BugReports: http://github.com/arnaldpuy/sensobol/issues
+URL: https://github.com/arnaldpuy/sensobol 
+BugReports: https://github.com/arnaldpuy/sensobol/issues
 LinkingTo: 
     Rcpp,
     RcppArmadillo

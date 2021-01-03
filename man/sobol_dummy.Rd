@@ -19,20 +19,20 @@ sobol_dummy(
 \arguments{
 \item{Y}{Numeric vector, model output.}
 
-\item{N}{Integer, base sample size of the sample matrix created with \code{\link{sobol_matrices}}.}
+\item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
 \item{params}{Vector with the name of the model inputs.}
 
 \item{boot}{Logical. Default is \code{boot = FALSE}.}
 
-\item{R}{Integer, number of bootstrap replicas.}
+\item{R}{Positive integer, number of bootstrap replicas.}
 
 \item{parallel}{The type of parallel operation to be used (if any).
 If missing, the default is taken from the option "boot.parallel"
 (and if that is not set, "no"). For more information, check the
 \code{parallel} option in the \code{boot} function of the \code{\link{boot}} package.}
 
-\item{ncpus}{Integer: number of processes to be used in parallel operation:
+\item{ncpus}{Positive integer: number of processes to be used in parallel operation:
 typically one would chose this to the number of available CPUs.
 Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boot}} package.}
 
@@ -42,11 +42,11 @@ Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boo
 Check the \code{type} option in the \code{boot} function of the \code{\link{boot}} package.}
 }
 \value{
-A data.table object.
+A \code{data.table} object.
 }
 \description{
 This function computes first and total-order Sobol' indices for a dummy
-parameter following the formulas shown
+parameter following the formulae shown
 in \insertCite{KhorashadiZadeh2017;textual}{sensobol}.
 }
 \examples{

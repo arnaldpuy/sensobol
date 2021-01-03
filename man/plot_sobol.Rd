@@ -2,24 +2,24 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_sobol}
 \alias{plot_sobol}
-\title{Plot Sobol' indices.}
+\title{Plot first, total, second and third order Sobol' indices.}
 \usage{
 plot_sobol(data, order = "first", dummy = NULL)
 }
 \arguments{
-\item{data}{The matrix created with \code{\link{sobol_matrices}}.}
+\item{data}{The output of \code{\link{sobol_indices}}.}
 
-\item{order}{If \code{order = "first"}, it plots first and total effects.
+\item{order}{If \code{order = "first"}, it plots first and total-order effects.
 If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
-third-order effects. Default is \code{order = "first"}}
+third-order effects. Default is \code{order = "first"}.}
 
-\item{dummy}{the output of \code{sobol_dummy}. Default is NULL.}
+\item{dummy}{The output of \code{\link{sobol_dummy}}. Default is NULL.}
 }
 \value{
 A ggplot object.
 }
 \description{
-Plot Sobol' indices.
+Plot first, total, second and third order Sobol' indices.
 }
 \examples{
 # Define settings

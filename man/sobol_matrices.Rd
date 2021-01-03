@@ -17,7 +17,7 @@ sobol_matrices(
 \item{matrices}{Vector with the required matrices. The default
 is \code{matrices = c("A", "B", "AB")}.}
 
-\item{N}{Integer, initial ample size of the base sample matrix.}
+\item{N}{Positive integer, initial sample size of the base sample matrix.}
 
 \item{params}{Character vector with the name of the model inputs.}
 

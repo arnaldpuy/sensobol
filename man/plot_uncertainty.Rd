@@ -9,7 +9,7 @@ plot_uncertainty(Y, N = NULL)
 \arguments{
 \item{Y}{A numeric vector with the model output.}
 
-\item{N}{The initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
+\item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 }
 \value{
 a ggplot2 object.

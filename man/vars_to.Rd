@@ -20,7 +20,7 @@ vars_to(Y, star.centers, params, h, method = "all.step")
 only the pairs \eqn{\Delta h} away are used. The default is \code{method = "all.step"}.}
 }
 \value{
-A data table with the VARS-TO indices of each parameter.
+A \code{data.table} with the VARS-TO indices of each parameter.
 }
 \description{
 It computes VARS-TO following \insertCite{Razavi2016a;textual}{sensobol}.
