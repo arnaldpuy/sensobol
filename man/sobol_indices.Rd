@@ -21,16 +21,17 @@ sobol_indices(
 )
 }
 \arguments{
-\item{matrices}{Vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
+\item{matrices}{Character vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
 See \code{\link{sobol_matrices}}.}
 
-\item{Y}{Numeric vector, model output.}
+\item{Y}{numeric vector with the model output obtained from the matrix created with
+\code{\link{sobol_matrices}}.}
 
 \item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
 \item{params}{Character vector with the name of the model inputs.}
 
-\item{first}{Estimator to compute first order indices. Options are:
+\item{first}{Estimator to compute first-order indices. Options are:
 \itemize{
 \item \code{first = "saltelli"} \insertCite{Saltelli2010a}{sensobol}.
 \item \code{first = "jansen"} \insertCite{Jansen1999}{sensobol}.
@@ -38,7 +39,7 @@ See \code{\link{sobol_matrices}}.}
 \item \code{first = "azzini"} \insertCite{Azzini2020}{sensobol}.
 }}
 
-\item{total}{Estimator to compute total order indices. Options are:
+\item{total}{Estimator to compute total-order indices. Options are:
 \itemize{
 \item \code{total = "jansen"} \insertCite{Jansen1999}{sensobol}.
 \item \code{total = "sobol"} \insertCite{Sobol2001}{sensobol}.
@@ -49,13 +50,13 @@ See \code{\link{sobol_matrices}}.}
 \item \code{total = "saltelli"} \insertCite{Saltelli2008}{sensobol}.
 }}
 
-\item{order}{Whether to compute "first", "second", or "third" order Sobol' indices. Default
+\item{order}{Whether to compute "first", "second", or "third" -order Sobol' indices. Default
 is \code{order = "first"}.}
 
 \item{boot}{Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
 estimates. Default is \code{boot = FALSE}.}
 
-\item{R}{Integer, number of bootstrap replicas. Default is NULL.}
+\item{R}{Positive integer, number of bootstrap replicas. Default is NULL.}
 
 \item{parallel}{The type of parallel operation to be used (if any).
 If missing, the default is taken from the option "boot.parallel"
@@ -84,8 +85,8 @@ mathematical description of the estimators. If the analyst mismatches estimators
 the function will generate an error and urge to redefine the sample matrices or the estimators.
 
 For all estimators except \insertCite{Azzini2020;textual}{sensobol}'s and \insertCite{Janon2014;textual}{sensobol}'s,
-\code{sobol_indices()} calculates the sample mean as \deqn{\hat{f}_0=\frac{1}{2N} \sum{v=1}^{N}(f(\mathbf{A})_v + f(\mathbf{B})_v)\,,}
-and the unconditional sample variance as
+\code{sobol_indices()} calculates the sample mean as \deqn{\hat{f}_0=\frac{1}{2N} \sum_{v=1}^{N}(f(\mathbf{A})_v + f(\mathbf{B})_v)\,,}
+where \eqn{N} is the row dimension of the base sample matrix, and the unconditional sample variance as
 
 \deqn{\hat{V}(y) = \frac{1}{2N-1} \sum{v=1}^{N} ((f(\mathbf{A})_v - \hat{f})^2 + (f(\mathbf{B})_v - \hat{f})^2)\,,}
 where \eqn{f(\mathbf{A})_v} (\eqn{f(\mathbf{B})_v}) indicates the model output \eqn{y} obtained after running the model \eqn{f}
@@ -119,5 +120,5 @@ ind <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = R)
 }
 \seealso{
 Check the function \code{\link{boot}} for further details on the bootstrapping
-with regards to the methods available for the computation of confidence intervals in \code{type}.
+with regards to the methods available for the computation of confidence intervals in the \code{type} argument.
 }

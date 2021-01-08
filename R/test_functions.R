@@ -30,6 +30,7 @@
 sobol_Fun <- function(X) {
   a <- c(0, 1, 4.5, 9, 99, 99, 99, 99)
   y <- 1
+
   for (j in 1:8) {
     y <- y * (abs(4 * X[, j] - 2) + a[j])/(1 + a[j])
   }
@@ -113,6 +114,7 @@ bratley1992_Fun <- function(X) {
   # Preallocate
   mat <- tmp <- vector(mode = "list", length = nrow(X))
   Y <- vector(mode = "numeric", length = nrow(X))
+
   for (i in 1:nrow(X)) {
     mat[[i]] <- matrix(rep(X[i, ], times = ncol(X)),
                        nrow = ncol(X),
@@ -154,6 +156,7 @@ bratley1992_Fun <- function(X) {
 #' Y <- bratley1988_Fun(mat)
 bratley1988_Fun <- function(X) {
   y <- 1
+
   for (j in 1:ncol(X)) {
     y <- y * (abs(4 * X[, j] - 2))}
   return(y)
@@ -242,6 +245,7 @@ oakley_Fun <- function(X) {
   Y <- vector()
   # transformation to normal distribution
   X <- apply(X, 2, function(x) stats::qnorm(x))
+
   for (i in 1:nrow(X)) {
     mat <- matrix(X[i, ])
     Y[i] <- a1 %*% mat + a2 %*% sin(mat) + a3 %*% cos(mat) + t(mat) %*% M %*% mat
@@ -346,13 +350,17 @@ metafunction <- function(data, k_2 = 0.5, k_3 = 0.2, epsilon = NULL) {
   coefD3 <- sample(coefficients, sample.size, replace = TRUE)
   output <- sapply(seq_along(all_functions), function(x) function_list[[all_functions[x]]](data[, x]))
   y1 <- Rfast::rowsums(mmult(output, coefD1))
+
   if (is.vector(d2M) == TRUE) {
     y2 <- sum(output[, d2M[1]] *  output[, d2M[2]] * coefD2)
+
   } else {
     y2 <- Rfast::rowsums(mmult(output[, d2M[, 1]] *  output[, d2M[, 2]], coefD2))
   }
+
   if (is.vector(d3M) == TRUE) {
     y3 <- sum(output[, d3M[1]] *  output[, d3M[2]] * output[, d3M[3]] * coefD3)
+
   } else {
     y3 <- Rfast::rowsums(mmult(output[, d3M[, 1]] *  output[, d3M[, 2]] * output[, d3M[, 3]], coefD3))
   }

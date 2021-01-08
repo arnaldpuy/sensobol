@@ -11,13 +11,16 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 
   if(order == "first") {
     loop <- first
-  } else if(order == "second") {
+
+  } else if (order == "second") {
     second <- c(first, utils::combn(1:ncol(A), 2, simplify = FALSE))
     loop <- second
-  } else if(order == "third") {
+
+  } else if (order == "third") {
     second <- c(first, utils::combn(1:ncol(A), 2, simplify = FALSE))
     third <- c(second, utils::combn(1:ncol(A), 3, simplify = FALSE))
     loop <- third
+
   } else {
     stop("order should be either first, second or third")
   }
@@ -29,32 +32,37 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
   BA.mat <- "BA" %in% matrices
   CB.mat <- "CB" %in% matrices
 
-  # CONSTRUCT AB, BA, ETC
+  # CONSTRUCT AB, BA MATRICES, ETC
   # -----------------------------------------------------------------
 
-  if(AB.mat == TRUE) {
+  if (AB.mat == TRUE) {
     X <- rbind(A, B)
+
     for(i in loop) {
       AB <- A
       AB[, i] <- B[, i]
       X <- rbind(X, AB)
     }
     AB <- X[(2 * N + 1):nrow(X), ]
-  } else if(AB.mat == FALSE) {
+
+  } else if (AB.mat == FALSE) {
     AB <- NULL
   }
-  if(BA.mat == TRUE) {
+
+  if (BA.mat == TRUE) {
     W <- rbind(A, B)
-    for(i in loop) {
+    for (i in loop) {
       BA <- B
       BA[, i] <- A[, i]
       W <- rbind(W, BA)
     }
     BA <- W[(2 * N + 1) : nrow(W), ]
-  } else if(BA.mat == FALSE) {
+
+  } else if (BA.mat == FALSE) {
     BA <- NULL
   }
-  if(CB.mat == TRUE) {
+
+  if (CB.mat == TRUE) {
     Z <- rbind(A, B)
     for(i in loop) {
       CB <- C
@@ -62,7 +70,8 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
       Z <- rbind(Z, CB)
     }
     CB <- Z[(2 * N + 1) : nrow(Z), ]
-  } else if(CB.mat == FALSE) {
+
+  } else if (CB.mat == FALSE) {
     CB <- NULL
   }
 
@@ -161,14 +170,17 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   # SELECTION OF THE TYPE OF SAMPLE MATRIX
   # -----------------------------------------------------------------
 
-  if(type == "QRN") {
+  if (type == "QRN") {
     df <- randtoolbox::sobol(n = N, dim = k * n.matrices, ...)
-  } else if(type == "R") {
+
+  } else if (type == "R") {
     df <- replicate(k * n.matrices, stats::runif(N))
-  } else if(type == "LHS") {
+
+  } else if (type == "LHS") {
     df <- lhs::randomLHS(N, n.matrices * k)
+
   } else {
-    stop("method should be either QRN, R or LHS")
+    stop ("method should be either QRN, R or LHS")
   }
 
   # CONSTRUCTION OF A, B AND C MATICES
@@ -176,13 +188,15 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
 
   A <- df[, 1:k]
   B <- df[, (k + 1) : (k * 2)]
-  if(n.matrices == 3) {
+
+  if (n.matrices == 3) {
     C <- df[, ((k * 2) + 1):(k * 3)]
+
   } else {
     C <- NULL
   }
 
-  # CONSTRUCTION OF AB, BA, ETC
+  # CONSTRUCTION OF AB, BA MATRICES, ETC
   # -----------------------------------------------------------------
 
   out <- scrambled_sobol(matrices = matrices,
@@ -195,13 +209,15 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   # SET NULL TO THOSE NOT USED
   # -----------------------------------------------------------------
 
-  if(A.mat == FALSE) {
+  if (A.mat == FALSE) {
     A <- NULL
   }
-  if(B.mat == FALSE) {
+
+  if (B.mat == FALSE) {
     B <- NULL
   }
-  if(C.mat == FALSE) {
+
+  if (C.mat == FALSE) {
     C <- NULL
   }
 

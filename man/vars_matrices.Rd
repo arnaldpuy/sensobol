@@ -7,7 +7,7 @@
 vars_matrices(star.centers, params, h = 0.1, type = "QRN", ...)
 }
 \arguments{
-\item{star.centers}{Number of star centers.}
+\item{star.centers}{Positive integer, number of star centers.}
 
 \item{params}{Character vector with the name of the model inputs.}
 

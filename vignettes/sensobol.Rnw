@@ -4,5 +4,5 @@
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
-\includepdf[pages=-, fitpaper=true]{jss_sensobol.pdf}
+\includepdf[pages=-, fitpaper=true]{sensobol_vignette.pdf}
 \end{document}

@@ -16,7 +16,7 @@ A numeric vector with the model output.
 It implements the \insertCite{Sobol1998;textual}{sensobol} G function.
 }
 \details{
-The function requires 8 model inputs and reads as
+The function requires eight model inputs and reads as
 \deqn{y=\prod_{i=1}^{k} \frac{|4 x_i - 2| + a_i}{1 + a_i}\,,}
 where \eqn{k=8}, \eqn{x_i\sim\mathcal{U}(0,1)} and \eqn{a=(0, 1, 4.5, 9, 99, 99, 99, 99)}.
 }

@@ -7,9 +7,10 @@
 vars_to(Y, star.centers, params, h, method = "all.step")
 }
 \arguments{
-\item{Y}{Numeric vector, model output.}
+\item{Y}{A numeric vector with the model output obtained from the matrix created with
+\code{\link{vars_matrices}}.}
 
-\item{star.centers}{Number of star centers.}
+\item{star.centers}{Positive integer, number of star centers.}
 
 \item{params}{Character vector with the name of the model inputs.}
 

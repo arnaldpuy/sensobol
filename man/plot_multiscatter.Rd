@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_multiscatter}
 \alias{plot_multiscatter}
-\title{It plots all possible combinations of \eqn{x_i} against \eqn{x_j} with the colour
+\title{Pairwise combinations of model inputs with the colour
 proportional the model output value.}
 \usage{
 plot_multiscatter(data, N, Y, params, smpl = NULL)
@@ -12,7 +12,8 @@ plot_multiscatter(data, N, Y, params, smpl = NULL)
 
 \item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
-\item{Y}{A numeric vector with the model output.}
+\item{Y}{A numeric vector with the model output obtained from the matrix created with
+\code{\link{sobol_matrices}}.}
 
 \item{params}{Character vector with the name of the model inputs.}
 
@@ -20,10 +21,10 @@ plot_multiscatter(data, N, Y, params, smpl = NULL)
 The default is NULL.}
 }
 \value{
-A ggplot2 object.
+A \code{ggplot2} object.
 }
 \description{
-It plots all possible combinations of \eqn{x_i} against \eqn{x_j} with the colour
+It plots all pairwise combinations of model inputs with the colour
 proportional the model output value.
 }
 \examples{

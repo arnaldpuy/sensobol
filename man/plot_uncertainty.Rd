@@ -2,17 +2,18 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_uncertainty}
 \alias{plot_uncertainty}
-\title{Plot model output uncertainty}
+\title{Visualization of the model output uncertainty}
 \usage{
 plot_uncertainty(Y, N = NULL)
 }
 \arguments{
-\item{Y}{A numeric vector with the model output.}
+\item{Y}{A numeric vector with the model output obtained from the matrix created with
+\code{\link{sobol_matrices}}.}
 
 \item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 }
 \value{
-a ggplot2 object.
+A \code{ggplot2} object.
 }
 \description{
 It creates an histogram with the model output distribution.

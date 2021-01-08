@@ -15,8 +15,9 @@ theme_AP <- function() {
 
 # PLOT SOBOL' FIRST AND TOTAL-ORDER INDICES
 ##################################################################################
-
-#' Plot first, total, second and third order Sobol' indices.
+#' Visualization of first, total, second and third order Sobol' indices.
+#'
+#' It plots first, total, second and third order Sobol' indices.
 #'
 #' @param data The output of \code{\link{sobol_indices}}.
 #' @param order If \code{order = "first"}, it plots first and total-order effects.
@@ -24,7 +25,7 @@ theme_AP <- function() {
 #' third-order effects. Default is \code{order = "first"}.
 #' @param dummy The output of \code{\link{sobol_dummy}}. Default is NULL.
 #'
-#' @return A ggplot object.
+#' @return A \code{ggplot} object.
 #' @import ggplot2
 #' @export
 #'
@@ -47,6 +48,7 @@ theme_AP <- function() {
 plot_sobol <- function(data, order = "first", dummy = NULL) {
   sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
   colNames <- colnames(data)
+
   if (order == "first") {
     dt <- data[sensitivity %in% c("Si", "Ti")]
     gg <- ggplot2::ggplot(dt, ggplot2::aes(parameters, original, fill = sensitivity)) +
@@ -60,16 +62,20 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
                                    labels = c(expression(S[italic(i)]),
                                               expression(T[italic(i)]))) +
       theme_AP()
+
     if (any(grepl("high.ci", colNames)) == TRUE) {
       gg <- gg +
         ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
                                             ymax = high.ci),
                                position = ggplot2::position_dodge(0.6))
     }
+
     if (is.null(dummy) == FALSE) {
       col_names <- colnames(dummy)
+
       if(any(grepl("high.ci", col_names)) == TRUE) {
         lmt <- dummy$high.ci
+
       } else {
         lmt <- dummy$original
       }
@@ -79,11 +85,15 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
                             lty = 2) +
         ggplot2::guides(linetype = FALSE, color = FALSE)
     }
+
   } else if (!order == "first") {
+
     if (order == "second") {
       dt <- data[sensitivity %in% "Sij"][low.ci > 0]
+
     } else if (order == "third") {
       dt <- data[sensitivity %in% "Sijk"][low.ci > 0]
+
     } else {
       stop("Order should be first, second or third")
     }
@@ -105,7 +115,7 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
 # PLOT MODEL OUTPUT UNCERTAINTY
 ##################################################################################
 
-#' Plot model output uncertainty
+#' Visualization of the model output uncertainty
 #'
 #' It creates an histogram with the model output distribution.
 #'
@@ -134,9 +144,11 @@ plot_uncertainty <- function(Y, N = NULL) {
   if (is.vector(Y) == FALSE) {
     stop("Y should be a vector")
   }
+
   if (is.null(N) == TRUE) {
     stop("The size of the base sample matrix N should be specified")
   }
+
   Y <- Y[1:N]
   df <- data.frame(Y)
   gg <- ggplot2::ggplot(df, ggplot2::aes(Y)) +
@@ -151,17 +163,19 @@ plot_uncertainty <- function(Y, N = NULL) {
 # PLOT SCATTERPLOTS OF MODEL OUTPUT AGAINST MODEL INPUTS
 #################################################################################
 
-#' It creates scatter plots of the model output against the model inputs
+#' Scatter plots of the model output against the model inputs.
+#'
+#' It creates scatter plots of the model output against the model inputs.
 #'
 #' @param data The matrix created with \code{\link{sobol_matrices}}.
-#' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
+#' @param N Positive integer, the initial sample size of the base sample matrix created with \code{sobol_matrices}.
 #' @param Y A numeric vector with the model output obtained from the matrix created with
 #' \code{\link{sobol_matrices}}.
 #' @param params Character vector with the name of the model inputs.
 #' @param method The type of plot. If \code{method = "point"} (the default), each simulation is a point.
 #' If \code{method = "bin"}, bins are used to aggregate simulations.
-#' @param size Number between 0 and 1, argument of \code{\link{geom_point()}}. Default is 0.7.
-#' @param alpha Number between 0 and 1, transparency scale of \code{\link{geom_point()}}. Default is 0.2.
+#' @param size Number between 0 and 1, argument of \code{geom_point()}. Default is 0.7.
+#' @param alpha Number between 0 and 1, transparency scale of \code{geom_point()}. Default is 0.2.
 #' @return A \code{ggplot2} object.
 #' @import ggplot2
 #' @export
@@ -183,6 +197,7 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
   dt <- data.table::data.table(cbind(data, Y))[1:N]
   colnames(dt)[length(colnames(dt))] <- "y"
   out <- data.table::melt(dt, measure.vars = params)
+
   gg <- ggplot2::ggplot(out, ggplot2::aes(value, y)) +
     ggplot2::facet_wrap(~variable, scales = "free_x") +
     ggplot2::labs(x = "Value", y = "y") +
@@ -194,12 +209,15 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
                    legend.key = ggplot2::element_rect(fill = "transparent", color = NA),
                    strip.background = ggplot2::element_rect(fill = "white"),
                    legend.position = "top")
+
   if (method == "point") {
     gg <- gg + ggplot2::geom_point(size = size, alpha = alpha) +
       ggplot2::stat_summary_bin(fun = "mean", geom = "point", colour = "red", size = 0.7)
+
   } else if (method == "bin") {
     gg <- gg + ggplot2::geom_hex() +
       ggplot2::stat_summary_bin(fun = "mean", geom = "point", colour = "red", size = 0.7)
+
   } else {
     stop("Method should be either point or bin")
   }
@@ -209,6 +227,9 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
 # PLOT SCATTERPLOT MATRIX OF PAIRS OF PARAMETERS
 ##################################################################################
 
+#' Pairwise combinations of model inputs with the colour
+#' proportional the model output value.
+#'
 #' It plots all pairwise combinations of model inputs with the colour
 #' proportional the model output value.
 #'
@@ -243,19 +264,24 @@ plot_multiscatter <- function(data, N, Y, params, smpl = NULL) {
   dt <- data.table::data.table(data)
   out <- t(utils::combn(params, 2))
   da <- list()
+
   for (i in 1:nrow(out)) {
     cols <- out[i, ]
     da[[i]] <- cbind(dt[1:N, .SD, .SDcols = (cols)], cols[1], cols[2], Y[1:N])
     data.table::setnames(da[[i]], colnames(da[[i]]), c("xvar", "yvar", "x", "y", "output"))
   }
+
   output <- data.table::rbindlist(da)
+
   if (is.null(smpl) == FALSE) {
     if (is.numeric(smpl) == FALSE) {
       stop("smpl should be a number")
+
     } else {
       output <- output[,.SD[sample(.N, min(smpl,.N))], by = list(x, y)]
     }
   }
+
   gg <- ggplot2::ggplot(output, ggplot2::aes(xvar, yvar, color = output)) +
     ggplot2::geom_point(size = 0.5) +
     ggplot2::scale_colour_gradientn(colours = grDevices::terrain.colors(10), name = "y") +

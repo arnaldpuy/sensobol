@@ -46,13 +46,17 @@ vars_matrices <- function(star.centers, params, h = 0.1, type = "QRN",...) {
   if(h %in% h.values == FALSE) {
     stop("Revise the selection of h")
   }
+
   if(type == "QRN") {
     mat <- randtoolbox::sobol(n = star.centers, dim = length(params),...)
+
   } else if(type == "R") {
     mat <- replicate(length(params), stats::runif(star.centers))
+
   } else {
     stop("Type should be either QRN, R or LHS")
   }
+
   for(i in 1:nrow(mat)) {
     center[[i]] <- mat[i, ]
     sections[[i]] <- sapply(center[[i]], function(x) {
@@ -64,6 +68,7 @@ vars_matrices <- function(star.centers, params, h = 0.1, type = "QRN",...) {
     A[[i]] <- matrix(center[[i]], nrow = nrow(B[[i]]),
                      ncol = length(center[[i]]), byrow = TRUE)
     X[[i]] <- rbind(A[[i]], B[[i]])
+
     for(j in 1:ncol(A[[i]])) {
       AB[[i]] <- A[[i]]
       AB[[i]][, j] <- B[[i]][, j]

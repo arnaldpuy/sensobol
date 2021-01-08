@@ -14,7 +14,7 @@ sobol_matrices(
 )
 }
 \arguments{
-\item{matrices}{Vector with the required matrices. The default
+\item{matrices}{Character vector with the required matrices. The default
 is \code{matrices = c("A", "B", "AB")}.}
 
 \item{N}{Positive integer, initial sample size of the base sample matrix.}
@@ -50,7 +50,7 @@ third-order indices.
 Before calling \code{sobol_matrices}, the user must decide which estimators
 will be used to compute first and total-order indices, for this option conditions
 the design of the sample matrix and therefore the argument \code{matrices}.
-See the vignette for further details on the specific sampling designs required by
+See Table 3 in the vignette for further details on the specific sampling designs required by
 the estimators.
 
 The user can select one of the following sampling designs:

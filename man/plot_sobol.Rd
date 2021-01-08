@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_sobol}
 \alias{plot_sobol}
-\title{Plot first, total, second and third order Sobol' indices.}
+\title{Visualization of first, total, second and third order Sobol' indices.}
 \usage{
 plot_sobol(data, order = "first", dummy = NULL)
 }
@@ -16,10 +16,10 @@ third-order effects. Default is \code{order = "first"}.}
 \item{dummy}{The output of \code{\link{sobol_dummy}}. Default is NULL.}
 }
 \value{
-A ggplot object.
+A \code{ggplot} object.
 }
 \description{
-Plot first, total, second and third order Sobol' indices.
+It plots first, total, second and third order Sobol' indices.
 }
 \examples{
 # Define settings

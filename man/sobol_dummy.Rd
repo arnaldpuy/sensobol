@@ -17,13 +17,15 @@ sobol_dummy(
 )
 }
 \arguments{
-\item{Y}{Numeric vector, model output.}
+\item{Y}{A numeric vector with the model output obtained from the matrix created with
+\code{\link{sobol_matrices}}.}
 
 \item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
-\item{params}{Vector with the name of the model inputs.}
+\item{params}{A character vector with the name of the model inputs.}
 
-\item{boot}{Logical. Default is \code{boot = FALSE}.}
+\item{boot}{Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
+estimates. Default is \code{boot = FALSE}.}
 
 \item{R}{Positive integer, number of bootstrap replicas.}
 
@@ -36,7 +38,7 @@ If missing, the default is taken from the option "boot.parallel"
 typically one would chose this to the number of available CPUs.
 Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boot}} package.}
 
-\item{conf}{Number between 0 and 1. Default is \code{conf = 0.95}.}
+\item{conf}{Confidence intervals, number between 0 and 1. Default is \code{conf = 0.95}.}
 
 \item{type}{Method to compute the confidence intervals. Default is \code{type = "norm"}.
 Check the \code{type} option in the \code{boot} function of the \code{\link{boot}} package.}

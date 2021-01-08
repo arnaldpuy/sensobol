@@ -28,7 +28,8 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
 #' \code{\link{sobol_matrices}}.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #' @param params A character vector with the name of the model inputs.
-#' @param boot Logical. Default is \code{boot = FALSE}.
+#' @param boot Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
+#' estimates. Default is \code{boot = FALSE}.
 #' @param R Positive integer, number of bootstrap replicas.
 #' @param parallel The type of parallel operation to be used (if any).
 #' If missing, the default is taken from the option "boot.parallel"
@@ -105,16 +106,21 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
        !total == "janon" & !total == "glen") {
       stop(ms)
     }
+
   } else if (isTRUE(all.equal(matrices, c("A", "B", "BA")))) {
     if (!first == "sobol"| !total == "saltelli") {
       stop(ms)
     }
+
   } else if (isTRUE(all.equal(matrices, c("A", "B", "AB", "BA")))) {
+
     if (!first == "azzini" | !total == "azzini" &
        !total == "jansen" & !total == "sobol" & !total == "homma" &
        !total == "janon" & !total == "glen" & !total == "saltelli") {
+
       if (!total == "azzini" | !first == "saltelli" & !first == "jansen" &
          !first == "azzini" & !first == "sobol") {
+
         stop(ms)
       }
     }
@@ -130,6 +136,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   }
   if (order == "second") {
     k <- length(params) + length(utils::combn(params, 2, simplify = FALSE))
+
   } else if (order == "third") {
     k <- length(params) + length(utils::combn(params, 2, simplify = FALSE)) +
       length(utils::combn(params, 3, simplify = FALSE))
@@ -142,15 +149,18 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     Y_A <- m[, 1]
     Y_B <- m[, 2]
     Y_AB <- m[, -c(1, 2)]
+
   } else if (isTRUE(all.equal(matrices, c("A", "B", "BA")))) {
     Y_A <- m[, 1]
     Y_B <- m[, 2]
     Y_BA <- m[, -c(1, 2)]
+
   } else if (isTRUE(all.equal(matrices, c("A", "B", "AB", "BA")))) {
     Y_A <- m[, 1]
     Y_B <- m[, 2]
     Y_AB <- m[, 3:(k + 2)]
     Y_BA <- m[, (k + 3):ncol(m)]
+
   } # A warning might be needed here
   if (isTRUE(all.equal(matrices, c("A", "B", "AB"))) |
      isTRUE(all.equal(matrices, c("A", "B", "BA")))) {
@@ -170,18 +180,24 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   # ----------------------------------
   if (first == "sobol") {
     Vi <- 1 / N * Rfast::colsums(Y_A * Y_BA - f0^2)
+
   } else if (first == "saltelli") {
     Vi <- 1 / N * Rfast::colsums(Y_B * (Y_AB - Y_A))
+
   } else if (first == "jansen") {
     Vi <- VY - 1 / (2 * N) * Rfast::colsums((Y_B - Y_AB)^2)
+
   } else if (first == "azzini") {
     VY <- Rfast::colsums((Y_A - Y_B)^2 + (Y_BA - Y_AB)^2)
     Vi <- (2 * Rfast::colsums((Y_BA - Y_B) * (Y_A - Y_AB)))
+
   } else {
     stop("first should be sobol, saltelli, jansen or azzini")
   }
+
   if (first == "azzini") {
     Si <- Vi[1:length(params)] / VY[1:length(params)]
+
   } else {
     Si <- Vi[1:length(params)] / VY
   }
@@ -199,24 +215,31 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   # ----------------------------------
   if (total == "jansen") {
     Ti <- (1 / (2 * N) * Rfast::colsums((Y_A - Y_AB)^2)) / VY
+
   } else if (total == "sobol") {
     Ti <- ((1 / N) * Rfast::colsums(Y_A * (Y_A - Y_AB))) / VY
+
   } else if (total == "homma") {
     Ti <- (VY - (1 / N) * Rfast::colsums(Y_A * Y_AB) + f0^2) / VY
+
   } else if (total == "saltelli") {
     Ti <- 1 - ((1 / N * Rfast::colsums(Y_B * Y_BA - f0^2)) / VY)
+
   } else if (total == "janon") {
     Ti <- 1 - (1 / N * Rfast::colsums(Y_A * Y_AB) -
                  (1/ N * Rfast::colsums((Y_A + Y_AB) / 2))^2) /
       (1 / N * Rfast::colsums((Y_A ^ 2 + Y_AB^2) / 2) -
          (1/ N * Rfast::colsums((Y_A + Y_AB) / 2))^2)
+
   } else if (total == "glen") {
     Ti <- 1 - (1 / (N - 1) *
                  Rfast::colsums(((Y_A - mean(Y_A)) * (Y_AB - Rfast::colmeans(Y_AB))) /
                                   sqrt(stats::var(Y_A) * Rfast::colVars(Y_AB))))
+
   } else if (total == "azzini") {
     Ti <- Rfast::colsums((Y_B - Y_BA)^2 + (Y_A - Y_AB)^2) /
       Rfast::colsums((Y_A - Y_B)^2 + (Y_BA - Y_AB)^2)
+
   } else {
     stop("total should be jansen, sobol, homma saltelli, janon, glen or azzini")
   }
@@ -230,12 +253,15 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     mat2 <- t(mapply(c, Vi[(length(params) + 1):(length(params) + length(com2))],
                      lapply(com2, function(x) Vi[x])))
     Vij <- apply(mat2, 1, function(x) Reduce("-", x))
+
     if (first == "azzini") {
       VY <- Rfast::colsums((Y_A - Y_B)^2 + (Y_BA - Y_AB)^2)
       Sij <- Vij / VY[(length(params) + 1):(length(params) + ncol(utils::combn(1:length(params), 2)))]
+
     } else {
       Sij <- Vij / VY
     }
+
   } else {
     Sij <- NULL
   }
@@ -258,11 +284,14 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     Vij.only <- t(mapply(cbind, first.pairwise, second.pairwise, third.pairwise))
     mat3 <- cbind(Vijk.only, Vij.only, Vi.only)
     Vijk <- apply(mat3, 1, function(x) Reduce("-", x))
+
     if (first == "azzini") {
       Sijk <- Vijk / utils::tail(VY, length(utils::combn(params, 3, simplify = FALSE)))
+
     } else {
       Sijk <- Vijk / VY
     }
+
   } else {
     Sijk <- NULL
   }
@@ -282,26 +311,33 @@ bootstats <- function(b, conf = conf, type = type) {
     tmp[i, "bias"] <- mean(b$t[, i]) - b$t0[i]
     tmp[i, "std.error"] <- stats::sd(b$t[, i])
     # confidence interval
+
     if (type == "norm") {
       ci <- boot::boot.ci(b, index = i, type = "norm", conf = conf)
+
       if (!is.null(ci)) {
         tmp[i, "low.ci"] <- ci$norm[2]
         tmp[i, "high.ci"] <- ci$norm[3]
       }
+
     } else if (type == "basic") {
       ci <- boot::boot.ci(b, index = i, type = "basic", conf = conf)
       if (!is.null(ci)) {
         tmp[i, "low.ci"] <- ci$basic[4]
         tmp[i, "high.ci"] <- ci$basic[5]
       }
+
     } else if (type == "percent") {
       ci <- boot::boot.ci(b, index = i, type = "perc", conf = conf)
+
       if (!is.null(ci)) {
         tmp[i, "low.ci"] <- ci$percent[4]
         tmp[i, "high.ci"] <- ci$percent[5]
       }
+
     } else if (type == "bca") {
       ci <- boot::boot.ci(b, index = i, conf = conf)
+
       if (!is.null(ci)) {
         tmp[i, "low.ci"] <- ci$bca[4]
         tmp[i, "high.ci"] <- ci$bca[5]
@@ -322,12 +358,12 @@ bootstats <- function(b, conf = conf, type = type) {
 #' \code{\link{sobol_matrices}}.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #' @param params Character vector with the name of the model inputs.
-#' @param first Estimator to compute first order indices. Options are:
+#' @param first Estimator to compute first-order indices. Options are:
 #' * \code{first = "saltelli"} \insertCite{Saltelli2010a}{sensobol}.
 #' * \code{first = "jansen"} \insertCite{Jansen1999}{sensobol}.
 #' * \code{first = "sobol"}  \insertCite{Sobol1993}{sensobol}.
 #' * \code{first = "azzini"} \insertCite{Azzini2020}{sensobol}.
-#' @param total Estimator to compute total order indices. Options are:
+#' @param total Estimator to compute total-order indices. Options are:
 #' * \code{total = "jansen"} \insertCite{Jansen1999}{sensobol}.
 #' * \code{total = "sobol"} \insertCite{Sobol2001}{sensobol}.
 #' * \code{total = "homma"} \insertCite{Homma1996}{sensobol}.
@@ -335,7 +371,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #' * \code{total = "glen"} \insertCite{Glen2012}{sensobol}.
 #' * \code{total = "azzini"} \insertCite{Azzini2020}{sensobol}.
 #' * \code{total = "saltelli"} \insertCite{Saltelli2008}{sensobol}.
-#' @param order Whether to compute "first", "second", or "third" order Sobol' indices. Default
+#' @param order Whether to compute "first", "second", or "third" -order Sobol' indices. Default
 #' is \code{order = "first"}.
 #' @param boot Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
 #' estimates. Default is \code{boot = FALSE}.
@@ -368,7 +404,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #'
 #' For all estimators except \insertCite{Azzini2020;textual}{sensobol}'s and \insertCite{Janon2014;textual}{sensobol}'s,
 #' \code{sobol_indices()} calculates the sample mean as \deqn{\hat{f}_0=\frac{1}{2N} \sum_{v=1}^{N}(f(\mathbf{A})_v + f(\mathbf{B})_v)\,,}
-#' and the unconditional sample variance as
+#' where \eqn{N} is the row dimension of the base sample matrix, and the unconditional sample variance as
 #'
 #' \deqn{\hat{V}(y) = \frac{1}{2N-1} \sum{v=1}^{N} ((f(\mathbf{A})_v - \hat{f})^2 + (f(\mathbf{B})_v - \hat{f})^2)\,,}
 #' where \eqn{f(\mathbf{A})_v} (\eqn{f(\mathbf{B})_v}) indicates the model output \eqn{y} obtained after running the model \eqn{f}
@@ -432,6 +468,7 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
                       first = first, total = total, order = order, matrices = matrices,
                       parallel = parallel, ncpus = ncpus, boot = TRUE)
     out <- data.table::data.table(bootstats(tmp, conf = conf, type = type))
+
   } else {
     stop("boot has to be TRUE or FALSE")
   }
@@ -466,6 +503,7 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     sensitivity <- c(rep(c("Si", "Ti"), each = k),
                      rep("Sij", times = length(vector.second)),
                      rep("Sijk", times = length(vector.third)))
+
   } else {
     stop("order has to be first, second or third")
   }

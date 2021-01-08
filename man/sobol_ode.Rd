@@ -13,9 +13,9 @@ sobol_ode(d, times, state, func, ...)
 
 \item{state}{Initial values of the state variables.}
 
-\item{func}{An R function as defined by \code{ode}.}
+\item{func}{An R function as defined by \code{\link{ode}}.}
 
-\item{...}{Additional arguments passed to \code{ode}.}
+\item{...}{Additional arguments passed to \code{\link{ode}}.}
 }
 \value{
 A matrix with the output values.

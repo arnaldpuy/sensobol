@@ -7,7 +7,8 @@
 bratley1992_Fun(X)
 }
 \arguments{
-\item{X}{A data frame or numeric matrix.}
+\item{X}{A data frame or numeric matrix where each column is a model input and each
+row a sample point.}
 }
 \value{
 A numeric vector with the model output.

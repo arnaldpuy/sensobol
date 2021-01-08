@@ -7,7 +7,8 @@
 oakley_Fun(X)
 }
 \arguments{
-\item{X}{A data frame or numeric matrix.}
+\item{X}{A data frame or numeric matrix where each column is a model input and each
+row a sample point.}
 }
 \value{
 A numeric vector with the model output.
@@ -19,7 +20,7 @@ It implements the \insertCite{Oakley2004;textual}{sensobol} function.
 The function requires 15 model inputs and reads as
 \deqn{y=\mathbf{a}_1^T \bm{x} + \mathbf{a}_2 ^ T \sin(\mathbf{x}) + \mathbf{a}_3 ^ T \cos(\mathbf{x}) + \mathbf{x}^T \mathbf{M}\mathbf{x}\,,}
 where \eqn{\mathbf{x}=x_1,x_2,...,x_k}, \eqn{k=15}, and values
-for \eqn{\mathbf{a}^T_i,i=1,2,3} and \eqn{\mathbf{M}} are defined by the authors. The
+for \eqn{\mathbf{a}^T_i,i=1,2,3} and \eqn{\mathbf{M}} are defined by \insertCite{Oakley2004;textual}{sensobol}. The
 transformation of the distribution of the model inputs from \eqn{U(0, 1)} to
 \eqn{N(0, 1)}) is conducted internally.
 }
