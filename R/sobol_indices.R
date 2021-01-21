@@ -89,6 +89,23 @@ sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
   sensitivity <- c("Si", "Ti")
   parameters <- "dummy"
   out <- cbind(out, sensitivity, parameters)
+
+  # TRANSFORM NEGATIVE VALUES TO ZEROES
+  # -----------------------------------------------------------------
+
+  colNames <- colnames(out)
+
+  if (any(grepl("high.ci", colNames)) == TRUE) {
+    cols_transform <- c("original", "low.ci", "high.ci")
+
+  } else {
+    cols_transform <- "original"
+  }
+
+  for(j in cols_transform){
+    data.table::set(out, i = which(out[[j]] < 0), j = j, value = 0)
+  }
+
   return(out)
 }
 
