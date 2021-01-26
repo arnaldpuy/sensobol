@@ -9,5 +9,5 @@ citEntry(entry = "manual",
     url = "https://github.com/arnaldpuy/sensobol",
     textVersion  = paste("A. Puy, S. Lo Piano, A. Saltelli, S. A. Levin (2021).",
         "sensobol: Computation of Variance-Based Sensitivity Indices.",
-        "arxiv: arxiv:2101.10103.")
+        "arxiv:2101.10103.")
 )
