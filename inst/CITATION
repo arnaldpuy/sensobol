@@ -3,7 +3,7 @@ citHeader("To cite reports in publications, please use:")
 
 citEntry(entry = "manual",
     title = "{sensobol}: {C}omputation of Variance-Based Sensitivity Indices",
-    author = "Arnald Puy, Samuele Lo Piano, Andrea Satelli and Simon A. Levin",
+    author = "Arnald Puy, Samuele Lo Piano, Andrea Satelli, Simon A. Levin",
     journal = "arxiv",
     doi = "2101.10103",
     year = "2021",
