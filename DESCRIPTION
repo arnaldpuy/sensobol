@@ -29,7 +29,7 @@ Imports:
     randtoolbox (>= 1.17.1),
     deSolve (>= 1.27.1),
     Rdpack (>= 0.7),
-    Rfast (>= 1.9.8),
+    Rfast (>= 2.0.1),
     rlang (>= 0.3.1),
     scales (>= 1.0.0),
     stats,
@@ -50,5 +50,7 @@ VignetteBuilder: knitr
 URL: https://github.com/arnaldpuy/sensobol 
 BugReports: https://github.com/arnaldpuy/sensobol/issues
 LinkingTo: 
+    Rfast,
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+
