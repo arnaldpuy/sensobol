@@ -1,4 +1,4 @@
-[![Codecov test coverage](https://codecov.io/gh/arnaldpuy/sensobol/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaldpuy/sensobol?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/arnaldpuy/sensobol/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaldpuy/sensobol?branch=master)[![](https://cranlogs.r-pkg.org/badges/sensobol)](https://cran.r-project.org/package=sensobol)
  
  
 # sensobol: an R package to compute variance-based sensitivity indices
