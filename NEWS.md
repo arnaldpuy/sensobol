@@ -1,3 +1,9 @@
+# sensobol 1.0.1
+
+* The metafunction has been optimized.
+
+* The output of `sobol_indices` is now an object of class `sensobol`. Besides including the indices, it also informs on the sum of first-order effects, the estimators used in the computation and the total number of model runs.
+
 # sensobol 1.0.0
 
 * This is a major package upgrade.

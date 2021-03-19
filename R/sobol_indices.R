@@ -409,7 +409,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #' @references
 #' \insertAllCited{}
 #'
-#' @return A \code{data.table} object.
+#' @return A \code{sensobol} object.
 #' @seealso Check the function \code{\link{boot}} for further details on the bootstrapping
 #' with regards to the methods available for the computation of confidence intervals in the \code{type} argument.
 #' @export
@@ -524,8 +524,35 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
   } else {
     stop("order has to be first, second or third")
   }
-  out <- cbind(out, sensitivity, parameters)
-  return(out)
+
+  # CREATE CLASS AND OUTPUT
+  # ----------------------------------------------------------------------
+
+  ind <- structure(list(), class = "sensobol") # Create class
+  ind$results <- cbind(out, sensitivity, parameters) # Add Sobol' indices
+  original <- NULL
+  ind$si.sum <- ind$results[sensitivity == "Si", sum(original)] # Sum of first-order indices
+  ind$first <- first # First-order estimator
+  ind$total <- total # Total-order estimator
+  ind$C <- length(Y) # Total number of model runs
+  return(ind)
+}
+
+#' Display the results obtained with the \code{sobol_indices} function.
+#'
+#' @param x A \code{sensobol} object produced by \code{sobol_indices}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @return The function \code{print.sensobol} informs on the first and total-order
+#' estimators used in the computations, the total number of model runs and
+#' the sum of first-order index. It also plots the estimated results.
+#' @export
+#'
+print.sensobol <- function(x, ...) {
+  cat("\nFirst-order estimator:", x$first, "| Total-order estimator:", x$total, "\n")
+  cat("\nTotal number of model runs:", x$C, "\n")
+  cat("\nSum of first order indices:", x$si.sum, "\n")
+  print(data.table::data.table(x$results))
 }
 
 

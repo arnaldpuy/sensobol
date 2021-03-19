@@ -73,7 +73,7 @@ Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boo
 Check the \code{type} option in the \code{boot} function of the \code{\link{boot}} package.}
 }
 \value{
-A \code{data.table} object.
+A \code{sensobol} object.
 }
 \description{
 It allows to compute Sobol' indices up to the third order using state-of-the-art estimators.

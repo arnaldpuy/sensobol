@@ -47,6 +47,7 @@ theme_AP <- function() {
 
 plot_sobol <- function(data, order = "first", dummy = NULL) {
   sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
+  data <- data$results
   colNames <- colnames(data)
 
   if (order == "first") {

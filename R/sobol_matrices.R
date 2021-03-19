@@ -186,11 +186,11 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   # CONSTRUCTION OF A, B AND C MATICES
   # -----------------------------------------------------------------
 
-  A <- df[, 1:k]
-  B <- df[, (k + 1) : (k * 2)]
+  A <- df[, 1:k, drop = FALSE]
+  B <- df[, (k + 1) : (k * 2), drop = FALSE]
 
   if (n.matrices == 3) {
-    C <- df[, ((k * 2) + 1):(k * 3)]
+    C <- df[, ((k * 2) + 1):(k * 3), drop = FALSE]
 
   } else {
     C <- NULL
