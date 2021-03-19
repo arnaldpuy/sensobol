@@ -113,8 +113,7 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
 
   VY <- var(Y[index.centers])
   Ti <- (variogr + covariogr) / VY
-  output <- data.table::data.table(Ti)
-  output[, parameters:= params]
+  output <- data.table::data.table(Ti)[, parameters:= params]
 
   # CREATE CLASS AND OUTPUT
   # ----------------------------------------------------------------------
@@ -141,5 +140,5 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
 print.vars <- function(x, ...) {
   cat("\nNumber of star centers:", x$stars, "| h:", x$h, "\n")
   cat("\nTotal number of model runs:", x$C, "\n")
-  print(data.table::data.table(x$results))
+  print(x$results)
 }

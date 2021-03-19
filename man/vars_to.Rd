@@ -49,6 +49,7 @@ y <- sensobol::ishigami_Fun(mat)
 
 # Compute VARS-TO
 ind <- vars_to(Y = y, star.centers = star.centers, params = params, h = h)
+ind
 }
 \references{
 \insertAllCited{}
