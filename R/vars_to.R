@@ -58,6 +58,7 @@ CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
 #'
 #' # Compute VARS-TO
 #' ind <- vars_to(Y = y, star.centers = star.centers, params = params, h = h)
+#' ind
 vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   parameters <- NULL
 
@@ -114,5 +115,31 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   Ti <- (variogr + covariogr) / VY
   output <- data.table::data.table(Ti)
   output[, parameters:= params]
-  return(output)
+
+  # CREATE CLASS AND OUTPUT
+  # ----------------------------------------------------------------------
+
+  ind <- structure(list(), class = "vars") # Create class vars
+  ind$results <- out # Add VARS-TO
+  ind$stars <- star.centers # Number of star centers
+  ind$h <- h # Steps h
+  ind$C <- length(Y) # Total number of model runs
+
+  return(ind)
+}
+
+
+#' Display the results obtained with the \code{vars_to} function.
+#'
+#' @param x A \code{vars} object produced by \code{vars_to}.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @return The function \code{print.vars} informs on the number of star centers,
+#' the value of h used and the total number of model runs.. It also plots
+#' the VARS-TO indices.
+#' @export
+print.vars <- function(x, ...) {
+  cat("\nNumber of star centers:", x$stars, "| h:", x$h, "\n")
+  cat("\nTotal number of model runs:", x$C, "\n")
+  print(data.table::data.table(x$results))
 }
