@@ -327,7 +327,8 @@ metafunction <- function(data, k_2 = 0.5, k_3 = 0.2, epsilon = NULL) {
   set.seed(epsilon)
   all_functions <- sample(names(function_list), k, replace = TRUE)
   set.seed(epsilon)
-  components <- sample(1:2, prob = c(0.7, 0.3), size = 200, replace = TRUE)
+  components <- sample(1:2, prob = c(0.7, 0.3), size = 200,
+                       replace = TRUE)
   mus <- c(0, 0)
   sds <- sqrt(c(0.5, 5))
   set.seed(epsilon)
@@ -336,21 +337,38 @@ metafunction <- function(data, k_2 = 0.5, k_3 = 0.2, epsilon = NULL) {
   coefD1 <- sample(coefficients, k)
   d2 <- t(utils::combn(1:k, 2))
   set.seed(epsilon)
-  d2M <- d2[sample(nrow(d2), size = ceiling(k * k_2), replace = FALSE), , drop = FALSE]
+  d2M <- d2[sample(nrow(d2), size = ceiling(k * k_2), replace = FALSE),
+  ]
+  sample.size.d2M <- ifelse(is.vector(d2M) == TRUE, 1, nrow(d2M))
   set.seed(epsilon)
-  coefD2 <- sample(coefficients, nrow(d2M), replace = TRUE)
+  coefD2 <- sample(coefficients, sample.size.d2M, replace = TRUE)
   d3 <- t(utils::combn(1:k, 3))
   set.seed(epsilon)
   size.d3 <- ifelse(nrow(d3) == 1, 1, ceiling(k * k_3))
   set.seed(epsilon)
-  d3M <- d3[sample(nrow(d3), size = size.d3, replace = FALSE), ]
+  d3M <- d3[sample(nrow(d3), size = size.d3, replace = FALSE),
+  ]
   sample.size <- ifelse(is.vector(d3M) == TRUE, 1, nrow(d3M))
   set.seed(epsilon)
   coefD3 <- sample(coefficients, sample.size, replace = TRUE)
-  output <- sapply(seq_along(all_functions), function(x) function_list[[all_functions[x]]](data[, x]))
+  output <- sapply(seq_along(all_functions), function(x) function_list[[all_functions[x]]](data[,
+                                                                                                x]))
   y1 <- Rfast::rowsums(mmult(output, coefD1))
-  y2 <- Rfast::rowsums(mmult(output[, d2M[, 1]] *  output[, d2M[, 2]], coefD2))
-  y3 <- Rfast::rowsums(mmult(output[, d3M[, 1]] *  output[, d3M[, 2]] * output[, d3M[, 3]], coefD3))
+  if (is.vector(d2M) == TRUE) {
+    y2 <- sum(output[, d2M[1]] * output[, d2M[2]] * coefD2)
+  }
+  else {
+    y2 <- Rfast::rowsums(mmult(output[, d2M[, 1]] * output[,
+                                                           d2M[, 2]], coefD2))
+  }
+  if (is.vector(d3M) == TRUE) {
+    y3 <- sum(output[, d3M[1]] * output[, d3M[2]] * output[,
+                                                           d3M[3]] * coefD3)
+  }
+  else {
+    y3 <- Rfast::rowsums(mmult(output[, d3M[, 1]] * output[,
+                                                           d3M[, 2]] * output[, d3M[, 3]], coefD3))
+  }
   Y <- y1 + y2 + y3
   return(Y)
 }
