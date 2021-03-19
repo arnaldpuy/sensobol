@@ -131,8 +131,7 @@ plot.sensobol <- function(x, order = "first", dummy = NULL, ...) {
 #' @import ggplot2
 #' @export
 plot_sobol <- function(data, order = "first", dummy = NULL) {
-  .Deprecated("This function is substituted by the S3 function plot.sensobol and
-              will be removed from future versions")
+  .Deprecated("plot")
   sensitivity <- parameters <- original <- low.ci <- high.ci <- NULL
   data <- data$results
   colNames <- colnames(data)
