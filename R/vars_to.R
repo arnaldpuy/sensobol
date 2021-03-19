@@ -120,7 +120,7 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   # ----------------------------------------------------------------------
 
   ind <- structure(list(), class = "vars") # Create class vars
-  ind$results <- out # Add VARS-TO
+  ind$results <- output # Add VARS-TO
   ind$stars <- star.centers # Number of star centers
   ind$h <- h # Steps h
   ind$C <- length(Y) # Total number of model runs
