@@ -2,7 +2,8 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot_sobol}
 \alias{plot_sobol}
-\title{Visualization of first, total, second and third order Sobol' indices.}
+\title{Visualization of first, total, second and third order Sobol' indices (Deprecated,
+substituted by plot.sensobol).}
 \usage{
 plot_sobol(data, order = "first", dummy = NULL)
 }
@@ -19,21 +20,5 @@ third-order effects. Default is \code{order = "first"}.}
 A \code{ggplot} object.
 }
 \description{
-It plots first, total, second and third order Sobol' indices.
-}
-\examples{
-# Define settings
-N <- 1000; params <- paste("X", 1:3, sep = ""); R <- 10
-
-# Create sample matrix
-mat <- sobol_matrices(N = N, params = params)
-
-# Compute Ishigami function
-Y <- ishigami_Fun(mat)
-
-# Compute and bootstrap Sobol' indices
-ind <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = R)
-
-# Plot Sobol' indices
-plot_sobol(data = ind)
+It plots first, total, second and third-order Sobol' indices.
 }

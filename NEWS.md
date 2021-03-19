@@ -4,6 +4,8 @@
 
 * The output of `sobol_indices` is now an object of class `sensobol`. Besides including the indices, it also informs on the sum of first-order effects, the estimators used in the computation and the total number of model runs.
 
+* The function `plot_sobol` is deprecated and will be removed from future versions.
+
 # sensobol 1.0.0
 
 * This is a major package upgrade.
