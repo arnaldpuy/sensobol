@@ -1,10 +1,10 @@
 # sensobol 1.0.1
 
-* The metafunction has been optimized.
-
 * The output of `sobol_indices` is now an object of class `sensobol`. Besides including the indices, it also informs on the sum of first-order effects, the estimators used in the computation and the total number of model runs.
 
-* The function `plot_sobol` is deprecated and will be removed from future versions.
+* The output of `vars_to` is now an object of class `vars`. Besides including the indices, it also informs on the number of stars and the h value used.
+
+* The function `plot_sobol` is deprecated and will be removed from future versions. Now the output of `sobol_indices`can be printed with a call to `plot`.
 
 # sensobol 1.0.0
 

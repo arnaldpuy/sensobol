@@ -16,7 +16,7 @@ Authors@R: c(person(given = "Arnald",
                     role = "cph", 
                     comment = "Copyright holder of included 'sensitivity' fragments"))
 Maintainer: Arnald Puy <arnald.puy@pm.me>
-Description: It allows to rapidly compute, bootstrap and plot up to third-order Sobol'-based sensitivity indices using several state-of-the-art first and total-order estimators. Sobol' indices can be computed either for models that yield a scalar as a model output or for systems of differential equations. The package also provides a suit of benchmark tests functions and several options to obtain publication-ready figures of the model output uncertainty and sensitivity-related analysis. An overview of Sobol'-based sensitivity indices can be found in Saltelli (2008, ISBN:9780470059975) and in Puy, Lo Piano, Saltelli, and Levin (2021) <arXiv:2101.10103>.
+Description: It allows to rapidly compute, bootstrap and plot up to third-order Sobol'-based sensitivity indices using several state-of-the-art first and total-order estimators. Sobol' indices can be computed either for models that yield a scalar as a model output or for systems of differential equations. The package also provides a suit of benchmark tests functions and several options to obtain publication-ready figures of the model output uncertainty and sensitivity-related analysis. An overview of Sobol'-based sensitivity indices can be found in Saltelli et al. (2008, ISBN:9780470059975) and in Puy, Lo Piano, Saltelli, and Levin (2021) <arXiv:2101.10103>.
 License: GPL-3
 Encoding: UTF-8
 Imports:
