@@ -1,5 +1,6 @@
 [![](https://cranlogs.r-pkg.org/badges/sensobol)](https://cran.r-project.org/package=sensobol)
-[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/grand-total/sensobol?color=blue)](https://r-pkg.org/pkg/sensobol)"
+[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/grand-total/sensobol?color=blue)](https://r-pkg.org/pkg/sensobol)
+[![](https://www.r-pkg.org/badges/version/sensobol?color=orange)](https://cran.r-project.org/package=sensobol)
  
  
 # sensobol: an R package to compute variance-based sensitivity indices
