@@ -52,6 +52,9 @@ plot.sensobol <- function(x, order = "first", dummy = NULL, ...) {
   data <- x$results
   colNames <- colnames(data)
 
+  # Plot only first-order indices
+  # -----------------------------------------
+
   if (order == "first") {
     dt <- data[sensitivity %in% c("Si", "Ti")]
     gg <- ggplot2::ggplot(dt, ggplot2::aes(parameters, original, fill = sensitivity)) +
@@ -66,12 +69,18 @@ plot.sensobol <- function(x, order = "first", dummy = NULL, ...) {
                                               expression(T[italic(i)]))) +
       theme_AP()
 
+    # Check if there are confidence intervals
+    # -----------------------------------------
+
     if (any(grepl("high.ci", colNames)) == TRUE) {
       gg <- gg +
         ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
                                             ymax = high.ci),
                                position = ggplot2::position_dodge(0.6))
     }
+
+    # Check if there are indices for the dummy parameter
+    # -----------------------------------------
 
     if (is.null(dummy) == FALSE) {
       col_names <- colnames(dummy)
@@ -90,6 +99,9 @@ plot.sensobol <- function(x, order = "first", dummy = NULL, ...) {
     }
 
   } else if (!order == "first") {
+
+    # Define for second and third-order indices
+    # -----------------------------------------
 
     if (order == "second") {
       dt <- data[sensitivity %in% "Sij"][low.ci > 0]
@@ -229,9 +241,16 @@ plot_sobol <- function(data, order = "first", dummy = NULL) {
 #' plot_uncertainty(Y = Y, N = N)
 
 plot_uncertainty <- function(Y, N = NULL) {
+
+  # Ensure that Y is a vector
+  # -----------------------------------------
+
   if (is.vector(Y) == FALSE) {
     stop("Y should be a vector")
   }
+
+  # Ensure that N is defined
+  # -----------------------------------------
 
   if (is.null(N) == TRUE) {
     stop("The size of the base sample matrix N should be specified")
@@ -282,9 +301,13 @@ plot_uncertainty <- function(Y, N = NULL) {
 #' plot_scatter(data = mat, Y = Y, N = N, params = params)
 plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha = 0.2) {
   value <- y <- NULL
+
   dt <- data.table::data.table(cbind(data, Y))[1:N]
   colnames(dt)[length(colnames(dt))] <- "y"
   out <- data.table::melt(dt, measure.vars = params)
+
+  # Define the plot skeleton
+  # -----------------------------------------
 
   gg <- ggplot2::ggplot(out, ggplot2::aes(value, y)) +
     ggplot2::facet_wrap(~variable, scales = "free_x") +
@@ -298,9 +321,15 @@ plot_scatter <- function(data, N, Y, params, method = "point", size = 0.7, alpha
                    strip.background = ggplot2::element_rect(fill = "white"),
                    legend.position = "top")
 
+  # Precise for geom_point
+  # -----------------------------------------
+
   if (method == "point") {
     gg <- gg + ggplot2::geom_point(size = size, alpha = alpha) +
       ggplot2::stat_summary_bin(fun = "mean", geom = "point", colour = "red", size = 0.7)
+
+  # Precise for geom_hex
+  # -----------------------------------------
 
   } else if (method == "bin") {
     gg <- gg + ggplot2::geom_hex() +
@@ -353,6 +382,9 @@ plot_multiscatter <- function(data, N, Y, params, smpl = NULL) {
   out <- t(utils::combn(params, 2))
   da <- list()
 
+  # Define pairwise combinations
+  # -----------------------------------------
+
   for (i in 1:nrow(out)) {
     cols <- out[i, ]
     da[[i]] <- cbind(dt[1:N, .SD, .SDcols = (cols)], cols[1], cols[2], Y[1:N])
@@ -360,6 +392,9 @@ plot_multiscatter <- function(data, N, Y, params, smpl = NULL) {
   }
 
   output <- data.table::rbindlist(da)
+
+  # Define option to plot just a fraction of the sample
+  # -----------------------------------------
 
   if (is.null(smpl) == FALSE) {
     if (is.numeric(smpl) == FALSE) {
@@ -369,6 +404,9 @@ plot_multiscatter <- function(data, N, Y, params, smpl = NULL) {
       output <- output[,.SD[sample(.N, min(smpl,.N))], by = list(x, y)]
     }
   }
+
+  # Plot
+  # -----------------------------------------
 
   gg <- ggplot2::ggplot(output, ggplot2::aes(xvar, yvar, color = output)) +
     ggplot2::geom_point(size = 0.5) +

@@ -43,9 +43,16 @@
 vars_matrices <- function(star.centers, params, h = 0.1, type = "QRN",...) {
   out <- center <- sections <- A <- B <- AB <- X <- out <- list()
   h.values <- c(0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2)
+
+  # Ensure that a proper h value has been selected
+  # ----------------------------------------------------------------
+
   if(h %in% h.values == FALSE) {
     stop("Revise the selection of h")
   }
+
+  # Define type of matrix
+  # -----------------------------------------------------------------
 
   if(type == "QRN") {
     mat <- randtoolbox::sobol(n = star.centers, dim = length(params),...)
@@ -56,6 +63,9 @@ vars_matrices <- function(star.centers, params, h = 0.1, type = "QRN",...) {
   } else {
     stop("Type should be either QRN, R or LHS")
   }
+
+  # Construct STAR_VARS
+  # -----------------------------------------------------------------
 
   for(i in 1:nrow(mat)) {
     center[[i]] <- mat[i, ]

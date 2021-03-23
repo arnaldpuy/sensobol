@@ -6,7 +6,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
   first <- 1:ncol(A)
   N <- nrow(A)
 
-  # VECTORS WITH THE COLUMNS
+  # Vectors with the columns
   # -----------------------------------------------------------------
 
   if(order == "first") {
@@ -25,14 +25,14 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
     stop("order should be either first, second or third")
   }
 
-  # CHECK WHICH MATRICES HAVE BEEN SELECTED
+  # Check which matrices have been selected
   # -----------------------------------------------------------------
 
   AB.mat <- "AB" %in% matrices
   BA.mat <- "BA" %in% matrices
   CB.mat <- "CB" %in% matrices
 
-  # CONSTRUCT AB, BA MATRICES, ETC
+  # Construct Ab, Ba matrices, etc
   # -----------------------------------------------------------------
 
   if (AB.mat == TRUE) {
@@ -75,7 +75,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
     CB <- NULL
   }
 
-  # MERGE AND OUTPUT
+  # Merge and output
   # -----------------------------------------------------------------
 
   final <- rbind(AB, BA, CB)
@@ -167,7 +167,7 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   k <- length(params)
   n.matrices <- ifelse(any(stringr::str_detect(matrices, "C")) == FALSE, 2, 3)
 
-  # SELECTION OF THE TYPE OF SAMPLE MATRIX
+  # Selection of the sample matrix type
   # -----------------------------------------------------------------
 
   if (type == "QRN") {
@@ -183,7 +183,7 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
     stop ("method should be either QRN, R or LHS")
   }
 
-  # CONSTRUCTION OF A, B AND C MATICES
+  # Construction of A, B, ... matrices
   # -----------------------------------------------------------------
 
   A <- df[, 1:k, drop = FALSE]
@@ -196,7 +196,7 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
     C <- NULL
   }
 
-  # CONSTRUCTION OF AB, BA MATRICES, ETC
+  # Construction of Ab, Ba, ... matrices
   # -----------------------------------------------------------------
 
   out <- scrambled_sobol(matrices = matrices,
@@ -206,7 +206,7 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   B.mat <- "B" %in% matrices
   C.mat <- "C" %in% matrices
 
-  # SET NULL TO THOSE NOT USED
+  # Set NULL to those not used
   # -----------------------------------------------------------------
 
   if (A.mat == FALSE) {
@@ -221,7 +221,7 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
     C <- NULL
   }
 
-  # BIND AND OUTPUT
+  # Bind and output
   # -----------------------------------------------------------------
 
   final <- rbind(A, B, C, out)

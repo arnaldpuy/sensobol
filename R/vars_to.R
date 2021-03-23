@@ -62,7 +62,8 @@ CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
 vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   parameters <- NULL
 
-  # REORGANIZE THE POINTS ------------------------------------------------
+  # Reorganize the points
+  # -----------------------------------------------------------------
 
   n.cross.points <- length(params) * ((1 / h) - 1) + 1
   index.centers <- seq(1, length(Y), n.cross.points)
@@ -73,7 +74,8 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
     out[[i]] <- mat[indices[i, "lower"]:indices[i, "upper"], ]
   }
 
-  # EXTRACT PAIRS OF POINTS SEPARATED h ----------------------------------
+  # Extract pairs of points separated h
+  # -----------------------------------------------------------------
 
   if(method == "one.step") {
     d <- lapply(1:length(params), function(x)
@@ -83,7 +85,8 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
                 out[[x]][, j][length(out[[x]][, j])])
       }))
 
-  # EXTRACT PAIRS OF POINTS SEPARATED h, 2h, 3h, ... -------------------
+    # Extract pairs of points separated h, 2h, 3h, ...
+    # -----------------------------------------------------------------
 
   } else if(method == "all.step") {
     d <- lapply(1:length(params), function(x)
@@ -96,27 +99,30 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   out <- lapply(d, function(x)
     lapply(x, function(y) matrix(y, nrow = length(y) / 2, byrow = TRUE)))
 
-  # COMPUTATION OF THE VARIOGRAM -----------------------------------------
+  # Computation of the variogram
+  # -----------------------------------------------------------------
 
   variogr <- lapply(out, function(x) lapply(x, function(y)
     mean(0.5 * (y[, 1] - y[, 2]) ^ 2)))
   variogr <- lapply(variogr, function(x) do.call(rbind, x))
   variogr <- unlist(lapply(variogr, mean))
 
-  # COMPUTATION OF THE COVARIOGRAM ---------------------------------------
+  # Computation of the covariogram
+  # -----------------------------------------------------------------
 
   covariogr <- lapply(out, function(x)
     lapply(x, function(y) stats::cov(y[, 1], y[, 2])))
   covariogr <- unlist(lapply(covariogr, function(x) Rfast::colmeans(do.call(rbind, x))))
 
-  # VARS-TO --------------------------------------------------------------
+  # VARS-TO
+  # -----------------------------------------------------------------
 
   VY <- var(Y[index.centers])
   Ti <- (variogr + covariogr) / VY
   output <- data.table::data.table(Ti)[, parameters:= params]
 
-  # CREATE CLASS AND OUTPUT
-  # ----------------------------------------------------------------------
+  # Create class and output
+  # -----------------------------------------------------------------
 
   ind <- structure(list(), class = "vars") # Create class vars
   ind$results <- output # Add VARS-TO

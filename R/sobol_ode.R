@@ -57,7 +57,9 @@
 #'}
 
 sobol_ode <- function(d, times, state, func,...) {
+
   out <- deSolve::ode(y = state, times = times, func = func, parms = d,...)
+
   return(out[times[length(times)], names(state)])
 }
 

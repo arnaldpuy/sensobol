@@ -75,7 +75,9 @@ ishigami <- function(X1, X2, X3) {
 #' # Compute Ishigami function
 #' Y <- ishigami_Fun(mat)
 ishigami_Fun <- function(X) {
+
   X <- apply(X, 2, function(x) x * (pi + pi) - pi)
+
   return(mapply(ishigami,
                 X[, 1],
                 X[, 2],

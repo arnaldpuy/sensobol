@@ -8,7 +8,7 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
     m <- d
   }
 
-  # COMPUTATION OF E(Y), V(Y), SI AND TI
+  # Computation of E(Y), V(Y), Si and Ti
   # -----------------------------------------------------------------
 
   f0 <- (1 / N) * sum(m[, 1] * m[, 2])
@@ -68,7 +68,7 @@ sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
   k <- length(params)
   d <- matrix(Y, nrow = N)
 
-  # COMPUTE WITH BOOTSTRAP
+  # Compute with bootstrap
   # -----------------------------------------------------------------
 
   if (boot == TRUE) {
@@ -78,7 +78,7 @@ sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
                       boot = boot)
     out <- bootstats(out, conf = conf, type = type)
 
-  # COMPUTE WITHOUT BOOTSTRAP
+  # Compute without bootstrap
   # -----------------------------------------------------------------
 
   } else if (boot == FALSE) {
@@ -90,7 +90,7 @@ sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
   parameters <- "dummy"
   out <- cbind(out, sensitivity, parameters)
 
-  # TRANSFORM NEGATIVE VALUES TO ZEROES
+  # Transform negative values to zeroes
   # -----------------------------------------------------------------
 
   colNames <- colnames(out)
@@ -112,7 +112,7 @@ sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
 
 sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) {
 
-  # STOPPING RULE TO CHECK CONCORDANCE BETWEEN ESTIMATORS AND MATRIX
+  # Stopping rule to check concordance between estimators and sample matrix
   # -------------------------------------------------------------------
 
   ms <- "Revise the correspondence between the matrices and the estimators"
@@ -159,7 +159,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
       length(utils::combn(params, 3, simplify = FALSE))
   }
 
-  # DEFINE VECTORS BASED ON SAMPLE DESIGN
+  # Define vectors based on sample design
   # ------------------------------------------------------------------
 
   if (isTRUE(all.equal(matrices, c("A", "B", "AB")))) {
@@ -185,7 +185,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     VY <- 1 / (2 * N - 1) * sum((Y_A - f0)^2 + (Y_B - f0)^2)
   }
 
-  # DEFINE FIRST-ORDER ESTIMATORS
+  # Define first-order estimators
   # --------------------------------------------------------------------
 
   # Define variance for estimators with A, B, AB; or A, B, BA matrices
@@ -219,7 +219,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     Si <- Vi[1:length(params)] / VY
   }
 
-  # DEFINE TOTAL-ORDER ESTIMATORS
+  # Define total-order estimators
   # --------------------------------------------------------------------
 
   # Define variance for estimators with A, B, AB; or A, B, BA matrices
@@ -262,7 +262,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   }
   Ti <- Ti[1:length(params)]
 
-  # DEFINE COMPUTATION OF SECOND-ORDER INDICES
+  # Define computation of second-order indices
   # ---------------------------------------------------------------------
 
   if (order == "second" | order == "third") {
@@ -283,7 +283,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     Sij <- NULL
   }
 
-  # DEFINE COMPUTATION OF THIRD-ORDER INDICES
+  # Define computation of third-order indices
   # ---------------------------------------------------------------------
 
   if (order == "third") {
@@ -454,21 +454,21 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
                           order = "first", boot = FALSE, R = NULL,
                           parallel = "no", ncpus = 1, conf = 0.95, type = "norm") {
 
-  # CHECK CONCORDANCE BETWEEN BOOT AND R ARGUMENTS
+  # Check concordance between boot and R arguments
   # ---------------------------------------------------------------------
 
   if (boot == FALSE & is.null(R) == FALSE | boot == TRUE & is.null(R) == TRUE) {
     stop("Bootstrapping requires boot = TRUE and an integer in R")
   }
 
-  # DEFINE PARAMETERS
+  # Define parameters
   # ----------------------------------------------------------------------
 
   sensitivity <- parameters <- NULL
   k <- length(params)
   d <- matrix(Y, nrow = N)
 
-  # FUNCTION WHEN BOOT = FALSE
+  # Function when boot = FALSE
   # -----------------------------------------------------------------------
 
   if (boot == FALSE) {
@@ -477,7 +477,7 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     out <- data.table::data.table(tmp)
     data.table::setnames(out, "tmp", "original")
 
-    # FUNCTION WHEN BOOT = TRUE
+    # Function when boot = TRUE
     # -----------------------------------------------------------------------
 
   } else if (boot == TRUE) {
@@ -490,14 +490,14 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     stop("boot has to be TRUE or FALSE")
   }
 
-  # VECTORS OF PARAMETERS AND SENSITIVITY INDICES WHEN ORDER = FIRST
+  # Vectors of parameters and sensitivity indices when order = FIRST
   # -----------------------------------------------------------------------
 
   if (order == "first") {
     parameters <- c(rep(params, times = 2))
     sensitivity <- c(rep(c("Si", "Ti"), each = k))
 
-    # VECTORS OF PARAMETERS AND SENSITIVITY INDICES WHEN ORDER = SECOND
+    # Vectors of parameters and sensitivity indices when order = second
     # -----------------------------------------------------------------------
 
   } else if (order == "second") {
@@ -507,7 +507,7 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     sensitivity <- c(rep(c("Si", "Ti"), each = length(params)),
                      rep("Sij", times = length(vector.second)))
 
-    # VECTORS OF PARAMETERS AND SENSITIVITY INDICES WHEN ORDER = THIRD
+    # Vectors of parameters and sensitivity indices when order = third
     # -----------------------------------------------------------------------
 
   } else if (order == "third") {
@@ -525,7 +525,7 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     stop("order has to be first, second or third")
   }
 
-  # CREATE CLASS AND OUTPUT
+  # Create class and output
   # ----------------------------------------------------------------------
 
   ind <- structure(list(), class = "sensobol") # Create class
