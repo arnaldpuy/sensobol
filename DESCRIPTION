@@ -37,7 +37,6 @@ Imports:
     utils,
     Rcpp
 RdMacros: Rdpack
-LazyData: true
 Depends: R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
