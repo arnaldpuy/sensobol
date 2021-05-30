@@ -1,3 +1,12 @@
+# sensobol 1.0.2
+
+* The function `plot_sensobol`has been eliminated. Now the Sobol' indices can be plot by a single call to `plot`.
+
+* Third-order indices are now referred to as `Sijl` rather than `Sijk`.
+
+* The function `sobol_convergence`has been added to check the convergence of
+Sobol' indices across sub-samples of the model output.
+
 # sensobol 1.0.1
 
 * The output of `sobol_indices` is now an object of class `sensobol`. Besides including the indices, it also informs on the sum of first-order effects, the estimators used in the computation and the total number of model runs.

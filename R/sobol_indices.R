@@ -303,16 +303,16 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     Vijk <- apply(mat3, 1, function(x) Reduce("-", x))
 
     if (first == "azzini") {
-      Sijk <- Vijk / utils::tail(VY, length(utils::combn(params, 3, simplify = FALSE)))
+      Sijl <- Vijk / utils::tail(VY, length(utils::combn(params, 3, simplify = FALSE)))
 
     } else {
-      Sijk <- Vijk / VY
+      Sijl <- Vijk / VY
     }
 
   } else {
-    Sijk <- NULL
+    Sijl <- NULL
   }
-  return(c(Si, Ti, Sij, Sijk))
+  return(c(Si, Ti, Sij, Sijl))
 }
 
 
@@ -519,7 +519,7 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     parameters <- c(parameters, vector.third)
     sensitivity <- c(rep(c("Si", "Ti"), each = k),
                      rep("Sij", times = length(vector.second)),
-                     rep("Sijk", times = length(vector.third)))
+                     rep("Sijl", times = length(vector.third)))
 
   } else {
     stop("order has to be first, second or third")
