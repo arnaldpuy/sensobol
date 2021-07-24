@@ -14,8 +14,6 @@ and several options to obtain publication-ready figures of the model output unce
 and sensitivity-related analysis.
 }
 \details{
-The \strong{package vignete} can be retrieved \href{https://cran.rstudio.com/web/packages/sensobol/vignettes/sensobol.pdf}{here}.
-
 A comprehensive empirical study of several total-order estimators included in sensobol can be found in \insertCite{Puyz;textual}{sensobol}.
 }
 \references{

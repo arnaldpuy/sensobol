@@ -5,8 +5,6 @@
 #' and several options to obtain publication-ready figures of the model output uncertainty
 #' and sensitivity-related analysis.
 #'
-#' The **package vignete** can be retrieved [here](https://cran.rstudio.com/web/packages/sensobol/vignettes/sensobol.pdf).
-#'
 #' A comprehensive empirical study of several total-order estimators included in sensobol can be found in \insertCite{Puyz;textual}{sensobol}.
 #'
 #' @author Arnald Puy (\email{arnald.puy@pm.me})
