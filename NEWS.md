@@ -1,3 +1,8 @@
+
+# sensobol 1.0.3
+
+* Added a help page for the package.
+
 # sensobol 1.0.2
 
 * The function `plot_sensobol`has been eliminated. Now the Sobol' indices can be plot by a single call to `plot`.

@@ -4,12 +4,15 @@
 \alias{sobol_ode}
 \title{Wrapper around \code{deSolve} \code{\link{ode}}.}
 \usage{
-sobol_ode(d, times, state, func, ...)
+sobol_ode(d, times, timeOutput, state, func, ...)
 }
 \arguments{
 \item{d}{Character vector with the name of the model inputs.}
 
-\item{times}{Numeric vector with the time sequences at which the model output is wanted.}
+\item{times}{Time sequence as defined by \code{\link{ode}}.}
+
+\item{timeOutput}{Numeric vector determining the time steps at which
+the output is wanted.}
 
 \item{state}{Initial values of the state variables.}
 
@@ -38,8 +41,11 @@ with(as.list(c(state, parameters)), {
 N <- 2 ^ 5 # Sample size of sample matrix
 params <- c("r", "alpha", "m", "theta", "K", "X", "Y") # Parameters
 
-# Define the timesteps
-times <- seq(5, 15, 5)
+# Define the times
+ times <- seq(5, 20, 1)
+
+ # Define the times at which the output is wanted
+ timeOutput <- c(10, 15)
 
 # Construct the sample matrix
 mat <- sobol_matrices(N = N, params = params)
@@ -55,12 +61,11 @@ mat[, "Y"] <- floor(mat[, "Y"] * (2 - 6 + 1) + 6)
 
 # Run the model
 y <- list()
-for (j in 1:length(times)) {
- for (i in 1:nrow(mat)) {
-   y[[j]] <- sobol_ode(d = mat[i, ],
-                       times = seq(0, j, 1),
-                       state = c(X = mat[[i, "X"]], Y = mat[[i, "Y"]]),
-                       func = lotka_volterra_fun)
- }
+for (i in 1:nrow(mat)) {
+  y[[i]] <- sobol_ode(d = mat[i, ],
+                     times = times,
+                     timeOutput = timeOutput,
+                     state = c(X = mat[[i, "X"]], Y = mat[[i, "Y"]]),
+                     func = lotka_volterra_fun)
 }
 }

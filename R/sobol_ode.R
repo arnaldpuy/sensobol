@@ -8,7 +8,9 @@
 #' at the selected times.
 #'
 #' @param d Character vector with the name of the model inputs.
-#' @param times Numeric vector with the time sequences at which the model output is wanted.
+#' @param times Time sequence as defined by \code{\link{ode}}.
+#' @param timeOutput Numeric vector determining the time steps at which
+#' the output is wanted.
 #' @param state Initial values of the state variables.
 #' @param func An R function as defined by \code{\link{ode}}.
 #' @param ... Additional arguments passed to \code{\link{ode}}.
@@ -30,8 +32,11 @@
 #' N <- 2 ^ 5 # Sample size of sample matrix
 #' params <- c("r", "alpha", "m", "theta", "K", "X", "Y") # Parameters
 #'
-#' # Define the timesteps
-#' times <- seq(5, 15, 5)
+#' # Define the times
+#'  times <- seq(5, 20, 1)
+#'
+#'  # Define the times at which the output is wanted
+#'  timeOutput <- c(10, 15)
 #'
 #' # Construct the sample matrix
 #' mat <- sobol_matrices(N = N, params = params)
@@ -47,19 +52,27 @@
 #'
 #' # Run the model
 #' y <- list()
-#' for (j in 1:length(times)) {
-#'  for (i in 1:nrow(mat)) {
-#'    y[[j]] <- sobol_ode(d = mat[i, ],
-#'                        times = seq(0, j, 1),
-#'                        state = c(X = mat[[i, "X"]], Y = mat[[i, "Y"]]),
-#'                        func = lotka_volterra_fun)
-#'  }
+#' for (i in 1:nrow(mat)) {
+#'   y[[i]] <- sobol_ode(d = mat[i, ],
+#'                      times = times,
+#'                      timeOutput = timeOutput,
+#'                      state = c(X = mat[[i, "X"]], Y = mat[[i, "Y"]]),
+#'                      func = lotka_volterra_fun)
 #'}
 
-sobol_ode <- function(d, times, state, func,...) {
+sobol_ode <- function(d, times, timeOutput, state, func,...) {
 
   out <- deSolve::ode(y = state, times = times, func = func, parms = d,...)
 
-  return(out[times[length(times)], names(state)])
+  check.timeOutput <- all(timeOutput %in% out[, "time"] )
+
+  if(isFALSE(check.timeOutput) == TRUE) {
+    stop("all values in timeOutput should be time steps in time")
+
+  } else {
+    output <- out[out[, "time"] %in% timeOutput, ]
+  }
+
+  return(output)
 }
 
