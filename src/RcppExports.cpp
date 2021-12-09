@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // mmult
 arma::mat mmult(arma::mat A, arma::rowvec x);
 RcppExport SEXP _sensobol_mmult(SEXP ASEXP, SEXP xSEXP) {

@@ -13,16 +13,26 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
     loop <- first
 
   } else if (order == "second") {
+
     second <- c(first, utils::combn(1:ncol(A), 2, simplify = FALSE))
     loop <- second
 
   } else if (order == "third") {
+
     second <- c(first, utils::combn(1:ncol(A), 2, simplify = FALSE))
     third <- c(second, utils::combn(1:ncol(A), 3, simplify = FALSE))
     loop <- third
 
+  } else if (order == "fourth") {
+
+    second <- c(first, utils::combn(1:ncol(A), 2, simplify = FALSE))
+    third <- c(second, utils::combn(1:ncol(A), 3, simplify = FALSE))
+    fourth <- c(third, utils::combn(1:ncol(A), 4, simplify = FALSE))
+    loop <- fourth
+
   } else {
-    stop("order should be either first, second or third")
+
+    stop("order should be either first, second, third or fourth")
   }
 
   # Check which matrices have been selected
@@ -51,6 +61,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 
   if (BA.mat == TRUE) {
     W <- rbind(A, B)
+
     for (i in loop) {
       BA <- B
       BA[, i] <- A[, i]
@@ -64,7 +75,8 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 
   if (CB.mat == TRUE) {
     Z <- rbind(A, B)
-    for(i in loop) {
+
+    for (i in loop) {
       CB <- C
       CB[, i] <- B[, i]
       Z <- rbind(Z, CB)
@@ -88,15 +100,15 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 #' Creation of the sample matrices
 #'
 #' It creates the sample matrices to compute Sobol' first and total-order indices.
-#' If needed, it also creates the sample matrices required to compute second and
-#' third-order indices.
+#' If needed, it also creates the sample matrices required to compute second,
+#' third and fourth-order indices.
 #'
 #' @param matrices Character vector with the required matrices. The default
 #' is \code{matrices = c("A", "B", "AB")}.
 #' @param N Positive integer, initial sample size of the base sample matrix.
 #' @param params Character vector with the name of the model inputs.
-#' @param order One of "first", "second" or "third" to create a matrix to
-#' compute first, second or up to third-order Sobol indices. The default is
+#' @param order One of "first", "second", "third" or "fourth" to create a matrix to
+#' compute first, second, third or up to fourth-order Sobol' indices. The default is
 #' \code{order = "first"}.
 #' @param type Approach to construct the sample matrix. Options are:
 #' * \code{type = "QRN"} (default): It uses \insertCite{Sobol1967;textual}{sensobol} Quasi-Random Numbers.
@@ -141,6 +153,8 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 #' (\eqn{\mathbf{A}}). These matrices are needed to compute third-order effects, and are row-bound below
 #' those created for second-order effects.
 #'
+#' The same process applies to create the matrices to compute fourth-order effects.
+#'
 #' All columns are distributed in (0,1). If the uncertainty in some parameter(s) is better described with
 #' another distribution, the user should apply the required quantile inverse transformation to the column of
 #' interest once the sample matrix is produced.
@@ -164,6 +178,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
 sobol_matrices <- function(matrices = c("A", "B", "AB"),
                            N, params, order = "first",
                            type = "QRN", ...) {
+
   k <- length(params)
   n.matrices <- ifelse(any(stringr::str_detect(matrices, "C")) == FALSE, 2, 3)
 

@@ -15,13 +15,14 @@ theme_AP <- function() {
 
 # PLOT SOBOL' FIRST AND TOTAL-ORDER INDICES
 ##################################################################################
-#' Visualization of first, total, second and third order Sobol' indices.
+#' Visualization of first, total, second, third and fourth-order Sobol' indices.
 #'
-#' It plots first, total, second and third-order Sobol' indices.
+#' It plots first, total, second, third and fourth-order Sobol' indices.
 #'
 #' @param x The output of \code{\link{sobol_indices}}.
 #' @param order If \code{order = "first"}, it plots first and total-order effects.
 #' If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
+#' third-order effects. If \code{order = "fourth"}, it plots
 #' third-order effects. Default is \code{order = "first"}.
 #' @param dummy The output of \code{\link{sobol_dummy}}. Default is NULL.
 #' @param ... Other graphical parameters to plot.
@@ -108,6 +109,9 @@ plot.sensobol <- function(x, order = "first", dummy = NULL, ...) {
 
     } else if (order == "third") {
       dt <- data[sensitivity %in% "Sijl"][low.ci > 0]
+
+    } else if (order == "fourth") {
+      dt <- data[sensitivity %in% "Sijlm"][low.ci > 0]
 
     } else {
       stop("Order should be first, second or third")

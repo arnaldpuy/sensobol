@@ -1,3 +1,6 @@
+# sensobol 1.0.4
+
+* Fixed redundant links in the bibliography in .Rd files.
 
 # sensobol 1.0.3
 

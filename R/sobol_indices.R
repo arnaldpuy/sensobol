@@ -9,7 +9,7 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
   }
 
   # Computation of E(Y), V(Y), Si and Ti
-  # -----------------------------------------------------------------
+  # ----------------------------------------------------------------
 
   f0 <- (1 / N) * sum(m[, 1] * m[, 2])
   VY <- 1 / (2 * N - 1) * sum(m[, 1]^2 + m[, 2]^2) - f0
@@ -119,8 +119,8 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
 
   if (isTRUE(all.equal(matrices, c("A", "B", "AB")))) {
     if (!first == "saltelli" & !first == "jansen" |
-       !total == "jansen" & !total == "sobol" & !total == "homma" &
-       !total == "janon" & !total == "glen") {
+        !total == "jansen" & !total == "sobol" & !total == "homma" &
+        !total == "janon" & !total == "glen") {
       stop(ms)
     }
 
@@ -132,11 +132,11 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   } else if (isTRUE(all.equal(matrices, c("A", "B", "AB", "BA")))) {
 
     if (!first == "azzini" | !total == "azzini" &
-       !total == "jansen" & !total == "sobol" & !total == "homma" &
-       !total == "janon" & !total == "glen" & !total == "saltelli") {
+        !total == "jansen" & !total == "sobol" & !total == "homma" &
+        !total == "janon" & !total == "glen" & !total == "saltelli") {
 
       if (!total == "azzini" | !first == "saltelli" & !first == "jansen" &
-         !first == "azzini" & !first == "sobol") {
+          !first == "azzini" & !first == "sobol") {
 
         stop(ms)
       }
@@ -146,8 +146,10 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   # -------------------------------------
 
   k <- length(params)
+
   if (boot == TRUE) {
     m <- d[i, ]
+
   } else if (boot == FALSE) {
     m <- d
   }
@@ -155,8 +157,15 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     k <- length(params) + length(utils::combn(params, 2, simplify = FALSE))
 
   } else if (order == "third") {
-    k <- length(params) + length(utils::combn(params, 2, simplify = FALSE)) +
+    k <- length(params) +
+      length(utils::combn(params, 2, simplify = FALSE)) +
       length(utils::combn(params, 3, simplify = FALSE))
+
+  } else if (order == "fourth") {
+    k <- length(params) +
+      length(utils::combn(params, 2, simplify = FALSE)) +
+      length(utils::combn(params, 3, simplify = FALSE)) +
+      length(utils::combn(params, 4, simplify = FALSE))
   }
 
   # Define vectors based on sample design
@@ -180,7 +189,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
 
   } # A warning might be needed here
   if (isTRUE(all.equal(matrices, c("A", "B", "AB"))) |
-     isTRUE(all.equal(matrices, c("A", "B", "BA")))) {
+      isTRUE(all.equal(matrices, c("A", "B", "BA")))) {
     f0 <- 1 / (2 * N) * sum(Y_A + Y_B)
     VY <- 1 / (2 * N - 1) * sum((Y_A - f0)^2 + (Y_B - f0)^2)
   }
@@ -224,7 +233,8 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
 
   # Define variance for estimators with A, B, AB; or A, B, BA matrices
   if (total == "azzini" | total == "jansen" | total == "sobol" |
-     total == "homma" | total == "janon" | total == "glen" | total == "saltelli") {
+      total == "homma" | total == "janon" | total == "glen" | total == "saltelli") {
+
     f0 <- 1 / (2 * N) * sum(Y_A + Y_B)
     VY <- 1 / (2 * N - 1) * sum((Y_A - f0)^2 + (Y_B - f0)^2)
   }
@@ -265,11 +275,13 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   # Define computation of second-order indices
   # ---------------------------------------------------------------------
 
-  if (order == "second" | order == "third") {
+  if (order == "second" | order == "third" | order == "fourth") {
     com2 <- utils::combn(1:length(params), 2, simplify = FALSE)
-    mat2 <- t(mapply(c, Vi[(length(params) + 1):(length(params) + length(com2))],
-                     lapply(com2, function(x) Vi[x])))
-    Vij <- apply(mat2, 1, function(x) Reduce("-", x))
+    tmp2 <- do.call(rbind, com2)
+    Vi2 <- Vi[(length(params) + 1):(length(params) + length(com2))] # Second order
+    Vi1 <- lapply(com2, function(x) Vi[x])
+    final.pairwise <- t(mapply(c, Vi2, Vi1))
+    Vij <- unname(apply(final.pairwise, 1, function(x) Reduce("-", x)))
 
     if (first == "azzini") {
       VY <- Rfast::colsums((Y_A - Y_B)^2 + (Y_BA - Y_AB)^2)
@@ -286,24 +298,25 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   # Define computation of third-order indices
   # ---------------------------------------------------------------------
 
-  if (order == "third") {
+  if (order == "third" | order == "fourth") {
+    com3 <- utils::combn(1:length(params), 3, simplify = FALSE)
+    tmp3 <- do.call(rbind, com3)
+    Vi3 <- Vi[(length(params) + length(com2) + 1):(length(params) + length(com2) + length(com3))] # Third order
+    Vi1 <- lapply(com3, function(x) Vi[x])
+
+    # Pairs
     tmp <- do.call(rbind, com2)
     Vij.vec <- as.numeric(paste(tmp[, 1], tmp[, 2], sep = ""))
-    Vij.named <- Vij
-    names(Vij.named) <- Vij.vec
-    com3 <- utils::combn(1:length(params), 3, simplify = FALSE)
-    Vi.only <- do.call(rbind, lapply(com3, function(x) Vi[x])) # Extract Vi, Vj, Vk
-    Vijk.only <- utils::tail(Vi, length(com3)) # Extract Vijk
-    tmp3 <- do.call(rbind, com3)
-    first.pairwise <- lapply(paste(tmp3[, 1], tmp3[, 2], sep = ""), function(x) Vij.named[x])
-    second.pairwise <- lapply(paste(tmp3[, 1], tmp3[, 3], sep = ""), function(x) Vij.named[x])
-    third.pairwise <- lapply(paste(tmp3[, 2], tmp3[, 3], sep = ""), function(x) Vij.named[x])
-    Vij.only <- t(mapply(cbind, first.pairwise, second.pairwise, third.pairwise))
-    mat3 <- cbind(Vijk.only, Vij.only, Vi.only)
-    Vijk <- apply(mat3, 1, function(x) Reduce("-", x))
+    names(Vij) <- Vij.vec
+    Vi2.1 <- unname(Vij[paste(tmp3[, 1], tmp3[, 2], sep  = "")])
+    Vi2.2 <- unname(Vij[paste(tmp3[, 1], tmp3[, 3], sep  = "")])
+    Vi2.3 <- unname(Vij[paste(tmp3[, 2], tmp3[, 3], sep  = "")])
+
+    mat3 <- cbind(Vi3, Vi2.1, Vi2.2, Vi2.3, do.call(rbind, Vi1))
+    Vijk <- unname(apply(mat3, 1, function(x) Reduce("-", x)))
 
     if (first == "azzini") {
-      Sijl <- Vijk / utils::tail(VY, length(utils::combn(params, 3, simplify = FALSE)))
+      Sijl <- Vijk / VY[(length(params) + length(com2) + 1):(length(params) + length(com2) + length(com3))]
 
     } else {
       Sijl <- Vijk / VY
@@ -312,7 +325,52 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   } else {
     Sijl <- NULL
   }
-  return(c(Si, Ti, Sij, Sijl))
+
+  # Define computation of fourth-order indices
+  # ---------------------------------------------------------------------
+
+  if(order == "fourth") {
+    com4 <- utils::combn(1:length(params), 4, simplify = FALSE)
+    tmp4 <- do.call(rbind, com4)
+    Vi4 <- Vi[(length(params) + length(com2) + length(com3) + 1):
+                (length(params) + length(com2) + length(com3) + length(com4))] # Fourth order
+    Vi1 <- lapply(com4, function(x) Vi[x])
+
+    # triplets
+    tmp <- do.call(rbind, com3)
+    Vijk.vec <- as.numeric(paste(tmp[, 1], tmp[, 2], tmp[, 3], sep = ""))
+    names(Vijk) <- Vijk.vec
+    Vi3.1 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 2], tmp4[, 3], sep  = "")])
+    Vi3.2 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 2], tmp4[, 4], sep  = "")])
+    Vi3.3 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 3], tmp4[, 4], sep  = "")])
+    Vi3.4 <- unname(Vijk[paste(tmp4[, 2], tmp4[, 3], tmp4[, 4], sep  = "")])
+
+    # Pairs
+    Vi2.1 <- unname(Vij[paste(tmp4[, 1], tmp4[, 2], sep  = "")])
+    Vi2.2 <- unname(Vij[paste(tmp4[, 1], tmp4[, 3], sep  = "")])
+    Vi2.3 <- unname(Vij[paste(tmp4[, 1], tmp4[, 4], sep  = "")])
+    Vi2.4 <- unname(Vij[paste(tmp4[, 2], tmp4[, 3], sep  = "")])
+    Vi2.5 <- unname(Vij[paste(tmp4[, 2], tmp4[, 4], sep  = "")])
+    Vi2.6 <- unname(Vij[paste(tmp4[, 3], tmp4[, 4], sep  = "")])
+
+    mat4 <- cbind(Vi4, Vi3.1, Vi3.2, Vi3.3,
+                  Vi2.1, Vi2.2, Vi2.3, Vi2.4, Vi2.5,
+                  Vi2.6, do.call(rbind, Vi1))
+
+    Vijlm <- unname(apply(mat4, 1, function(x) Reduce("-", x)))
+
+    if (first == "azzini") {
+      Sijlm <- Vijlm / VY[(length(params) + length(com2) + length(com3) + 1):
+                            (length(params) + length(com2) + length(com3) + length(com4))]
+
+    } else {
+      Sijlm <- Vijlm / VY
+    }
+
+  } else {
+    Sijlm <- NULL
+  }
+  return(c(Si, Ti, Sij, Sijl, Sijlm))
 }
 
 
@@ -367,7 +425,7 @@ bootstats <- function(b, conf = conf, type = type) {
 
 #' Computation of Sobol' indices
 #'
-#' It allows to compute Sobol' indices up to the third order using state-of-the-art estimators.
+#' It allows to compute Sobol' indices up to the fourth-order using state-of-the-art estimators.
 #'
 #'@param matrices Character vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
 #' See \code{\link{sobol_matrices}}.
@@ -388,7 +446,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #' * \code{total = "glen"} \insertCite{Glen2012}{sensobol}.
 #' * \code{total = "azzini"} \insertCite{Azzini2020}{sensobol}.
 #' * \code{total = "saltelli"} \insertCite{Saltelli2008}{sensobol}.
-#' @param order Whether to compute "first", "second", or "third" -order Sobol' indices. Default
+#' @param order Whether to compute "first", "second", "third" or fourth-order Sobol' indices. Default
 #' is \code{order = "first"}.
 #' @param boot Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
 #' estimates. Default is \code{boot = FALSE}.
@@ -521,8 +579,26 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
                      rep("Sij", times = length(vector.second)),
                      rep("Sijl", times = length(vector.third)))
 
+    # Vectors of parameters and sensitivity indices when order = fourth
+    # -----------------------------------------------------------------------
+
+  } else if (order == "fourth") {
+    vector.second <- unlist(lapply(utils::combn(params, 2, simplify = FALSE), function(x)
+      paste0(x, collapse = ".")))
+    parameters <- c(c(rep(params, times = 2)), vector.second)
+    vector.third <- unlist(lapply(utils::combn(params, 3, simplify = FALSE), function(x)
+      paste0(x, collapse = ".")))
+    parameters <- c(parameters, vector.third)
+    vector.fourth <- unlist(lapply(utils::combn(params, 4, simplify = FALSE), function(x)
+      paste0(x, collapse = ".")))
+    parameters <- c(parameters, vector.fourth)
+    sensitivity <- c(rep(c("Si", "Ti"), each = k),
+                     rep("Sij", times = length(vector.second)),
+                     rep("Sijl", times = length(vector.third)),
+                     rep("Sijlm", times = length(vector.fourth)))
   } else {
-    stop("order has to be first, second or third")
+
+    stop("order has to be first, second, third or fourth")
   }
 
   # Create class and output
@@ -554,6 +630,4 @@ print.sensobol <- function(x, ...) {
   cat("\nSum of first order indices:", x$si.sum, "\n")
   print(data.table::data.table(x$results))
 }
-
-
 
