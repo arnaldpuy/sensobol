@@ -1,6 +1,6 @@
 Package: sensobol
 Title: Computation of Variance-Based Sensitivity Indices
-Version: 1.0.4
+Version: 1.1.0
 Authors@R: c(person(given = "Arnald", 
                     family = "Puy",
                     role = c("aut", "cre"),

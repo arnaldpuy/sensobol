@@ -1,3 +1,7 @@
+# sensobol 1.1.0
+
+* The package now includes support to calculate and plot up to fourth-order effects.
+
 # sensobol 1.0.4
 
 * Fixed redundant links in the bibliography in .Rd files.
