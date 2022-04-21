@@ -269,7 +269,12 @@ function_list <- list(
   Non.monotonic = function(x) 4 * (x - 0.5) ^ 2,
   Inverse = function(x) (10 - 1 / 1.1) ^ -1 * (x + 0.1) ^ - 1,
   No.effect = function(x) x * 0,
-  Trigonometric = function(x) cos(x)
+  Trigonometric = function(x) cos(x),
+  Piecewise.large = function(x) ((-1) ^ as.integer(4 * x) *
+                                   (0.125 - (x %% 0.25)) + 0.125),
+  Piecewise.small = function(x) ((-1) ^ as.integer(32 * x) *
+                                   (0.03125 - 2 * (x %% 0.03125)) + 0.03125) / 2,
+  Oscillation = function(x) x ^ 2 - 0.2 * cos(7 * pi * x)
 )
 
 #' Random metafunction based on \insertCite{Becker2020;textual}{sensobol}'s metafunction.

@@ -1,3 +1,7 @@
+# sensobol 1.1.1
+
+* The metafunction has been extended with a piecewise large, piecewise small and an oscillation function.
+
 # sensobol 1.1.0
 
 * The package now includes support to calculate and plot up to fourth-order effects.
