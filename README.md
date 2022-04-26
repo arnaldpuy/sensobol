@@ -47,8 +47,7 @@ ind <- sobol_indices(Y = Y, N = N, params = params)
 Please use the following citation if you use `sensobol` in your publications:
 
 ```r
-A. Puy, S. Lo Piano, A. Saltelli, S. A. Levin (2021). sensobol: Computation of
-  Variance-Based Sensitivity Indices. arxiv:2101.10103.
+A. Puy, S. Lo Piano, A. Saltelli, S. A. Levin (2022). sensobol: Computation of Variance-Based Sensitivity Indices. Journal of Statistical Software 102(5), 1-37.
 ```
 
 A BibTex entry for LaTex users is:
