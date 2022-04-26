@@ -54,11 +54,14 @@ A. Puy, S. Lo Piano, A. Saltelli, S. A. Levin (2021). sensobol: Computation of
 A BibTex entry for LaTex users is:
 
 ```r
-@Manual{,
-    title = {{sensobol}: {C}omputation of Variance-Based Sensitivity Indices},
-    author = {Arnald Puy and Samuele Lo Piano and Andrea Satelli and Simon A. Levin},
-    journal = {arxiv:2101.10103},
-    year = {2021},
-    url = {https://github.com/arnaldpuy/sensobol},
-  }
+@article{,
+author = {Puy, Arnald and {Lo Piano}, Samuele and Saltelli, Andrea and Levin, Simon A.},
+journal = {Journal of Statistical Software},
+title = {{sensobol: an R package to compute variance-based sensitivity indices}},
+doi = {10.18637/jss.v102.i05},
+volume = {102}, 
+number = {5},
+pages = {1--37},
+year = {2022}
+}
 ```
