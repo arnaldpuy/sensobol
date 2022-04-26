@@ -1,0 +1,20 @@
+bibentry(bibtype = "Article",
+  title        = "{sensobol}: An {R} Package to Compute Variance-Based Sensitivity Indices",
+  author       = c(person(given = "Arnald",
+                          family = "Puy",
+                          email = "apuy@princeton.edu"),
+                   person(given = c("Samuele", "Lo"),
+                          family = "Piano"),
+                   person(given = "Andrea",
+                          family = "Saltelli"),
+                   person(given = c("Simon", "A."),
+                          family = "Levin")),
+  journal      = "Journal of Statistical Software",
+  year         = "2022",
+  volume       = "102",
+  number       = "5",
+  pages        = "1--37",
+  doi          = "10.18637/jss.v102.i05",
+  header       = "To cite sensobol in publications use:"
+)
+
