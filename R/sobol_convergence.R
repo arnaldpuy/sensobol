@@ -86,6 +86,7 @@ sobol_convergence <- function(matrices, Y, N, sub.sample, params, first, total,
   sensitivity <- NULL
 
   if (sub.sample[length(sub.sample)] > N) {
+
     stop("The last sub-sample should be equal or smaller than N")
   }
 

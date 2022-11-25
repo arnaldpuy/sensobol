@@ -53,7 +53,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
       AB[, i] <- B[, i]
       X <- rbind(X, AB)
     }
-    AB <- X[(2 * N + 1):nrow(X), ]
+    AB <- X[(2 * N + 1):nrow(X), , drop = FALSE]
 
   } else if (AB.mat == FALSE) {
     AB <- NULL
@@ -67,7 +67,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
       BA[, i] <- A[, i]
       W <- rbind(W, BA)
     }
-    BA <- W[(2 * N + 1) : nrow(W), ]
+    BA <- W[(2 * N + 1) : nrow(W), , drop = FALSE]
 
   } else if (BA.mat == FALSE) {
     BA <- NULL
@@ -81,7 +81,7 @@ scrambled_sobol <- function(matrices, A, B, C, order) {
       CB[, i] <- B[, i]
       Z <- rbind(Z, CB)
     }
-    CB <- Z[(2 * N + 1) : nrow(Z), ]
+    CB <- Z[(2 * N + 1) : nrow(Z), , drop = FALSE]
 
   } else if (CB.mat == FALSE) {
     CB <- NULL

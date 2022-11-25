@@ -25,7 +25,7 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
 #' in \insertCite{KhorashadiZadeh2017;textual}{sensobol}.
 #'
 #' @param Y A numeric vector with the model output obtained from the matrix created with
-#' \code{\link{sobol_matrices}}.
+#' \code{\link{sobol_matrices}}. The numeric vector should not contain any NA or NaN values.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #' @param params A character vector with the name of the model inputs.
 #' @param boot Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
@@ -429,8 +429,8 @@ bootstats <- function(b, conf = conf, type = type) {
 #'
 #'@param matrices Character vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
 #' See \code{\link{sobol_matrices}}.
-#' @param Y  numeric vector with the model output obtained from the matrix created with
-#' \code{\link{sobol_matrices}}.
+#' @param Y  Numeric vector with the model output obtained from the matrix created with
+#' \code{\link{sobol_matrices}}. The numeric vector should not contain any NA or NaN values.
 #' @param N Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.
 #' @param params Character vector with the name of the model inputs.
 #' @param first Estimator to compute first-order indices. Options are:

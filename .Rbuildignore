@@ -6,3 +6,4 @@
 ^codecov\.yml$
 ^doc$
 ^CRAN-RELEASE$
+^CRAN-SUBMISSION$

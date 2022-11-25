@@ -18,7 +18,7 @@ sobol_dummy(
 }
 \arguments{
 \item{Y}{A numeric vector with the model output obtained from the matrix created with
-\code{\link{sobol_matrices}}.}
+\code{\link{sobol_matrices}}. The numeric vector should not contain any NA or NaN values.}
 
 \item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 

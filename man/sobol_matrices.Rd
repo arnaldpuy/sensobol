@@ -21,8 +21,8 @@ is \code{matrices = c("A", "B", "AB")}.}
 
 \item{params}{Character vector with the name of the model inputs.}
 
-\item{order}{One of "first", "second" or "third" to create a matrix to
-compute first, second or up to third-order Sobol indices. The default is
+\item{order}{One of "first", "second", "third" or "fourth" to create a matrix to
+compute first, second, third or up to fourth-order Sobol' indices. The default is
 \code{order = "first"}.}
 
 \item{type}{Approach to construct the sample matrix. Options are:
@@ -43,8 +43,8 @@ a sampling point.
 }
 \description{
 It creates the sample matrices to compute Sobol' first and total-order indices.
-If needed, it also creates the sample matrices required to compute second and
-third-order indices.
+If needed, it also creates the sample matrices required to compute second,
+third and fourth-order indices.
 }
 \details{
 Before calling \code{sobol_matrices}, the user must decide which estimators
@@ -79,6 +79,8 @@ for the computation of second-order effects. In these matrices, all columns come
 (\eqn{\mathbf{B}}) except the \eqn{i}-th, the \eqn{j}-th and the \eqn{l}-th, which come from \eqn{\mathbf{B}}
 (\eqn{\mathbf{A}}). These matrices are needed to compute third-order effects, and are row-bound below
 those created for second-order effects.
+
+The same process applies to create the matrices to compute fourth-order effects.
 
 All columns are distributed in (0,1). If the uncertainty in some parameter(s) is better described with
 another distribution, the user should apply the required quantile inverse transformation to the column of

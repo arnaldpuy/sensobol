@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_sobol.R
 \name{plot.sensobol}
 \alias{plot.sensobol}
-\title{Visualization of first, total, second and third order Sobol' indices.}
+\title{Visualization of first, total, second, third and fourth-order Sobol' indices.}
 \usage{
 \method{plot}{sensobol}(x, order = "first", dummy = NULL, ...)
 }
@@ -11,6 +11,7 @@
 
 \item{order}{If \code{order = "first"}, it plots first and total-order effects.
 If \code{order = "second"}, it plots second-order effects. If \code{order = "third"}, it plots
+third-order effects. If \code{order = "fourth"}, it plots
 third-order effects. Default is \code{order = "first"}.}
 
 \item{dummy}{The output of \code{\link{sobol_dummy}}. Default is NULL.}
@@ -21,7 +22,7 @@ third-order effects. Default is \code{order = "first"}.}
 A \code{ggplot} object.
 }
 \description{
-It plots first, total, second and third-order Sobol' indices.
+It plots first, total, second, third and fourth-order Sobol' indices.
 }
 \examples{
 # Define settings

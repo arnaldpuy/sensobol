@@ -24,8 +24,8 @@ sobol_indices(
 \item{matrices}{Character vector with the required matrices. The default is \code{matrices = c("A", "B", "AB")}.
 See \code{\link{sobol_matrices}}.}
 
-\item{Y}{numeric vector with the model output obtained from the matrix created with
-\code{\link{sobol_matrices}}.}
+\item{Y}{Numeric vector with the model output obtained from the matrix created with
+\code{\link{sobol_matrices}}. The numeric vector should not contain any NA or NaN values.}
 
 \item{N}{Positive integer, the initial sample size of the base sample matrix created with \code{\link{sobol_matrices}}.}
 
@@ -50,7 +50,7 @@ See \code{\link{sobol_matrices}}.}
 \item \code{total = "saltelli"} \insertCite{Saltelli2008}{sensobol}.
 }}
 
-\item{order}{Whether to compute "first", "second", or "third" -order Sobol' indices. Default
+\item{order}{Whether to compute "first", "second", "third" or fourth-order Sobol' indices. Default
 is \code{order = "first"}.}
 
 \item{boot}{Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
@@ -76,7 +76,7 @@ Check the \code{type} option in the \code{boot} function of the \code{\link{boot
 A \code{sensobol} object.
 }
 \description{
-It allows to compute Sobol' indices up to the third order using state-of-the-art estimators.
+It allows to compute Sobol' indices up to the fourth-order using state-of-the-art estimators.
 }
 \details{
 Any first and total-order estimator can be combined with the appropriate sampling design.
