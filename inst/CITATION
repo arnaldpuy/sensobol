@@ -2,8 +2,8 @@ citHeader("To cite sensobol in publications use:
 
 Arnald Puy, Samuele Lo Piano, Andrea Saltelli, Simon A. Levin. 2022. sensobol: An R Package to Compute Variance-Based Sensitivity Indices. Journal of Statistical Software 102(5), 1-37. doi:10.18637/jss.v102.i05.")
 
-citEntry(
-  entry    = "Article",
+bibentry(
+  bibtype  = "Article",
   title    = "{sensobol}: An {R} Package to Compute Variance-Based Sensitivity Indices",
   author   = c(person(given = "Arnald",
                           family = "Puy",

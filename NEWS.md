@@ -1,3 +1,9 @@
+# sensobol 1.1.4
+
+* Added the function "discrepancy_ersatz" to use the S-ersatz discrepancy as a 
+sensitivity measure. The S-ersatz is published in A. Puy, P. Roy and A. Saltelli. 2023.
+Discrepancy measures for sensitivity analysis. arXiv: 2206.13470).
+
 # sensobol 1.1.3
 
 * Added the function "load_packages" to load (and install in case they are not already in the local R setup) all required libraries in just one call.

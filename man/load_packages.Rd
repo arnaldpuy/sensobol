@@ -7,7 +7,7 @@
 load_packages(x)
 }
 \arguments{
-\item{x}{A character vector with the name of the packages.}
+\item{x}{A character vector with the name of the packages to load.}
 }
 \description{
 The function loads R packages. If the packages are not already
@@ -15,5 +15,5 @@ in the local system, the function also downloads, installs and loads them.
 }
 \examples{
 # Load packages:
-\dontrun{load_packages(c("sensobol", "data.table"))}
+\dontrun{load_packages(c("tidyverse", "data.table"))}
 }
