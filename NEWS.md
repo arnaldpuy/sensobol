@@ -1,3 +1,9 @@
+# sensobol 1.1.5
+
+* Added the journal citation for the "discrepancy_ersatz" function. It is published
+in A. Puy, P. T. Roy and A. Saltelli. 2024. "Discrepancy measures for global sensitivity
+analysis". Technometrics. DOI: 10.1080/00401706.2024.2304341.
+
 # sensobol 1.1.4
 
 * Added the function "discrepancy_ersatz" to use the S-ersatz discrepancy as a 
