@@ -19,10 +19,9 @@
 #' @aliases sensobol
 #' @useDynLib sensobol, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
-#' @docType package
 #' @title sensobol: Computation of Variance-Based Sensitivity Indices
 #' @keywords sensitivity uncertainty modeling
-NULL
+"_PACKAGE"
 
 
 

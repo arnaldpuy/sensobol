@@ -19,6 +19,14 @@ A comprehensive empirical study of several total-order estimators included in se
 \references{
 \insertAllCited{}
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/arnaldpuy/sensobol}
+  \item Report bugs at \url{https://github.com/arnaldpuy/sensobol/issues}
+}
+
+}
 \author{
 Arnald Puy (\email{arnald.puy@pm.me})
 

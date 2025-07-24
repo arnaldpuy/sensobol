@@ -34,13 +34,13 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
 #' @param parallel The type of parallel operation to be used (if any).
 #' If missing, the default is taken from the option "boot.parallel"
 #' (and if that is not set, "no"). For more information, check the
-#' \code{parallel} option in the \code{boot} function of the \code{\link{boot}} package.
+#' \code{parallel} option in the \code{boot} function of the \code{\link[boot]{boot}} package.
 #' @param ncpus Positive integer: number of processes to be used in parallel operation:
 #' typically one would chose this to the number of available CPUs.
-#' Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boot}} package.
+#' Check the \code{ncpus} option in the \code{boot} function of the \code{\link[boot]{boot}} package.
 #' @param conf Confidence intervals, number between 0 and 1. Default is \code{conf = 0.95}.
 #' @param type Method to compute the confidence intervals. Default is \code{type = "norm"}.
-#' Check the \code{type} option in the \code{boot} function of the \code{\link{boot}} package.
+#' Check the \code{type} option in the \code{boot} function of the \code{\link[boot]{boot}} package.
 #'
 #' @importFrom Rdpack reprompt
 #' @importFrom rlang :=
@@ -454,13 +454,13 @@ bootstats <- function(b, conf = conf, type = type) {
 #' @param parallel The type of parallel operation to be used (if any).
 #' If missing, the default is taken from the option "boot.parallel"
 #' (and if that is not set, "no"). For more information, check the
-#' \code{parallel} option in the \code{boot} function of the \code{\link{boot}} package.
+#' \code{parallel} option in the \code{boot} function of the \code{\link[boot]{boot}} package.
 #' @param ncpus Positive integer: number of processes to be used in parallel operation:
 #' typically one would chose this to the number of available CPUs.
-#' Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boot}} package.
+#' Check the \code{ncpus} option in the \code{boot} function of the \code{\link[boot]{boot}} package.
 #' @param conf Confidence interval if \code{boot = TRUE}. Number between 0 and 1. Default is \code{conf = 0.95}.
 #' @param type Method to compute the confidence interval if \code{boot = TRUE}. Default is "norm".
-#' Check the \code{type} option in the \code{boot} function of the \code{\link{boot}} package.
+#' Check the \code{type} option in the \code{boot} function of the \code{\link[boot]{boot}} package.
 #' @importFrom rlang ":="
 #' @importFrom Rdpack reprompt
 #' @importFrom stats var
@@ -468,7 +468,7 @@ bootstats <- function(b, conf = conf, type = type) {
 #' \insertAllCited{}
 #'
 #' @return A \code{sensobol} object.
-#' @seealso Check the function \code{\link{boot}} for further details on the bootstrapping
+#' @seealso Check the function \code{\link[boot]{boot}} for further details on the bootstrapping
 #' with regards to the methods available for the computation of confidence intervals in the \code{type} argument.
 #' @export
 #'

@@ -61,16 +61,16 @@ estimates. Default is \code{boot = FALSE}.}
 \item{parallel}{The type of parallel operation to be used (if any).
 If missing, the default is taken from the option "boot.parallel"
 (and if that is not set, "no"). For more information, check the
-\code{parallel} option in the \code{boot} function of the \code{\link{boot}} package.}
+\code{parallel} option in the \code{boot} function of the \code{\link[boot]{boot}} package.}
 
 \item{ncpus}{Positive integer: number of processes to be used in parallel operation:
 typically one would chose this to the number of available CPUs.
-Check the \code{ncpus} option in the \code{boot} function of the \code{\link{boot}} package.}
+Check the \code{ncpus} option in the \code{boot} function of the \code{\link[boot]{boot}} package.}
 
 \item{conf}{Confidence interval if \code{boot = TRUE}. Number between 0 and 1. Default is \code{conf = 0.95}.}
 
 \item{type}{Method to compute the confidence interval if \code{boot = TRUE}. Default is "norm".
-Check the \code{type} option in the \code{boot} function of the \code{\link{boot}} package.}
+Check the \code{type} option in the \code{boot} function of the \code{\link[boot]{boot}} package.}
 }
 \value{
 A \code{sensobol} object.
@@ -119,6 +119,6 @@ ind <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = R)
 \insertAllCited{}
 }
 \seealso{
-Check the function \code{\link{boot}} for further details on the bootstrapping
+Check the function \code{\link[boot]{boot}} for further details on the bootstrapping
 with regards to the methods available for the computation of confidence intervals in the \code{type} argument.
 }

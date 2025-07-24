@@ -1,3 +1,8 @@
+
+# sensobol 1.1.6
+
+* Added missing package anchors.
+
 # sensobol 1.1.5
 
 * Added the journal citation for the "discrepancy_ersatz" function. It is published

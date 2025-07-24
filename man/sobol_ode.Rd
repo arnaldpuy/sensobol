@@ -2,23 +2,23 @@
 % Please edit documentation in R/sobol_ode.R
 \name{sobol_ode}
 \alias{sobol_ode}
-\title{Wrapper around \code{deSolve} \code{\link{ode}}.}
+\title{Wrapper around \code{deSolve} \code{\link[deSolve]{ode}}.}
 \usage{
 sobol_ode(d, times, timeOutput, state, func, ...)
 }
 \arguments{
 \item{d}{Character vector with the name of the model inputs.}
 
-\item{times}{Time sequence as defined by \code{\link{ode}}.}
+\item{times}{Time sequence as defined by \code{\link[deSolve]{ode}}.}
 
 \item{timeOutput}{Numeric vector determining the time steps at which
 the output is wanted.}
 
 \item{state}{Initial values of the state variables.}
 
-\item{func}{An R function as defined by \code{\link{ode}}.}
+\item{func}{An R function as defined by \code{\link[deSolve]{ode}}.}
 
-\item{...}{Additional arguments passed to \code{\link{ode}}.}
+\item{...}{Additional arguments passed to \code{\link[deSolve]{ode}}.}
 }
 \value{
 A matrix with the output values.

@@ -17,11 +17,11 @@ vars_matrices(star.centers, params, h = 0.1, type = "QRN", ...)
 \item{type}{Approach to construct the STAR-VARS. Options are:
 \itemize{
 \item \code{type = "QRN"}: It uses \insertCite{Sobol1967;textual}{sensobol} Quasi-Random Numbers
-through a call to the function \code{\link{sobol}} of the \code{randtoolbox} package.
+through a call to the function \code{\link[randtoolbox]{sobol}} of the \code{randtoolbox} package.
 \item \code{type = "R"}: It uses random numbers.
 }}
 
-\item{...}{Further arguments in \code{\link{sobol}}.}
+\item{...}{Further arguments in \code{\link[randtoolbox]{sobol}}.}
 }
 \value{
 A matrix where each column is a model input and each row a sampling point.

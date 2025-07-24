@@ -12,9 +12,9 @@
 #' 0.02, 0.05, 0.1, 0.2. Default is \code{h = 0.1}.
 #' @param type Approach to construct the STAR-VARS. Options are:
 #' * \code{type = "QRN"}: It uses \insertCite{Sobol1967;textual}{sensobol} Quasi-Random Numbers
-#' through a call to the function \code{\link{sobol}} of the \code{randtoolbox} package.
+#' through a call to the function \code{\link[randtoolbox]{sobol}} of the \code{randtoolbox} package.
 #' * \code{type = "R"}: It uses random numbers.
-#' @param ... Further arguments in \code{\link{sobol}}.
+#' @param ... Further arguments in \code{\link[randtoolbox]{sobol}}.
 #'
 #' @return A matrix where each column is a model input and each row a sampling point.
 #' @export

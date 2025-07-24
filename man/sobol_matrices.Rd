@@ -28,14 +28,14 @@ compute first, second, third or up to fourth-order Sobol' indices. The default i
 \item{type}{Approach to construct the sample matrix. Options are:
 \itemize{
 \item \code{type = "QRN"} (default): It uses \insertCite{Sobol1967;textual}{sensobol} Quasi-Random Numbers.
-through a call to the function \code{\link{sobol}} of the \code{randtoolbox} package.
+through a call to the function \code{\link[randtoolbox]{sobol}} of the \code{randtoolbox} package.
 \item \code{type = "LHS"}: It uses a Latin Hypercube Sampling Design
 \insertCite{McKay1979}{sensobol} through a call
-to the function \code{\link{randomLHS}} of the \code{lhs} package.
+to the function \code{\link[lhs]{randomLHS}} of the \code{lhs} package.
 \item \code{type = "R"}: It uses random numbers.
 }}
 
-\item{...}{Further arguments in \code{\link{sobol}}.}
+\item{...}{Further arguments in \code{\link[randtoolbox]{sobol}}.}
 }
 \value{
 A numeric matrix where each column is a model input distributed in (0,1) and each row

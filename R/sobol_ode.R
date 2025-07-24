@@ -2,18 +2,18 @@
 # ODE SOLVER FOR SENSOBOL
 ##################################################################################
 
-#' Wrapper around \code{deSolve} \code{\link{ode}}.
+#' Wrapper around \code{deSolve} \code{\link[deSolve]{ode}}.
 #'
 #' It solves a system of ordinary differential equations and extracts the model output
 #' at the selected times.
 #'
 #' @param d Character vector with the name of the model inputs.
-#' @param times Time sequence as defined by \code{\link{ode}}.
+#' @param times Time sequence as defined by \code{\link[deSolve]{ode}}.
 #' @param timeOutput Numeric vector determining the time steps at which
 #' the output is wanted.
 #' @param state Initial values of the state variables.
-#' @param func An R function as defined by \code{\link{ode}}.
-#' @param ... Additional arguments passed to \code{\link{ode}}.
+#' @param func An R function as defined by \code{\link[deSolve]{ode}}.
+#' @param ... Additional arguments passed to \code{\link[deSolve]{ode}}.
 #'
 #' @return A matrix with the output values.
 #' @export
