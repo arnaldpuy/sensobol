@@ -2,6 +2,8 @@
 # PERSONALIZED GGPLOT2 THEME
 ##################################################################################
 
+#' @keywords internal
+#' @noRd
 theme_AP <- function() {
   ggplot2::theme_bw() +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(),

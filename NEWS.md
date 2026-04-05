@@ -1,4 +1,51 @@
 
+# sensobol 1.1.8
+
+* Fixed repeated `set.seed()` calls in `metafunction()`: the seed is now set once
+  at the beginning of the function, allowing the RNG to advance naturally across
+  all subsequent `sample()` and `rnorm()` calls.
+
+* Added `#' @keywords internal` / `#' @noRd` roxygen2 blocks to all undocumented
+  internal helpers: `sobol_dummy_boot()`, `sobol_boot()`, `bootstats()`,
+  `sobol_sample()`, `plot_sobol_convergence()`, `add_ribbon()`, `theme_AP()`,
+  `CutBySize()`, `s_ersatz()`, and `ishigami()`.
+
+* Updated the package-level documentation in `sensobol-package.R` to correctly
+  state support for up to fourth-order (not third-order) Sobol' indices.
+
+* Expanded the `@return` documentation of `sobol_convergence()` to enumerate all
+  list elements returned, including their types and column names.
+
+* Fixed multi-line string in `stop()` call in `sobol_convergence()` by replacing
+  the embedded newline with `paste()`.
+
+* Extended test coverage to include: second and third-order indices, `sobol_convergence()`
+  workflow and error paths, `vars_matrices()` / `vars_to()`, `discrepancy_ersatz()`,
+  `metafunction()` reproducibility, and `plot.sensobol()`.
+
+# sensobol 1.1.7
+
+* Fixed boolean logic errors in `sobol_boot()`: replaced `!x == "value"` chains
+  with `%in%` to correctly validate estimator names for all matrix configurations.
+
+* Added early `anyNA()` guard in `sobol_indices()` and `sobol_dummy()` to stop
+  with an informative error when `Y` contains `NA` or `NaN` values.
+
+* Added input validation in `sobol_matrices()` (`N` must be a positive integer),
+  `sobol_convergence()` (`sub.sample` must be non-empty, positive, and sorted),
+  and `vars_matrices()` (`star.centers` must be a positive integer).
+
+* Replaced auto-installing behaviour in `load_packages()`: the function no longer
+  calls `install.packages()` silently; it now stops with an informative message
+  directing the user to install the missing package themselves.
+
+* Replaced deprecated `expect_is()` with `expect_true(is.matrix())` in the test
+  suite.
+
+* Expanded test coverage to include the core `sobol_indices()` workflow,
+  bootstrap output, all new validation error paths, `sobol_dummy()`, and the
+  benchmark test functions `ishigami_Fun()` and `sobol_Fun()`.
+
 # sensobol 1.1.6
 
 * Added missing package anchors.

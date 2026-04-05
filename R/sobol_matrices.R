@@ -179,6 +179,9 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
                            N, params, order = "first",
                            type = "QRN", ...) {
 
+  if (!is.numeric(N) || length(N) != 1 || N < 1 || N != floor(N))
+    stop("'N' must be a single positive integer.")
+
   k <- length(params)
   n.matrices <- ifelse(any(stringr::str_detect(matrices, "C")) == FALSE, 2, 3)
 

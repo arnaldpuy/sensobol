@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(Rscript -e \"devtools::test\\(\\)\")",
+      "Bash(Rscript:*)"
+    ]
+  }
+}

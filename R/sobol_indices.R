@@ -1,5 +1,6 @@
 
-# Sobol' indices for a dummy parameter
+#' @keywords internal
+#' @noRd
 sobol_dummy_boot <- function(d, i, N, params, boot) {
   k <- length(params)
   if (boot == TRUE) {
@@ -65,6 +66,9 @@ sobol_dummy_boot <- function(d, i, N, params, boot) {
 
 sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
                         ncpus = 1, conf = 0.95, type = "norm") {
+  if (anyNA(Y)) {
+    stop("'Y' contains NA or NaN values. Please check your model output.")
+  }
   k <- length(params)
   d <- matrix(Y, nrow = N)
 
@@ -110,6 +114,8 @@ sobol_dummy <- function(Y, N, params, boot = FALSE, R = NULL, parallel = "no",
 }
 
 
+#' @keywords internal
+#' @noRd
 sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) {
 
   # Stopping rule to check concordance between estimators and sample matrix
@@ -118,28 +124,20 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   ms <- "Revise the correspondence between the matrices and the estimators"
 
   if (isTRUE(all.equal(matrices, c("A", "B", "AB")))) {
-    if (!first == "saltelli" & !first == "jansen" |
-        !total == "jansen" & !total == "sobol" & !total == "homma" &
-        !total == "janon" & !total == "glen") {
+    if (!(first %in% c("saltelli", "jansen")) |
+        !(total %in% c("jansen", "sobol", "homma", "janon", "glen"))) {
       stop(ms)
     }
 
   } else if (isTRUE(all.equal(matrices, c("A", "B", "BA")))) {
-    if (!first == "sobol"| !total == "saltelli") {
+    if (!(first %in% "sobol") | !(total %in% "saltelli")) {
       stop(ms)
     }
 
   } else if (isTRUE(all.equal(matrices, c("A", "B", "AB", "BA")))) {
-
-    if (!first == "azzini" | !total == "azzini" &
-        !total == "jansen" & !total == "sobol" & !total == "homma" &
-        !total == "janon" & !total == "glen" & !total == "saltelli") {
-
-      if (!total == "azzini" | !first == "saltelli" & !first == "jansen" &
-          !first == "azzini" & !first == "sobol") {
-
-        stop(ms)
-      }
+    if (!(first %in% c("saltelli", "jansen", "azzini", "sobol")) |
+        !(total %in% c("azzini", "jansen", "sobol", "homma", "janon", "glen", "saltelli"))) {
+      stop(ms)
     }
   }
 
@@ -374,6 +372,8 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
 }
 
 
+#' @keywords internal
+#' @noRd
 bootstats <- function(b, conf = conf, type = type) {
   p <- length(b$t0)
   lab <- c("original", "bias", "std.error", "low.ci", "high.ci")
@@ -511,6 +511,13 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
                           first = "saltelli", total = "jansen",
                           order = "first", boot = FALSE, R = NULL,
                           parallel = "no", ncpus = 1, conf = 0.95, type = "norm") {
+
+  # Check for NA/NaN in Y
+  # ---------------------------------------------------------------------
+
+  if (anyNA(Y)) {
+    stop("'Y' contains NA or NaN values. Please check your model output.")
+  }
 
   # Check concordance between boot and R arguments
   # ---------------------------------------------------------------------

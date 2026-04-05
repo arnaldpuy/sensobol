@@ -1,9 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^cran-comments\.md$
-^appveyor\.yml$
-^\.travis\.yml$
-^codecov\.yml$
 ^doc$
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
+^\.claude$

@@ -41,6 +41,10 @@
 #' # Create STAR-VARS
 #' mat <- vars_matrices(star.centers = star.centers, params = params, h = h)
 vars_matrices <- function(star.centers, params, h = 0.1, type = "QRN",...) {
+  if (!is.numeric(star.centers) || length(star.centers) != 1 ||
+      star.centers < 1 || star.centers != floor(star.centers))
+    stop("'star.centers' must be a single positive integer.")
+
   out <- center <- sections <- A <- B <- AB <- X <- out <- list()
   h.values <- c(0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2)
 

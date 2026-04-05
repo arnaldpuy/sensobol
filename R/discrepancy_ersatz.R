@@ -2,6 +2,8 @@
 # DISCREPANCY ERSATZ ###########################################################
 
 # S-ersatz function ------------------------------------------------------------
+#' @keywords internal
+#' @noRd
 s_ersatz <- function(mat) {
 
   N <- nrow(mat)

@@ -1,7 +1,8 @@
 
 # NOW CHECK CONVERGENCE -------------------
 
-# Create function to swiftly check convergence
+#' @keywords internal
+#' @noRd
 sobol_sample <- function(matrices, Y, N, sub.sample, params, first, total,
                          order = order, seed = seed, ...) {
 
@@ -14,7 +15,8 @@ sobol_sample <- function(matrices, Y, N, sub.sample, params, first, total,
   return(ind)
 }
 
-# Create function to plot convergence
+#' @keywords internal
+#' @noRd
 plot_sobol_convergence <- function(dt) {
 
   Cost <- original <- sensitivity <- NULL
@@ -28,6 +30,8 @@ plot_sobol_convergence <- function(dt) {
   return(gg)
 }
 
+#' @keywords internal
+#' @noRd
 add_ribbon <- function() {
 
   low.ci <- high.ci <- sensitivity <- NULL
@@ -57,7 +61,20 @@ add_ribbon <- function() {
 #' @param plot.order Whether to plot convergence for "second" or "third"-order indices.
 #' @param ... Further arguments in \code{\link{sobol_indices}}.
 #'
-#' @return A list with the results and the plots
+#' @return A named list with the following elements:
+#'   \describe{
+#'     \item{convergence}{A \code{data.table} with the Sobol' indices computed at
+#'       each sub-sample size, including columns \code{Cost} (total model runs),
+#'       \code{sensitivity} (index type), \code{parameters} (input name), and
+#'       \code{original} (index estimate). Bootstrap runs add \code{bias},
+#'       \code{std.error}, \code{low.ci}, and \code{high.ci} columns.}
+#'     \item{plot.first}{A \code{ggplot2} object showing convergence of first and
+#'       total-order indices.}
+#'     \item{plot.second}{A \code{ggplot2} object showing convergence of second-order
+#'       indices. Only present when \code{plot.order = "second"} or higher.}
+#'     \item{plot.third}{A \code{ggplot2} object showing convergence of third-order
+#'       indices. Only present when \code{plot.order = "third"}.}
+#'   }
 #' @export
 #'
 #' @examples
@@ -84,6 +101,12 @@ sobol_convergence <- function(matrices, Y, N, sub.sample, params, first, total,
                               order = order, seed = 666, plot.order, ...) {
 
   sensitivity <- NULL
+
+  if (length(sub.sample) == 0 || !is.numeric(sub.sample) || any(sub.sample < 1))
+    stop("'sub.sample' must be a non-empty numeric vector of positive values.")
+
+  if (is.unsorted(sub.sample))
+    stop("'sub.sample' must be sorted in ascending order.")
 
   if (sub.sample[length(sub.sample)] > N) {
 
@@ -151,8 +174,8 @@ sobol_convergence <- function(matrices, Y, N, sub.sample, params, first, total,
              order == "first" & plot.order == "third" |
              order == "second" & plot.order == "third") {
 
-    stop("you need to compute high-order indices to plot convergence
-         for high-order indices")
+    stop(paste("you need to compute high-order indices to plot convergence",
+               "for high-order indices"))
   }
 
 

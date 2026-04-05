@@ -40,6 +40,8 @@ sobol_Fun <- function(X) {
 # ISHIGAMI FUNCTION
 ##################################################################################
 
+#' @keywords internal
+#' @noRd
 ishigami <- function(X1, X2, X3) {
   A <- 2
   B <- 1
@@ -331,32 +333,24 @@ function_list <- list(
 #' Y <- metafunction(mat)
 metafunction <- function(data, k_2 = 0.5, k_3 = 0.2, epsilon = NULL) {
   k <- ncol(data)
-  set.seed(epsilon)
+  if (!is.null(epsilon)) set.seed(epsilon)
   all_functions <- sample(names(function_list), k, replace = TRUE)
-  set.seed(epsilon)
   components <- sample(1:2, prob = c(0.7, 0.3), size = 200,
                        replace = TRUE)
   mus <- c(0, 0)
   sds <- sqrt(c(0.5, 5))
-  set.seed(epsilon)
   coefficients <- stats::rnorm(100) * sds[components] + mus[components]
-  set.seed(epsilon)
   coefD1 <- sample(coefficients, k)
   d2 <- t(utils::combn(1:k, 2))
-  set.seed(epsilon)
   d2M <- d2[sample(nrow(d2), size = ceiling(k * k_2), replace = FALSE),
   ]
   sample.size.d2M <- ifelse(is.vector(d2M) == TRUE, 1, nrow(d2M))
-  set.seed(epsilon)
   coefD2 <- sample(coefficients, sample.size.d2M, replace = TRUE)
   d3 <- t(utils::combn(1:k, 3))
-  set.seed(epsilon)
   size.d3 <- ifelse(nrow(d3) == 1, 1, ceiling(k * k_3))
-  set.seed(epsilon)
   d3M <- d3[sample(nrow(d3), size = size.d3, replace = FALSE),
   ]
   sample.size <- ifelse(is.vector(d3M) == TRUE, 1, nrow(d3M))
-  set.seed(epsilon)
   coefD3 <- sample(coefficients, sample.size, replace = TRUE)
   output <- sapply(seq_along(all_functions), function(x) function_list[[all_functions[x]]](data[,
                                                                                                 x]))

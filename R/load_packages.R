@@ -2,14 +2,12 @@
 # FUNCTION TO INSTALL AND LOAD REQUIRED PACKAGES
 ##################################################################################
 
-#' Load (and install) R packages.
+#' Load R packages.
 #'
-#' The function loads R packages. If the packages are not already
-#' in the local system, the function also downloads, installs and loads them.
+#' The function loads R packages. If a package is not installed,
+#' the function stops with an informative error message.
 #'
 #' @param x A character vector with the name of the packages to load.
-#'
-#' @importFrom utils install.packages
 #'
 #' @return NULL
 #' @export
@@ -21,11 +19,10 @@ load_packages <- function(x) {
 
   for (i in x) {
 
-    if (!require(i, character.only = TRUE)) {
-
-      install.packages(i, dependencies = TRUE)
-
-      library(i, character.only = TRUE)
+    if (!requireNamespace(i, quietly = TRUE)) {
+      stop(paste0("Package '", i, "' is required but not installed. ",
+                  "Install it with: install.packages('", i, "')"))
     }
+    library(i, character.only = TRUE)
   }
 }

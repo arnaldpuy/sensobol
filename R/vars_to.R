@@ -2,6 +2,8 @@
 # FUNCTION TO CUT BY SIZE TO BE USED IN VARS-TO
 ##################################################################################
 
+#' @keywords internal
+#' @noRd
 CutBySize <- function(m, block.size, nb = ceiling(m / block.size)) {
   int <- m / nb
   upper <- round(1:nb * int)

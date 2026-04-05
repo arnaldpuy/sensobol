@@ -5,7 +5,7 @@ test_that("Output is a matrix", {
   N <- 10
   params <- paste("X", 1:3, sep = "")
   mat <- sobol_matrices(N = N, params = params)
-  expect_is(mat, "matrix")
+  expect_true(is.matrix(mat))
 })
 
 test_that("Sample size for first and total-order indices 1", {
