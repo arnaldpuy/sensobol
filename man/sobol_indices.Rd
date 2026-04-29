@@ -17,7 +17,8 @@ sobol_indices(
   parallel = "no",
   ncpus = 1,
   conf = 0.95,
-  type = "norm"
+  type = "norm",
+  groups = NULL
 )
 }
 \arguments{
@@ -51,7 +52,8 @@ See \code{\link{sobol_matrices}}.}
 }}
 
 \item{order}{Whether to compute "first", "second", "third" or fourth-order Sobol' indices. Default
-is \code{order = "first"}.}
+is \code{order = "first"}. When \code{groups} is supplied, the order refers to
+interactions between groups, not between individual parameters.}
 
 \item{boot}{Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
 estimates. Default is \code{boot = FALSE}.}
@@ -71,6 +73,19 @@ Check the \code{ncpus} option in the \code{boot} function of the \code{\link[boo
 
 \item{type}{Method to compute the confidence interval if \code{boot = TRUE}. Default is "norm".
 Check the \code{type} option in the \code{boot} function of the \code{\link[boot]{boot}} package.}
+
+\item{groups}{Optional grouping of the parameters into a strict partition.
+Either \code{NULL} (the default; one Sobol' index per parameter), a named
+list of character vectors of parameter names (e.g.
+\code{groups = list(g1 = "X1", g2 = c("X2", "X3"))}), or a character vector
+of length \code{length(params)} aligned with \code{params} that labels each
+parameter with its group. Every parameter in \code{params} must appear in
+exactly one group. The value of \code{groups} must match the one passed to
+\code{\link{sobol_matrices}} when generating the sample matrix. With
+\code{groups}, the function returns one first- and total-order index per
+group (and group-wise interaction indices for higher orders), which is the
+standard device used to handle correlated inputs in Sobol'-based
+sensitivity analysis by moving them together.}
 }
 \value{
 A \code{sensobol} object.
@@ -114,6 +129,13 @@ Y <- ishigami_Fun(mat)
 
 # Compute and bootstrap Sobol' indices
 ind <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = R)
+
+# Grouped design: treat X2 and X3 as a single group.
+params <- paste("X", 1:3, sep = "")
+groups <- list(g1 = "X1", g23 = c("X2", "X3"))
+mat_g <- sobol_matrices(N = N, params = params, groups = groups)
+Y_g <- ishigami_Fun(mat_g)
+ind_g <- sobol_indices(Y = Y_g, N = N, params = params, groups = groups)
 }
 \references{
 \insertAllCited{}

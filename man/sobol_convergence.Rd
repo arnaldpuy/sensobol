@@ -42,10 +42,26 @@ is \code{order = "first"}.}
 
 \item{plot.order}{Whether to plot convergence for "second" or "third"-order indices.}
 
-\item{...}{Further arguments in \code{\link{sobol_indices}}.}
+\item{...}{Further arguments in \code{\link{sobol_indices}}, including
+\code{groups} to check convergence on grouped Sobol' indices (the same
+\code{groups} value must have been used in \code{\link{sobol_matrices}} to
+generate the sample matrix).}
 }
 \value{
-A list with the results and the plots
+A named list with the following elements:
+\describe{
+\item{convergence}{A \code{data.table} with the Sobol' indices computed at
+each sub-sample size, including columns \code{Cost} (total model runs),
+\code{sensitivity} (index type), \code{parameters} (input name), and
+\code{original} (index estimate). Bootstrap runs add \code{bias},
+\code{std.error}, \code{low.ci}, and \code{high.ci} columns.}
+\item{plot.first}{A \code{ggplot2} object showing convergence of first and
+total-order indices.}
+\item{plot.second}{A \code{ggplot2} object showing convergence of second-order
+indices. Only present when \code{plot.order = "second"} or higher.}
+\item{plot.third}{A \code{ggplot2} object showing convergence of third-order
+indices. Only present when \code{plot.order = "third"}.}
+}
 }
 \description{
 It checks the convergence of Sobol' indices on different sub-samples of the model output-.

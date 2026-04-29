@@ -162,6 +162,62 @@ test_that("sobol_indices computes third-order indices", {
   expect_true("Sijl" %in% ind$results$sensitivity)
 })
 
+# ---- sobol_indices with groups ----
+
+test_that("sobol_indices with groups returns one Si/Ti per group", {
+  N <- 200
+  params <- paste("X", 1:3, sep = "")
+  groups <- list(g1 = "X1", g23 = c("X2", "X3"))
+  mat <- sobol_matrices(N = N, params = params, groups = groups)
+  Y <- ishigami_Fun(mat)
+  ind <- sobol_indices(Y = Y, N = N, params = params, groups = groups)
+  expect_equal(nrow(ind$results[sensitivity == "Si"]), length(groups))
+  expect_equal(nrow(ind$results[sensitivity == "Ti"]), length(groups))
+  expect_setequal(ind$results[sensitivity == "Si", parameters], names(groups))
+})
+
+test_that("sobol_indices with trivial groups equals ungrouped result", {
+  N <- 200
+  params <- paste("X", 1:3, sep = "")
+  trivial <- as.list(params); names(trivial) <- params
+  set.seed(42)
+  mat1 <- sobol_matrices(N = N, params = params, type = "R")
+  set.seed(42)
+  mat2 <- sobol_matrices(N = N, params = params, type = "R", groups = trivial)
+  Y1 <- ishigami_Fun(mat1)
+  Y2 <- ishigami_Fun(mat2)
+  ind1 <- sobol_indices(Y = Y1, N = N, params = params)
+  ind2 <- sobol_indices(Y = Y2, N = N, params = params, groups = trivial)
+  expect_equal(ind1$results$original, ind2$results$original)
+})
+
+test_that("sobol_indices with groups + second order gives one Sij per pair", {
+  N <- 200
+  params <- paste("X", 1:3, sep = "")
+  groups <- list(g1 = "X1", g23 = c("X2", "X3"))
+  mat <- sobol_matrices(N = N, params = params, groups = groups, order = "second")
+  Y <- ishigami_Fun(mat)
+  ind <- sobol_indices(Y = Y, N = N, params = params, groups = groups,
+                       order = "second")
+  expect_equal(nrow(ind$results[sensitivity == "Sij"]),
+               choose(length(groups), 2))
+  expect_equal(ind$results[sensitivity == "Sij", parameters],
+               unlist(lapply(utils::combn(names(groups), 2, simplify = FALSE),
+                             function(x) paste0(x, collapse = "."))))
+})
+
+test_that("sobol_indices with groups bootstraps without error", {
+  N <- 100
+  params <- paste("X", 1:3, sep = "")
+  groups <- list(g1 = "X1", g23 = c("X2", "X3"))
+  mat <- sobol_matrices(N = N, params = params, groups = groups)
+  Y <- ishigami_Fun(mat)
+  ind <- sobol_indices(Y = Y, N = N, params = params, groups = groups,
+                       boot = TRUE, R = 10)
+  expect_true(all(c("low.ci", "high.ci") %in% colnames(ind$results)))
+  expect_equal(nrow(ind$results[sensitivity == "Si"]), length(groups))
+})
+
 # ---- sobol_convergence ----
 
 test_that("sobol_convergence returns a list with convergence data and a plot", {

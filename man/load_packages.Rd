@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_packages.R
 \name{load_packages}
 \alias{load_packages}
-\title{Load (and install) R packages.}
+\title{Load R packages.}
 \usage{
 load_packages(x)
 }
@@ -10,8 +10,8 @@ load_packages(x)
 \item{x}{A character vector with the name of the packages to load.}
 }
 \description{
-The function loads R packages. If the packages are not already
-in the local system, the function also downloads, installs and loads them.
+The function loads R packages. If a package is not installed,
+the function stops with an informative error message.
 }
 \examples{
 # Load packages:

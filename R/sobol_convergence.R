@@ -59,7 +59,10 @@ add_ribbon <- function() {
 #' @param seed Whether to compute "first", "second", or "third" -order Sobol' indices. Default
 #' is \code{order = "first"}.
 #' @param plot.order Whether to plot convergence for "second" or "third"-order indices.
-#' @param ... Further arguments in \code{\link{sobol_indices}}.
+#' @param ... Further arguments in \code{\link{sobol_indices}}, including
+#' \code{groups} to check convergence on grouped Sobol' indices (the same
+#' \code{groups} value must have been used in \code{\link{sobol_matrices}} to
+#' generate the sample matrix).
 #'
 #' @return A named list with the following elements:
 #'   \describe{

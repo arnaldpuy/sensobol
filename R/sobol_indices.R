@@ -447,9 +447,22 @@ bootstats <- function(b, conf = conf, type = type) {
 #' * \code{total = "azzini"} \insertCite{Azzini2020}{sensobol}.
 #' * \code{total = "saltelli"} \insertCite{Saltelli2008}{sensobol}.
 #' @param order Whether to compute "first", "second", "third" or fourth-order Sobol' indices. Default
-#' is \code{order = "first"}.
+#' is \code{order = "first"}. When \code{groups} is supplied, the order refers to
+#' interactions between groups, not between individual parameters.
 #' @param boot Logical. If TRUE, the function bootstraps the Sobol' indices. If FALSE, it provides point
 #' estimates. Default is \code{boot = FALSE}.
+#' @param groups Optional grouping of the parameters into a strict partition.
+#' Either \code{NULL} (the default; one Sobol' index per parameter), a named
+#' list of character vectors of parameter names (e.g.
+#' \code{groups = list(g1 = "X1", g2 = c("X2", "X3"))}), or a character vector
+#' of length \code{length(params)} aligned with \code{params} that labels each
+#' parameter with its group. Every parameter in \code{params} must appear in
+#' exactly one group. The value of \code{groups} must match the one passed to
+#' \code{\link{sobol_matrices}} when generating the sample matrix. With
+#' \code{groups}, the function returns one first- and total-order index per
+#' group (and group-wise interaction indices for higher orders), which is the
+#' standard device used to handle correlated inputs in Sobol'-based
+#' sensitivity analysis by moving them together.
 #' @param R Positive integer, number of bootstrap replicas. Default is NULL.
 #' @param parallel The type of parallel operation to be used (if any).
 #' If missing, the default is taken from the option "boot.parallel"
@@ -507,10 +520,18 @@ bootstats <- function(b, conf = conf, type = type) {
 #'
 #' # Compute and bootstrap Sobol' indices
 #' ind <- sobol_indices(Y = Y, N = N, params = params, boot = TRUE, R = R)
+#'
+#' # Grouped design: treat X2 and X3 as a single group.
+#' params <- paste("X", 1:3, sep = "")
+#' groups <- list(g1 = "X1", g23 = c("X2", "X3"))
+#' mat_g <- sobol_matrices(N = N, params = params, groups = groups)
+#' Y_g <- ishigami_Fun(mat_g)
+#' ind_g <- sobol_indices(Y = Y_g, N = N, params = params, groups = groups)
 sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
                           first = "saltelli", total = "jansen",
                           order = "first", boot = FALSE, R = NULL,
-                          parallel = "no", ncpus = 1, conf = 0.95, type = "norm") {
+                          parallel = "no", ncpus = 1, conf = 0.95, type = "norm",
+                          groups = NULL) {
 
   # Check for NA/NaN in Y
   # ---------------------------------------------------------------------
@@ -526,18 +547,26 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     stop("Bootstrapping requires boot = TRUE and an integer in R")
   }
 
-  # Define parameters
+  # Define parameters / units of analysis
   # ----------------------------------------------------------------------
 
   sensitivity <- parameters <- NULL
-  k <- length(params)
+
+  # Resolve groups (NULL -> one group per parameter); the unit labels
+  # are either parameter names or group names. The estimator algebra in
+  # `sobol_boot()` only relies on the *length* of the unit vector, so we
+  # pass `units` through the existing `params` argument.
+
+  group_idx <- resolve_groups(params, groups)
+  units <- names(group_idx)
+  k <- length(units)
   d <- matrix(Y, nrow = N)
 
   # Function when boot = FALSE
   # -----------------------------------------------------------------------
 
   if (boot == FALSE) {
-    tmp <- sobol_boot(d = d, N = N, params = params, first = first, total = total,
+    tmp <- sobol_boot(d = d, N = N, params = units, first = first, total = total,
                       order = order, boot = FALSE, matrices = matrices)
     out <- data.table::data.table(tmp)
     data.table::setnames(out, "tmp", "original")
@@ -546,7 +575,7 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     # -----------------------------------------------------------------------
 
   } else if (boot == TRUE) {
-    tmp <- boot::boot(data = d, statistic = sobol_boot, R = R, N = N, params = params,
+    tmp <- boot::boot(data = d, statistic = sobol_boot, R = R, N = N, params = units,
                       first = first, total = total, order = order, matrices = matrices,
                       parallel = parallel, ncpus = ncpus, boot = TRUE)
     out <- data.table::data.table(bootstats(tmp, conf = conf, type = type))
@@ -555,48 +584,48 @@ sobol_indices <- function(matrices = c("A", "B", "AB"), Y, N, params,
     stop("boot has to be TRUE or FALSE")
   }
 
-  # Vectors of parameters and sensitivity indices when order = FIRST
+  # Vectors of unit labels and sensitivity indices when order = FIRST
   # -----------------------------------------------------------------------
 
   if (order == "first") {
-    parameters <- c(rep(params, times = 2))
+    parameters <- c(rep(units, times = 2))
     sensitivity <- c(rep(c("Si", "Ti"), each = k))
 
-    # Vectors of parameters and sensitivity indices when order = second
+    # Vectors of unit labels and sensitivity indices when order = second
     # -----------------------------------------------------------------------
 
   } else if (order == "second") {
-    vector.second <- unlist(lapply(utils::combn(params, 2, simplify = FALSE), function(x)
+    vector.second <- unlist(lapply(utils::combn(units, 2, simplify = FALSE), function(x)
       paste0(x, collapse = ".")))
-    parameters <- c(c(rep(params, times = 2)), vector.second)
-    sensitivity <- c(rep(c("Si", "Ti"), each = length(params)),
+    parameters <- c(c(rep(units, times = 2)), vector.second)
+    sensitivity <- c(rep(c("Si", "Ti"), each = k),
                      rep("Sij", times = length(vector.second)))
 
-    # Vectors of parameters and sensitivity indices when order = third
+    # Vectors of unit labels and sensitivity indices when order = third
     # -----------------------------------------------------------------------
 
   } else if (order == "third") {
-    vector.second <- unlist(lapply(utils::combn(params, 2, simplify = FALSE), function(x)
+    vector.second <- unlist(lapply(utils::combn(units, 2, simplify = FALSE), function(x)
       paste0(x, collapse = ".")))
-    parameters <- c(c(rep(params, times = 2)), vector.second)
-    vector.third <- unlist(lapply(utils::combn(params, 3, simplify = FALSE), function(x)
+    parameters <- c(c(rep(units, times = 2)), vector.second)
+    vector.third <- unlist(lapply(utils::combn(units, 3, simplify = FALSE), function(x)
       paste0(x, collapse = ".")))
     parameters <- c(parameters, vector.third)
     sensitivity <- c(rep(c("Si", "Ti"), each = k),
                      rep("Sij", times = length(vector.second)),
                      rep("Sijl", times = length(vector.third)))
 
-    # Vectors of parameters and sensitivity indices when order = fourth
+    # Vectors of unit labels and sensitivity indices when order = fourth
     # -----------------------------------------------------------------------
 
   } else if (order == "fourth") {
-    vector.second <- unlist(lapply(utils::combn(params, 2, simplify = FALSE), function(x)
+    vector.second <- unlist(lapply(utils::combn(units, 2, simplify = FALSE), function(x)
       paste0(x, collapse = ".")))
-    parameters <- c(c(rep(params, times = 2)), vector.second)
-    vector.third <- unlist(lapply(utils::combn(params, 3, simplify = FALSE), function(x)
+    parameters <- c(c(rep(units, times = 2)), vector.second)
+    vector.third <- unlist(lapply(utils::combn(units, 3, simplify = FALSE), function(x)
       paste0(x, collapse = ".")))
     parameters <- c(parameters, vector.third)
-    vector.fourth <- unlist(lapply(utils::combn(params, 4, simplify = FALSE), function(x)
+    vector.fourth <- unlist(lapply(utils::combn(units, 4, simplify = FALSE), function(x)
       paste0(x, collapse = ".")))
     parameters <- c(parameters, vector.fourth)
     sensitivity <- c(rep(c("Si", "Ti"), each = k),

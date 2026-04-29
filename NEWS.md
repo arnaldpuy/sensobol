@@ -1,4 +1,22 @@
 
+# sensobol 1.1.9
+
+* Added a new `groups` argument to `sobol_matrices()` and `sobol_indices()` that
+  allows the user to compute Sobol' first-, total- and higher-order indices for
+  groups of parameters rather than for individual parameters. This is the
+  standard device used in Sobol'-based sensitivity analysis to handle correlated
+  inputs by moving them together. `groups` accepts either a named list of
+  character vectors of parameter names (e.g.
+  `groups = list(g1 = "X1", g2 = c("X2", "X3"))`) or a character vector of
+  length `length(params)` aligned with `params`. The grouping must be a strict
+  partition of `params` (each parameter appears in exactly one group). When
+  `groups = NULL` (the default), behaviour is unchanged. The `order` argument is
+  reinterpreted as interactions between groups when `groups` is supplied.
+
+* Added test coverage for the new grouped design in both `sobol_matrices()` and
+  `sobol_indices()`, including row-count, column-swap, list/vector equivalence,
+  trivial-partition regression, and validation error paths.
+
 # sensobol 1.1.8
 
 * Fixed repeated `set.seed()` calls in `metafunction()`: the seed is now set once

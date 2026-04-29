@@ -10,6 +10,7 @@ sobol_matrices(
   params,
   order = "first",
   type = "QRN",
+  groups = NULL,
   ...
 )
 }
@@ -23,7 +24,8 @@ is \code{matrices = c("A", "B", "AB")}.}
 
 \item{order}{One of "first", "second", "third" or "fourth" to create a matrix to
 compute first, second, third or up to fourth-order Sobol' indices. The default is
-\code{order = "first"}.}
+\code{order = "first"}. When \code{groups} is supplied, the order refers to
+interactions between groups, not between individual parameters.}
 
 \item{type}{Approach to construct the sample matrix. Options are:
 \itemize{
@@ -35,6 +37,18 @@ to the function \code{\link[lhs]{randomLHS}} of the \code{lhs} package.
 \item \code{type = "R"}: It uses random numbers.
 }}
 
+\item{groups}{Optional grouping of the parameters into a strict partition.
+Either \code{NULL} (the default; each parameter is its own group, i.e.
+the standard Sobol' design), a named list of character vectors of parameter
+names (e.g. \code{groups = list(g1 = "X1", g2 = c("X2", "X3"))}), or a
+character vector of length \code{length(params)} aligned with \code{params}
+that labels each parameter with its group (e.g.
+\code{groups = c("g1", "g2", "g2")}). Every parameter in \code{params} must
+appear in exactly one group. When \code{groups} is supplied, conditional
+matrices swap all columns belonging to a group simultaneously, which is the
+standard device used to handle correlated inputs in Sobol'-based sensitivity
+analysis by moving them together.}
+
 \item{...}{Further arguments in \code{\link[randtoolbox]{sobol}}.}
 }
 \value{
@@ -44,7 +58,9 @@ a sampling point.
 \description{
 It creates the sample matrices to compute Sobol' first and total-order indices.
 If needed, it also creates the sample matrices required to compute second,
-third and fourth-order indices.
+third and fourth-order indices. Indices can be computed for individual parameters
+or for groups of parameters (e.g. to handle correlated inputs by moving them
+together).
 }
 \details{
 Before calling \code{sobol_matrices}, the user must decide which estimators
@@ -82,6 +98,16 @@ those created for second-order effects.
 
 The same process applies to create the matrices to compute fourth-order effects.
 
+When \code{groups} is supplied, the construction is identical except that the
+index \eqn{i} (or \eqn{(i,j)}, \eqn{(i,j,l)}, \eqn{(i,j,l,m)}) ranges over
+groups rather than individual parameters: a single conditional matrix
+\eqn{\mathbf{A}_B^{(g)}} swaps all columns of group \eqn{g} from
+\eqn{\mathbf{A}} to \eqn{\mathbf{B}} simultaneously. The number of conditional
+matrices appended therefore depends on the number of groups \eqn{G} rather
+than on \eqn{k}: \eqn{G} for first-order, \eqn{\binom{G}{2}} for second-order,
+and so on. Downstream, \code{\link{sobol_indices}} interprets each conditional
+block as a group-wise effect.
+
 All columns are distributed in (0,1). If the uncertainty in some parameter(s) is better described with
 another distribution, the user should apply the required quantile inverse transformation to the column of
 interest once the sample matrix is produced.
@@ -96,6 +122,12 @@ mat <- sobol_matrices(N = N, params = params, order = order)
 # Let's assume that the uncertainty in X3 is better described
 # with a normal distribution with mean 0 and standard deviation 1:
 mat[, 3] <- qnorm(mat[, 3], 0, 1)
+
+# Grouped design: treat X2 and X3 as a single group (e.g. because they
+# are correlated and should be moved together).
+params <- paste("X", 1:4, sep = "")
+groups <- list(g1 = "X1", g2 = c("X2", "X3"), g3 = "X4")
+mat_g <- sobol_matrices(N = 100, params = params, groups = groups)
 }
 \references{
 \insertAllCited{}

@@ -6,7 +6,7 @@
 \alias{sensobol}
 \title{sensobol: Computation of Variance-Based Sensitivity Indices}
 \description{
-It allows to rapidly compute, bootstrap and plot up to third-order Sobol'-based sensitivity
+It allows to rapidly compute, bootstrap and plot up to fourth-order Sobol'-based sensitivity
 indices using several state-of-the-art first and total-order estimators. Sobol' indices
 can be computed either for models that yield a scalar as a model output or for systems of
 differential equations. The package also provides a suit of benchmark tests functions
