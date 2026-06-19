@@ -38,6 +38,20 @@ See \code{\link{sobol_matrices}}.}
 \item \code{first = "jansen"} \insertCite{Jansen1999}{sensobol}.
 \item \code{first = "sobol"}  \insertCite{Sobol1993}{sensobol}.
 \item \code{first = "azzini"} \insertCite{Azzini2020}{sensobol}.
+\item \code{first = "owen"} \insertCite{Owen2013}{sensobol}: antithetic-pair
+estimator where both factors \eqn{Y_{AB}^{(i)} - Y_A} and \eqn{Y_B - Y_{BA}^{(i)}}
+are exactly zero when \eqn{X_i} has no effect, giving a zero-bias estimate
+at \eqn{S_i = 0}. Useful for discriminating "essentially zero" from
+"small but real" inputs. Requires the sampling design
+\code{c("A","B","AB","BA")}.
+\item \code{first = "martinez"} \insertCite{Martinez2011}{sensobol}: covariance
+form of the Pearson-correlation estimator \eqn{S_i = \mathrm{cor}(Y_B, Y_{AB}^{(i)})};
+the first-order counterpart of \code{total = "glen"}. Asymptotically equivalent
+to the correlation form for large \eqn{N}.
+\item \code{first = "mauntz"} \insertCite{Saltelli2010a}{sensobol}: Mauntz-centered
+Saltelli estimator. Asymptotically equivalent to \code{first = "saltelli"} but
+more stable in finite samples because the \eqn{f_0^2} cross-term is cancelled
+through centering.
 }}
 
 \item{total}{Estimator to compute total-order indices. Options are:
@@ -49,6 +63,12 @@ See \code{\link{sobol_matrices}}.}
 \item \code{total = "glen"} \insertCite{Glen2012}{sensobol}.
 \item \code{total = "azzini"} \insertCite{Azzini2020}{sensobol}.
 \item \code{total = "saltelli"} \insertCite{Saltelli2008}{sensobol}.
+\item \code{total = "owen"} \insertCite{Owen2013}{sensobol}: replicated total-order
+estimator that averages the two equivalent Jansen estimates obtained from
+the \eqn{(A, A_B^{(i)})} and \eqn{(B, B_A^{(i)})} pairs. Halves the variance
+of plain Jansen at the same total cost when both \eqn{A_B} and \eqn{B_A}
+matrices are already evaluated. Requires sampling design
+\code{c("A","B","AB","BA")}.
 }}
 
 \item{order}{Whether to compute "first", "second", "third" or fourth-order Sobol' indices. Default

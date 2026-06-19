@@ -162,6 +162,165 @@ test_that("sobol_indices computes third-order indices", {
   expect_true("Sijl" %in% ind$results$sensitivity)
 })
 
+# ---- New estimators: Owen, Martinez, Mauntz ----
+
+# helper: produce Ishigami output on the appropriate sampling design
+.ish_data <- function(N, params, matrices = c("A", "B", "AB"), order = "first") {
+  mat <- sobol_matrices(N = N, params = params, matrices = matrices, order = order)
+  list(Y = ishigami_Fun(mat), mat = mat)
+}
+
+# -- mauntz (requires A, B, AB) --
+
+test_that("mauntz Si matches saltelli Si in expectation on Ishigami", {
+  N <- 2^13
+  params <- paste0("X", 1:3)
+  d <- .ish_data(N, params)
+  ind_s <- sobol_indices(Y = d$Y, N = N, params = params,
+                         first = "saltelli", total = "jansen")
+  ind_m <- sobol_indices(Y = d$Y, N = N, params = params,
+                         first = "mauntz", total = "jansen")
+  si_s <- ind_s$results[sensitivity == "Si", original]
+  si_m <- ind_m$results[sensitivity == "Si", original]
+  expect_equal(si_s, si_m, tolerance = 0.01)
+})
+
+test_that("mauntz Si runs with higher-order designs", {
+  N <- 200; params <- paste0("X", 1:3)
+  d <- .ish_data(N, params, order = "third")
+  ind <- sobol_indices(Y = d$Y, N = N, params = params,
+                       first = "mauntz", total = "jansen", order = "third")
+  expect_true("Sij"  %in% ind$results$sensitivity)
+  expect_true("Sijl" %in% ind$results$sensitivity)
+})
+
+test_that("mauntz Si runs with groups and bootstrap", {
+  N <- 200; params <- paste0("X", 1:3)
+  groups <- list(g1 = "X1", g23 = c("X2", "X3"))
+  mat <- sobol_matrices(N = N, params = params, groups = groups)
+  Y <- ishigami_Fun(mat)
+  ind <- sobol_indices(Y = Y, N = N, params = params, groups = groups,
+                       first = "mauntz", total = "jansen",
+                       boot = TRUE, R = 25)
+  expect_equal(nrow(ind$results[sensitivity == "Si"]), length(groups))
+  expect_true(all(c("low.ci", "high.ci") %in% colnames(ind$results)))
+})
+
+# -- martinez (requires A, B, AB) --
+
+test_that("martinez Si matches saltelli Si in expectation on Ishigami", {
+  N <- 2^13; params <- paste0("X", 1:3)
+  d <- .ish_data(N, params)
+  ind_s <- sobol_indices(Y = d$Y, N = N, params = params,
+                         first = "saltelli", total = "jansen")
+  ind_m <- sobol_indices(Y = d$Y, N = N, params = params,
+                         first = "martinez", total = "jansen")
+  expect_equal(ind_s$results[sensitivity == "Si", original],
+               ind_m$results[sensitivity == "Si", original],
+               tolerance = 0.02)
+})
+
+test_that("martinez Si runs with higher-order designs", {
+  N <- 200; params <- paste0("X", 1:3)
+  d <- .ish_data(N, params, order = "second")
+  ind <- sobol_indices(Y = d$Y, N = N, params = params,
+                       first = "martinez", total = "jansen", order = "second")
+  expect_true("Sij" %in% ind$results$sensitivity)
+})
+
+test_that("martinez Si runs with groups and bootstrap", {
+  N <- 200; params <- paste0("X", 1:3)
+  groups <- list(g1 = "X1", g23 = c("X2", "X3"))
+  mat <- sobol_matrices(N = N, params = params, groups = groups)
+  Y <- ishigami_Fun(mat)
+  ind <- sobol_indices(Y = Y, N = N, params = params, groups = groups,
+                       first = "martinez", total = "jansen",
+                       boot = TRUE, R = 25)
+  expect_equal(nrow(ind$results[sensitivity == "Si"]), length(groups))
+  expect_true(all(c("low.ci", "high.ci") %in% colnames(ind$results)))
+})
+
+# -- owen Si and Ti (require A, B, AB, BA) --
+
+test_that("owen Si matches saltelli Si in expectation on Ishigami", {
+  N <- 2^13; params <- paste0("X", 1:3)
+  d <- .ish_data(N, params, matrices = c("A", "B", "AB", "BA"))
+  ind_s <- sobol_indices(matrices = c("A","B","AB","BA"),
+                         Y = d$Y, N = N, params = params,
+                         first = "saltelli", total = "jansen")
+  ind_o <- sobol_indices(matrices = c("A","B","AB","BA"),
+                         Y = d$Y, N = N, params = params,
+                         first = "owen", total = "owen")
+  expect_equal(ind_s$results[sensitivity == "Si", original],
+               ind_o$results[sensitivity == "Si", original],
+               tolerance = 0.02)
+  expect_equal(ind_s$results[sensitivity == "Ti", original],
+               ind_o$results[sensitivity == "Ti", original],
+               tolerance = 0.02)
+})
+
+test_that("owen Si and Ti run with higher-order designs", {
+  N <- 200; params <- paste0("X", 1:3)
+  d <- .ish_data(N, params, matrices = c("A","B","AB","BA"), order = "second")
+  ind <- sobol_indices(matrices = c("A","B","AB","BA"),
+                       Y = d$Y, N = N, params = params,
+                       first = "owen", total = "owen", order = "second")
+  expect_true("Sij" %in% ind$results$sensitivity)
+})
+
+test_that("owen Si and Ti run with groups and bootstrap", {
+  N <- 200; params <- paste0("X", 1:3)
+  groups <- list(g1 = "X1", g23 = c("X2", "X3"))
+  mat <- sobol_matrices(N = N, params = params,
+                        matrices = c("A","B","AB","BA"), groups = groups)
+  Y <- ishigami_Fun(mat)
+  ind <- sobol_indices(matrices = c("A","B","AB","BA"),
+                       Y = Y, N = N, params = params, groups = groups,
+                       first = "owen", total = "owen",
+                       boot = TRUE, R = 25)
+  expect_equal(nrow(ind$results[sensitivity == "Si"]), length(groups))
+  expect_equal(nrow(ind$results[sensitivity == "Ti"]), length(groups))
+  expect_true(all(c("low.ci", "high.ci") %in% colnames(ind$results)))
+})
+
+# -- error paths: wrong matrix design --
+
+test_that("owen first errors with c('A','B','AB') design", {
+  N <- 100; params <- paste0("X", 1:3)
+  d <- .ish_data(N, params)
+  expect_error(
+    sobol_indices(Y = d$Y, N = N, params = params,
+                  first = "owen", total = "jansen"),
+    "Revise the correspondence"
+  )
+})
+
+test_that("owen total errors with c('A','B','AB') design", {
+  N <- 100; params <- paste0("X", 1:3)
+  d <- .ish_data(N, params)
+  expect_error(
+    sobol_indices(Y = d$Y, N = N, params = params,
+                  first = "saltelli", total = "owen"),
+    "Revise the correspondence"
+  )
+})
+
+test_that("martinez and mauntz error with c('A','B','BA') design", {
+  N <- 100; params <- paste0("X", 1:3)
+  mat <- sobol_matrices(N = N, params = params, matrices = c("A","B","BA"))
+  Y <- ishigami_Fun(mat)
+  expect_error(
+    sobol_indices(matrices = c("A","B","BA"), Y = Y, N = N, params = params,
+                  first = "martinez", total = "saltelli"),
+    "Revise the correspondence"
+  )
+  expect_error(
+    sobol_indices(matrices = c("A","B","BA"), Y = Y, N = N, params = params,
+                  first = "mauntz", total = "saltelli"),
+    "Revise the correspondence"
+  )
+})
+
 # ---- sobol_indices with groups ----
 
 test_that("sobol_indices with groups returns one Si/Ti per group", {

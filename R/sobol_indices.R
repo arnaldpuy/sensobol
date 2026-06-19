@@ -124,7 +124,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   ms <- "Revise the correspondence between the matrices and the estimators"
 
   if (isTRUE(all.equal(matrices, c("A", "B", "AB")))) {
-    if (!(first %in% c("saltelli", "jansen")) |
+    if (!(first %in% c("saltelli", "jansen", "martinez", "mauntz")) |
         !(total %in% c("jansen", "sobol", "homma", "janon", "glen"))) {
       stop(ms)
     }
@@ -135,8 +135,10 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     }
 
   } else if (isTRUE(all.equal(matrices, c("A", "B", "AB", "BA")))) {
-    if (!(first %in% c("saltelli", "jansen", "azzini", "sobol")) |
-        !(total %in% c("azzini", "jansen", "sobol", "homma", "janon", "glen", "saltelli"))) {
+    if (!(first %in% c("saltelli", "jansen", "azzini", "sobol",
+                       "owen", "martinez", "mauntz")) |
+        !(total %in% c("azzini", "jansen", "sobol", "homma", "janon",
+                       "glen", "saltelli", "owen"))) {
       stop(ms)
     }
   }
@@ -196,7 +198,7 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   # --------------------------------------------------------------------
 
   # Define variance for estimators with A, B, AB; or A, B, BA matrices
-  if (first == "saltelli" | first == "jansen" | first == "sobol") {
+  if (first %in% c("saltelli", "jansen", "sobol", "owen", "martinez", "mauntz")) {
     f0 <- 1 / (2 * N) * sum(Y_A + Y_B)
     VY <- 1 / (2 * N - 1) * sum((Y_A - f0)^2 + (Y_B - f0)^2)
   }
@@ -215,8 +217,31 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     VY <- Rfast::colsums((Y_A - Y_B)^2 + (Y_BA - Y_AB)^2)
     Vi <- (2 * Rfast::colsums((Y_BA - Y_B) * (Y_A - Y_AB)))
 
+  } else if (first == "owen") {
+    # Owen (2013). Antithetic-pair estimator: both (Y_AB - Y_A) and
+    # (Y_B - Y_BA) are exactly zero when X_i has no effect, so the
+    # estimator is zero-bias at S_i = 0. Requires all four sample
+    # matrices (A, B, AB, BA).
+    Vi <- 1 / (2 * N) * Rfast::colsums((Y_AB - Y_A) * (Y_B - Y_BA))
+
+  } else if (first == "martinez") {
+    # Martinez (2011). Sample covariance form (cov / VY is asymptotically
+    # equivalent to cor(Y_B, Y_AB) since V(Y_B) ~ V(Y_AB) ~ VY for large N).
+    # Using the covariance form keeps the standard Vij = V_union - V_i - V_j
+    # decomposition valid for higher-order indices.
+    mY_B <- mean(Y_B)
+    mY_AB <- Rfast::colmeans(Y_AB)
+    Vi <- (Rfast::colsums(Y_B * Y_AB) - N * mY_B * mY_AB) / (N - 1)
+
+  } else if (first == "mauntz") {
+    # Mauntz-centered Saltelli (Saltelli et al. 2010, Sec. 4.3). Asymptotically
+    # equivalent to "saltelli" but more stable in finite samples because the
+    # f0^2 cross-term is cancelled exactly through centering.
+    mY_A <- mean(Y_A); mY_B <- mean(Y_B)
+    Vi <- 1 / N * Rfast::colsums((Y_B - mY_B) * (Y_AB - mY_A))
+
   } else {
-    stop("first should be sobol, saltelli, jansen or azzini")
+    stop("first should be sobol, saltelli, jansen, azzini, owen, martinez or mauntz")
   }
 
   if (first == "azzini") {
@@ -230,8 +255,8 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   # --------------------------------------------------------------------
 
   # Define variance for estimators with A, B, AB; or A, B, BA matrices
-  if (total == "azzini" | total == "jansen" | total == "sobol" |
-      total == "homma" | total == "janon" | total == "glen" | total == "saltelli") {
+  if (total %in% c("azzini", "jansen", "sobol", "homma", "janon",
+                   "glen", "saltelli", "owen")) {
 
     f0 <- 1 / (2 * N) * sum(Y_A + Y_B)
     VY <- 1 / (2 * N - 1) * sum((Y_A - f0)^2 + (Y_B - f0)^2)
@@ -265,8 +290,16 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     Ti <- Rfast::colsums((Y_B - Y_BA)^2 + (Y_A - Y_AB)^2) /
       Rfast::colsums((Y_A - Y_B)^2 + (Y_BA - Y_AB)^2)
 
+  } else if (total == "owen") {
+    # Owen (2013) "replicated" total-order: average the two equivalent
+    # Jansen estimates obtained from the A->A_B^(i) and B->B_A^(i) pairs.
+    # Halves the variance of plain Jansen for the same total cost when
+    # A_B and B_A are already computed.
+    Ti <- (1 / (4 * N) *
+             Rfast::colsums((Y_A - Y_AB)^2 + (Y_B - Y_BA)^2)) / VY
+
   } else {
-    stop("total should be jansen, sobol, homma saltelli, janon, glen or azzini")
+    stop("total should be jansen, sobol, homma, saltelli, janon, glen, azzini or owen")
   }
   Ti <- Ti[1:length(params)]
 
@@ -438,6 +471,20 @@ bootstats <- function(b, conf = conf, type = type) {
 #' * \code{first = "jansen"} \insertCite{Jansen1999}{sensobol}.
 #' * \code{first = "sobol"}  \insertCite{Sobol1993}{sensobol}.
 #' * \code{first = "azzini"} \insertCite{Azzini2020}{sensobol}.
+#' * \code{first = "owen"} \insertCite{Owen2013}{sensobol}: antithetic-pair
+#' estimator where both factors \eqn{Y_{AB}^{(i)} - Y_A} and \eqn{Y_B - Y_{BA}^{(i)}}
+#' are exactly zero when \eqn{X_i} has no effect, giving a zero-bias estimate
+#' at \eqn{S_i = 0}. Useful for discriminating "essentially zero" from
+#' "small but real" inputs. Requires the sampling design
+#' \code{c("A","B","AB","BA")}.
+#' * \code{first = "martinez"} \insertCite{Martinez2011}{sensobol}: covariance
+#' form of the Pearson-correlation estimator \eqn{S_i = \mathrm{cor}(Y_B, Y_{AB}^{(i)})};
+#' the first-order counterpart of \code{total = "glen"}. Asymptotically equivalent
+#' to the correlation form for large \eqn{N}.
+#' * \code{first = "mauntz"} \insertCite{Saltelli2010a}{sensobol}: Mauntz-centered
+#' Saltelli estimator. Asymptotically equivalent to \code{first = "saltelli"} but
+#' more stable in finite samples because the \eqn{f_0^2} cross-term is cancelled
+#' through centering.
 #' @param total Estimator to compute total-order indices. Options are:
 #' * \code{total = "jansen"} \insertCite{Jansen1999}{sensobol}.
 #' * \code{total = "sobol"} \insertCite{Sobol2001}{sensobol}.
@@ -446,6 +493,12 @@ bootstats <- function(b, conf = conf, type = type) {
 #' * \code{total = "glen"} \insertCite{Glen2012}{sensobol}.
 #' * \code{total = "azzini"} \insertCite{Azzini2020}{sensobol}.
 #' * \code{total = "saltelli"} \insertCite{Saltelli2008}{sensobol}.
+#' * \code{total = "owen"} \insertCite{Owen2013}{sensobol}: replicated total-order
+#' estimator that averages the two equivalent Jansen estimates obtained from
+#' the \eqn{(A, A_B^{(i)})} and \eqn{(B, B_A^{(i)})} pairs. Halves the variance
+#' of plain Jansen at the same total cost when both \eqn{A_B} and \eqn{B_A}
+#' matrices are already evaluated. Requires sampling design
+#' \code{c("A","B","AB","BA")}.
 #' @param order Whether to compute "first", "second", "third" or fourth-order Sobol' indices. Default
 #' is \code{order = "first"}. When \code{groups} is supplied, the order refers to
 #' interactions between groups, not between individual parameters.

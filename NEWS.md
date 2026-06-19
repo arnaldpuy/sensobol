@@ -1,4 +1,40 @@
 
+# sensobol 1.1.10
+
+* Added three new first-order Sobol' index estimators to `sobol_indices()`:
+
+  - `first = "owen"` (Owen 2013): an antithetic-pair estimator,
+    `V_i = (1/2N) * sum((Y_AB^(i) - Y_A) * (Y_B - Y_BA^(i)))`, in which both
+    factors are exactly zero when input X_i has no effect on the output. This
+    gives a zero-bias estimate at S_i = 0 and is useful for discriminating
+    "essentially zero" from "small but real" inputs. Requires the sampling
+    design `c("A","B","AB","BA")`.
+  - `first = "martinez"` (Martinez 2011): the covariance form of the
+    Pearson-correlation estimator, i.e. the first-order counterpart of the
+    existing `total = "glen"` total-order estimator.
+  - `first = "mauntz"` (Mauntz-centered Saltelli; Saltelli et al. 2010): a
+    centered version of the Saltelli estimator that is asymptotically
+    equivalent to `first = "saltelli"` but more stable in finite samples
+    because the f_0^2 cross-term is cancelled exactly through centering.
+
+* Added a new total-order estimator `total = "owen"` (Owen 2013): a replicated
+  total-order estimator that averages the two equivalent Jansen estimates
+  obtained from the `(A, A_B^(i))` and `(B, B_A^(i))` pairs, halving the
+  variance of plain Jansen at the same total cost when both A_B and B_A
+  matrices are already available. Requires the sampling design
+  `c("A","B","AB","BA")`.
+
+* Updated the matrix/estimator concordance check in `sobol_boot()` to admit
+  the new estimators only on their valid sampling designs and to error
+  informatively otherwise.
+
+* All four new estimators integrate with the existing higher-order (second,
+  third, fourth), grouped, and bootstrap workflows.
+
+* Added test coverage for the four new estimators: expectation agreement with
+  established estimators, higher-order designs, grouped designs, bootstrap,
+  and error paths.
+
 # sensobol 1.1.9
 
 * Added a new `groups` argument to `sobol_matrices()` and `sobol_indices()` that
