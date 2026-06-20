@@ -11,6 +11,20 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// sobol_owen_cpp
+Rcpp::NumericMatrix sobol_owen_cpp(int N, int dim, Rcpp::Nullable<int> seed_in, bool scramble);
+RcppExport SEXP _sensobol_sobol_owen_cpp(SEXP NSEXP, SEXP dimSEXP, SEXP seed_inSEXP, SEXP scrambleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< int >::type dim(dimSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<int> >::type seed_in(seed_inSEXP);
+    Rcpp::traits::input_parameter< bool >::type scramble(scrambleSEXP);
+    rcpp_result_gen = Rcpp::wrap(sobol_owen_cpp(N, dim, seed_in, scramble));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mmult
 arma::mat mmult(arma::mat A, arma::rowvec x);
 RcppExport SEXP _sensobol_mmult(SEXP ASEXP, SEXP xSEXP) {
@@ -25,6 +39,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_sensobol_sobol_owen_cpp", (DL_FUNC) &_sensobol_sobol_owen_cpp, 4},
     {"_sensobol_mmult", (DL_FUNC) &_sensobol_mmult, 2},
     {NULL, NULL, 0}
 };

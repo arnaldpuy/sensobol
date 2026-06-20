@@ -179,3 +179,159 @@ test_that("groups vector must have the same length as params", {
     "same length as 'params'"
   )
 })
+
+# ---- scrambling: regression (default == "none") ----
+
+test_that("scrambling = 'none' matches the pre-existing default", {
+  N <- 50; params <- paste0("X", 1:3)
+  m_old  <- sobol_matrices(N = N, params = params)
+  m_none <- sobol_matrices(N = N, params = params, scrambling = "none")
+  expect_identical(m_old, m_none)
+})
+
+# ---- scrambling: Cranley-Patterson shift ----
+
+test_that("scrambling = 'shift' with same seed is reproducible", {
+  N <- 100; params <- paste0("X", 1:3)
+  m1 <- sobol_matrices(N = N, params = params, scrambling = "shift", seed = 7)
+  m2 <- sobol_matrices(N = N, params = params, scrambling = "shift", seed = 7)
+  expect_equal(m1, m2)
+})
+
+test_that("scrambling = 'shift' with different seeds differs", {
+  N <- 100; params <- paste0("X", 1:3)
+  m1 <- sobol_matrices(N = N, params = params, scrambling = "shift", seed = 7)
+  m2 <- sobol_matrices(N = N, params = params, scrambling = "shift", seed = 99)
+  expect_false(isTRUE(all.equal(m1, m2)))
+})
+
+test_that("scrambling = 'shift' output stays in [0, 1]", {
+  N <- 100; params <- paste0("X", 1:3)
+  m <- sobol_matrices(N = N, params = params, scrambling = "shift", seed = 1)
+  expect_true(all(m >= 0 & m <= 1))
+})
+
+test_that("shift column means converge to 0.5 and variances to 1/12", {
+  N <- 2^13; params <- paste0("X", 1:3)
+  m <- sobol_matrices(N = N, params = params, scrambling = "shift", seed = 1)
+  A <- m[1:N, ]
+  expect_equal(unname(colMeans(A)), rep(0.5, 3), tolerance = 0.02)
+  expect_equal(unname(apply(A, 2, var)), rep(1 / 12, 3), tolerance = 0.02)
+})
+
+# ---- scrambling: in-house Sobol' + Owen ----
+
+test_that("scrambling = 'owen' with same seed is reproducible", {
+  N <- 100; params <- paste0("X", 1:3)
+  m1 <- sobol_matrices(N = N, params = params, scrambling = "owen", seed = 7)
+  m2 <- sobol_matrices(N = N, params = params, scrambling = "owen", seed = 7)
+  expect_equal(m1, m2)
+})
+
+test_that("scrambling = 'owen' with different seeds differs", {
+  N <- 100; params <- paste0("X", 1:3)
+  m1 <- sobol_matrices(N = N, params = params, scrambling = "owen", seed = 7)
+  m2 <- sobol_matrices(N = N, params = params, scrambling = "owen", seed = 99)
+  expect_false(isTRUE(all.equal(m1, m2)))
+})
+
+test_that("scrambling = 'owen' output stays in [0, 1]", {
+  N <- 100; params <- paste0("X", 1:3)
+  m <- sobol_matrices(N = N, params = params, scrambling = "owen", seed = 1)
+  expect_true(all(m >= 0 & m <= 1))
+})
+
+test_that("owen column means converge to 0.5 and variances to 1/12", {
+  N <- 2^13; params <- paste0("X", 1:3)
+  m <- sobol_matrices(N = N, params = params, scrambling = "owen", seed = 1)
+  A <- m[1:N, ]
+  expect_equal(unname(colMeans(A)), rep(0.5, 3), tolerance = 0.02)
+  expect_equal(unname(apply(A, 2, var)), rep(1 / 12, 3), tolerance = 0.02)
+})
+
+test_that("owen QMC integral converges faster than plain MC", {
+  # Integral of sum(x_i^2) over [0,1]^d is d/3.
+  N <- 2^12; d <- 5
+  mat <- sobol_matrices(N = N, params = paste0("X", 1:d),
+                        matrices = "A", scrambling = "owen", seed = 1)
+  qmc_err <- abs(mean(rowSums(mat ^ 2)) - d / 3)
+  set.seed(1)
+  mc_err <- abs(mean(replicate(N, sum(stats::runif(d) ^ 2))) - d / 3)
+  expect_lt(qmc_err, mc_err)
+})
+
+# ---- scrambling: integration with other features ----
+
+test_that("scrambling integrates with groups and order = 'second'", {
+  N <- 100; params <- paste0("X", 1:4)
+  g <- list(g1 = "X1", g23 = c("X2", "X3"), g4 = "X4")
+
+  for (sc in c("shift", "owen")) {
+    m <- sobol_matrices(N = N, params = params, scrambling = sc, seed = 1,
+                        groups = g, order = "second")
+    G <- length(g)
+    expect_equal(nrow(m), N * (G + 2 + choose(G, 2)),
+                 info = paste("scrambling =", sc))
+  }
+})
+
+test_that("Ishigami Sobol' indices converge under all scrambling modes", {
+  N <- 2^13; params <- paste0("X", 1:3)
+  for (sc in c("none", "shift", "owen")) {
+    mat <- sobol_matrices(N = N, params = params, scrambling = sc, seed = 1)
+    Y <- ishigami_Fun(mat)
+    ind <- sobol_indices(Y = Y, N = N, params = params)
+    si <- ind$results[sensitivity == "Si", original]
+    # S1 ~ 0.38, S2 ~ 0.001, S3 ~ 0 for sensobol's Ishigami parametrization
+    expect_lt(abs(si[1] - 0.383), 0.05, label = paste(sc, "S1"))
+    expect_lt(abs(si[2] - 0.001), 0.05, label = paste(sc, "S2"))
+    expect_lt(abs(si[3] - 0.000), 0.05, label = paste(sc, "S3"))
+  }
+})
+
+# ---- scrambling: error and validation paths ----
+
+test_that("scrambling = 'owen' errors when dim > 250", {
+  expect_error(
+    sobol_matrices(N = 10, params = paste0("X", 1:200),
+                   scrambling = "owen", seed = 1),
+    "up to 250 dimensions"
+  )
+})
+
+test_that("scrambling with type != 'QRN' emits a warning and falls back", {
+  expect_warning(
+    sobol_matrices(N = 50, params = paste0("X", 1:3),
+                   type = "R", scrambling = "shift", seed = 1),
+    "only used when type"
+  )
+})
+
+test_that("invalid 'seed' is rejected", {
+  expect_error(
+    sobol_matrices(N = 50, params = paste0("X", 1:3),
+                   scrambling = "shift", seed = "abc"),
+    "'seed' must be a single integer"
+  )
+})
+
+test_that("invalid 'scrambling' value is rejected", {
+  expect_error(
+    sobol_matrices(N = 50, params = paste0("X", 1:3),
+                   scrambling = "bogus", seed = 1),
+    "'arg'"
+  )
+})
+
+test_that("scrambling does not clobber the user's global RNG state", {
+  set.seed(123); a <- stats::runif(1)
+  set.seed(123); .junk <- sobol_matrices(N = 50, params = paste0("X", 1:3),
+                                         scrambling = "shift", seed = 7)
+  b <- stats::runif(1)
+  expect_equal(a, b)
+
+  set.seed(123); .junk <- sobol_matrices(N = 50, params = paste0("X", 1:3),
+                                         scrambling = "owen", seed = 7)
+  d <- stats::runif(1)
+  expect_equal(a, d)
+})

@@ -11,6 +11,8 @@ sobol_matrices(
   order = "first",
   type = "QRN",
   groups = NULL,
+  scrambling = "none",
+  seed = NULL,
   ...
 )
 }
@@ -48,6 +50,33 @@ appear in exactly one group. When \code{groups} is supplied, conditional
 matrices swap all columns belonging to a group simultaneously, which is the
 standard device used to handle correlated inputs in Sobol'-based sensitivity
 analysis by moving them together.}
+
+\item{scrambling}{Randomisation of the underlying low-discrepancy sequence,
+only applied when \code{type = "QRN"}. One of:
+\itemize{
+\item \code{scrambling = "none"} (default): pass-through call to
+\code{\link[randtoolbox]{sobol}}; reproducibility is governed by R's
+global RNG state, as today.
+\item \code{scrambling = "shift"}: Cranley-Patterson digital shift
+\insertCite{Cranley1976}{sensobol}. For each column \eqn{j} an independent
+\eqn{u_j \sim U(0,1)} is drawn and the points are mapped to
+\eqn{(x_{ij} + u_j) \mod 1}. The sequence remains low-discrepancy in
+expectation; replicates allow unbiased estimates and variance estimation
+in QMC integration. Zero new dependency.
+\item \code{scrambling = "owen"}: hash-based Owen scrambling
+\insertCite{Owen1995,Burley2020}{sensobol} of a Sobol' sequence
+constructed in-house from \insertCite{Joe2008;textual}{sensobol}
+direction numbers. Independent of \code{randtoolbox}: the sequence is
+built and scrambled by sensobol's own C++ code, so the package keeps
+working if the upstream sampler changes. Supports up to 250 dimensions.
+}}
+
+\item{seed}{Optional integer. When supplied, the scrambling is fully
+reproducible across runs and the user's global RNG state is preserved
+(set and restored internally). When \code{NULL} (the default), a fresh
+random scrambling is drawn from R's global RNG on every call -- which is
+the usual idiom for randomised QMC replication. Ignored when
+\code{scrambling = "none"}.}
 
 \item{...}{Further arguments in \code{\link[randtoolbox]{sobol}}.}
 }
@@ -111,6 +140,18 @@ block as a group-wise effect.
 All columns are distributed in (0,1). If the uncertainty in some parameter(s) is better described with
 another distribution, the user should apply the required quantile inverse transformation to the column of
 interest once the sample matrix is produced.
+
+When \code{scrambling} is set to \code{"shift"} or \code{"owen"}, the
+underlying Sobol' sequence is randomised. This converts the deterministic
+QMC design into a \emph{randomised QMC} design and unlocks two practical
+benefits: (i) every replicate run gives a statistically independent point
+set, so confidence intervals on Sobol' indices and other QMC quantities can
+be obtained directly from a small number of replications; and (ii) the
+estimators of integrals (and hence of \eqn{V(Y)}, \eqn{V_i}, \eqn{T_i}) are
+unbiased -- which the bare deterministic sequence is not. \code{"shift"}
+is the simpler Cranley-Patterson rotation; \code{"owen"} is the more
+powerful base-2 nested-uniform Owen scrambling and is generally preferred
+when available. Both options are reproducible when \code{seed} is supplied.
 }
 \examples{
 # Define settings
@@ -128,6 +169,11 @@ mat[, 3] <- qnorm(mat[, 3], 0, 1)
 params <- paste("X", 1:4, sep = "")
 groups <- list(g1 = "X1", g2 = c("X2", "X3"), g3 = "X4")
 mat_g <- sobol_matrices(N = 100, params = params, groups = groups)
+
+# Randomised QMC via Owen-scrambled Sobol' (in-house, no dependency on
+# randtoolbox's scrambling). Setting `seed` makes the run reproducible.
+mat_o <- sobol_matrices(N = 100, params = paste0("X", 1:3),
+                        scrambling = "owen", seed = 1)
 }
 \references{
 \insertAllCited{}

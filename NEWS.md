@@ -1,4 +1,45 @@
 
+# sensobol 1.10.0
+
+This release adds **randomised quasi-Monte Carlo (RQMC)** support to
+`sobol_matrices()` through two scrambling schemes. The previous
+deterministic behaviour is preserved as the default, so existing code is
+unaffected.
+
+* Added two new arguments to `sobol_matrices()`:
+
+  - `scrambling = c("none", "shift", "owen")`. The default `"none"`
+    reproduces the deterministic Sobol' sequence from `randtoolbox` as
+    in earlier releases. `"shift"` applies a Cranley-Patterson digital
+    shift (Cranley & Patterson 1976) on top of the `randtoolbox` output --
+    no new dependency. `"owen"` switches to an **in-house** Sobol'
+    generator (Joe-Kuo direction numbers, Joe & Kuo 2008) with hash-based
+    Owen scrambling (Owen 1995; Burley 2020). The Owen path is
+    independent of `randtoolbox` so the package keeps working if the
+    upstream sampler changes its API. Supports up to 250 dimensions.
+  - `seed = NULL`. When supplied, the scrambling is fully reproducible
+    across runs; the user's global RNG state is preserved (set and
+    restored internally). When `NULL`, a fresh random scrambling is drawn
+    from R's RNG on each call.
+
+* Added `src/sobol_owen.cpp` and `src/sobol_direction_numbers.h`
+  implementing the in-house Sobol' generator (Antonov-Saleev recurrence
+  on Joe-Kuo direction numbers) and the Burley hash-based Owen scrambler
+  (Laine-Karras hash, sandwiched between bit reversals). No new R
+  dependencies introduced.
+
+* The Joe-Kuo direction-number table is public domain, sourced from
+  https://web.maths.unsw.edu.au/~fkuo/sobol/new-joe-kuo-6.21201 and
+  subsetted to the first 250 dimensions (sufficient for realistic
+  sensobol use).
+
+* Added test coverage for the new scrambling modes: regression for
+  `scrambling = "none"`, reproducibility across replicates with same
+  seed, divergence across replicates with different seeds, range/mean
+  /variance convergence, QMC integration error smaller than plain MC,
+  integration with groups and higher-order designs, RNG-state
+  preservation, and validation/error paths.
+
 # sensobol 1.1.10
 
 * Added three new first-order Sobol' index estimators to `sobol_indices()`:

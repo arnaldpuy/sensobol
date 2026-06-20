@@ -1,4 +1,76 @@
 
+# SEED MANAGEMENT FOR SCRAMBLING
+##################################################################################
+
+# Run `expr` with `seed` controlling the RNG and restore the user's RNG state.
+# If `seed` is NULL, just evaluate `expr` (so the global RNG advances normally).
+#
+#' @keywords internal
+#' @noRd
+with_seed <- function(seed, expr) {
+
+  if (is.null(seed)) {
+    return(expr)
+  }
+
+  has_seed <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+
+  if (has_seed) {
+    oldseed <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+    on.exit(assign(".Random.seed", oldseed, envir = .GlobalEnv), add = TRUE)
+
+  } else {
+    on.exit(rm(".Random.seed", envir = .GlobalEnv), add = TRUE)
+  }
+
+  set.seed(seed)
+  expr
+}
+
+# CRANLEY-PATTERSON DIGITAL SHIFT
+##################################################################################
+
+# Apply a per-column random uniform offset modulo 1 to a low-discrepancy matrix.
+#
+#' @keywords internal
+#' @noRd
+shift_scramble <- function(df, seed = NULL) {
+
+  u <- with_seed(seed, stats::runif(ncol(df)))
+
+  out <- sweep(df, 2, u, "+") %% 1
+  attr(out, "dimnames") <- dimnames(df)
+  out
+}
+
+# IN-HOUSE SOBOL' SEQUENCE + OWEN SCRAMBLING
+##################################################################################
+
+# Generate a randomised Sobol' sequence using sensobol's own C++ implementation
+# (Joe-Kuo direction numbers + Burley hash-based Owen scrambling).
+# Independent of randtoolbox so the package keeps working if randtoolbox
+# changes its API again (as happened with the `scrambling` argument).
+#
+#' @keywords internal
+#' @noRd
+sobol_owen <- function(N, dim, seed = NULL) {
+
+  if (dim > 250L) {
+    stop(paste0("'scrambling = \"owen\"' supports up to 250 dimensions ",
+                "(requested ", dim, "). For higher dimensions use ",
+                "'scrambling = \"shift\"' or 'scrambling = \"none\"'."))
+  }
+
+  # The C++ side draws its master seed from R's RNG when seed is NULL,
+  # so we must enter the C++ call with R's RNG advanced consistently;
+  # with_seed handles the save/restore so the user's global RNG state
+  # is not clobbered when seed is provided.
+  with_seed(seed, sobol_owen_cpp(N = as.integer(N),
+                                 dim = as.integer(dim),
+                                 seed_in = if (is.null(seed)) NULL else as.integer(seed),
+                                 scramble = TRUE))
+}
+
 # RESOLUTION OF GROUPS INTO COLUMN INDICES
 ##################################################################################
 
@@ -173,6 +245,29 @@ scrambled_sobol <- function(matrices, A, B, C, order, group_idx) {
 #' \insertCite{McKay1979}{sensobol} through a call
 #' to the function \code{\link[lhs]{randomLHS}} of the \code{lhs} package.
 #' * \code{type = "R"}: It uses random numbers.
+#' @param scrambling Randomisation of the underlying low-discrepancy sequence,
+#' only applied when \code{type = "QRN"}. One of:
+#' * \code{scrambling = "none"} (default): pass-through call to
+#'   \code{\link[randtoolbox]{sobol}}; reproducibility is governed by R's
+#'   global RNG state, as today.
+#' * \code{scrambling = "shift"}: Cranley-Patterson digital shift
+#'   \insertCite{Cranley1976}{sensobol}. For each column \eqn{j} an independent
+#'   \eqn{u_j \sim U(0,1)} is drawn and the points are mapped to
+#'   \eqn{(x_{ij} + u_j) \mod 1}. The sequence remains low-discrepancy in
+#'   expectation; replicates allow unbiased estimates and variance estimation
+#'   in QMC integration. Zero new dependency.
+#' * \code{scrambling = "owen"}: hash-based Owen scrambling
+#'   \insertCite{Owen1995,Burley2020}{sensobol} of a Sobol' sequence
+#'   constructed in-house from \insertCite{Joe2008;textual}{sensobol}
+#'   direction numbers. Independent of \code{randtoolbox}: the sequence is
+#'   built and scrambled by sensobol's own C++ code, so the package keeps
+#'   working if the upstream sampler changes. Supports up to 250 dimensions.
+#' @param seed Optional integer. When supplied, the scrambling is fully
+#' reproducible across runs and the user's global RNG state is preserved
+#' (set and restored internally). When \code{NULL} (the default), a fresh
+#' random scrambling is drawn from R's global RNG on every call -- which is
+#' the usual idiom for randomised QMC replication. Ignored when
+#' \code{scrambling = "none"}.
 #' @param groups Optional grouping of the parameters into a strict partition.
 #' Either \code{NULL} (the default; each parameter is its own group, i.e.
 #' the standard Sobol' design), a named list of character vectors of parameter
@@ -236,6 +331,18 @@ scrambled_sobol <- function(matrices, A, B, C, order, group_idx) {
 #' another distribution, the user should apply the required quantile inverse transformation to the column of
 #' interest once the sample matrix is produced.
 #'
+#' When \code{scrambling} is set to \code{"shift"} or \code{"owen"}, the
+#' underlying Sobol' sequence is randomised. This converts the deterministic
+#' QMC design into a *randomised QMC* design and unlocks two practical
+#' benefits: (i) every replicate run gives a statistically independent point
+#' set, so confidence intervals on Sobol' indices and other QMC quantities can
+#' be obtained directly from a small number of replications; and (ii) the
+#' estimators of integrals (and hence of \eqn{V(Y)}, \eqn{V_i}, \eqn{T_i}) are
+#' unbiased -- which the bare deterministic sequence is not. \code{"shift"}
+#' is the simpler Cranley-Patterson rotation; \code{"owen"} is the more
+#' powerful base-2 nested-uniform Owen scrambling and is generally preferred
+#' when available. Both options are reproducible when \code{seed} is supplied.
+#'
 #' @importFrom Rdpack reprompt
 #'
 #' @references
@@ -258,12 +365,30 @@ scrambled_sobol <- function(matrices, A, B, C, order, group_idx) {
 #' params <- paste("X", 1:4, sep = "")
 #' groups <- list(g1 = "X1", g2 = c("X2", "X3"), g3 = "X4")
 #' mat_g <- sobol_matrices(N = 100, params = params, groups = groups)
+#'
+#' # Randomised QMC via Owen-scrambled Sobol' (in-house, no dependency on
+#' # randtoolbox's scrambling). Setting `seed` makes the run reproducible.
+#' mat_o <- sobol_matrices(N = 100, params = paste0("X", 1:3),
+#'                         scrambling = "owen", seed = 1)
 sobol_matrices <- function(matrices = c("A", "B", "AB"),
                            N, params, order = "first",
-                           type = "QRN", groups = NULL, ...) {
+                           type = "QRN", groups = NULL,
+                           scrambling = "none", seed = NULL, ...) {
 
   if (!is.numeric(N) || length(N) != 1 || N < 1 || N != floor(N))
     stop("'N' must be a single positive integer.")
+
+  scrambling <- match.arg(scrambling, c("none", "shift", "owen"))
+
+  if (!is.null(seed)) {
+    if (!is.numeric(seed) || length(seed) != 1 || seed != floor(seed))
+      stop("'seed' must be a single integer.")
+  }
+
+  if (scrambling != "none" && type != "QRN") {
+    warning("'scrambling' is only used when type = 'QRN'; ignoring.")
+    scrambling <- "none"
+  }
 
   k <- length(params)
   n.matrices <- ifelse(any(stringr::str_detect(matrices, "C")) == FALSE, 2, 3)
@@ -277,7 +402,22 @@ sobol_matrices <- function(matrices = c("A", "B", "AB"),
   # -----------------------------------------------------------------
 
   if (type == "QRN") {
-    df <- randtoolbox::sobol(n = N, dim = k * n.matrices, ...)
+
+    if (scrambling == "owen") {
+      # In-house Sobol' generator + Burley hash-based Owen scrambling.
+      # Avoids randtoolbox entirely for this branch.
+      df <- sobol_owen(N = N, dim = k * n.matrices, seed = seed)
+
+    } else {
+      df <- randtoolbox::sobol(n = N, dim = k * n.matrices, ...)
+
+      if (scrambling == "shift") {
+        # Cranley-Patterson rotation: per-column uniform offset, mod 1.
+        # Preserves the (t, m, s)-net structure in expectation and yields
+        # an unbiased estimator for QMC integration.
+        df <- shift_scramble(df, seed = seed)
+      }
+    }
 
   } else if (type == "R") {
     df <- replicate(k * n.matrices, stats::runif(N))
