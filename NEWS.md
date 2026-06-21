@@ -1,48 +1,14 @@
 
-# sensobol 1.10.0
+# sensobol 1.2.0
 
-This release adds **randomised quasi-Monte Carlo (RQMC)** support to
-`sobol_matrices()` through two scrambling schemes. The previous
-deterministic behaviour is preserved as the default, so existing code is
-unaffected.
+This release adds four new variance-based estimators and **randomised
+quasi-Monte Carlo (RQMC)** support to `sobol_matrices()`. All additions are
+backward compatible: existing code keeps its previous behaviour through the
+default argument values.
 
-* Added two new arguments to `sobol_matrices()`:
+## New sensitivity estimators in `sobol_indices()`
 
-  - `scrambling = c("none", "shift", "owen")`. The default `"none"`
-    reproduces the deterministic Sobol' sequence from `randtoolbox` as
-    in earlier releases. `"shift"` applies a Cranley-Patterson digital
-    shift (Cranley & Patterson 1976) on top of the `randtoolbox` output --
-    no new dependency. `"owen"` switches to an **in-house** Sobol'
-    generator (Joe-Kuo direction numbers, Joe & Kuo 2008) with hash-based
-    Owen scrambling (Owen 1995; Burley 2020). The Owen path is
-    independent of `randtoolbox` so the package keeps working if the
-    upstream sampler changes its API. Supports up to 250 dimensions.
-  - `seed = NULL`. When supplied, the scrambling is fully reproducible
-    across runs; the user's global RNG state is preserved (set and
-    restored internally). When `NULL`, a fresh random scrambling is drawn
-    from R's RNG on each call.
-
-* Added `src/sobol_owen.cpp` and `src/sobol_direction_numbers.h`
-  implementing the in-house Sobol' generator (Antonov-Saleev recurrence
-  on Joe-Kuo direction numbers) and the Burley hash-based Owen scrambler
-  (Laine-Karras hash, sandwiched between bit reversals). No new R
-  dependencies introduced.
-
-* The Joe-Kuo direction-number table is public domain, sourced from
-  https://web.maths.unsw.edu.au/~fkuo/sobol/new-joe-kuo-6.21201 and
-  subsetted to the first 250 dimensions (sufficient for realistic
-  sensobol use).
-
-* Added test coverage for the new scrambling modes: regression for
-  `scrambling = "none"`, reproducibility across replicates with same
-  seed, divergence across replicates with different seeds, range/mean
-  /variance convergence, QMC integration error smaller than plain MC,
-  integration with groups and higher-order designs, RNG-state
-  preservation, and validation/error paths.
-
-# sensobol 1.1.10
-
-* Added three new first-order Sobol' index estimators to `sobol_indices()`:
+* Three new first-order estimators:
 
   - `first = "owen"` (Owen 2013): an antithetic-pair estimator,
     `V_i = (1/2N) * sum((Y_AB^(i) - Y_A) * (Y_B - Y_BA^(i)))`, in which both
@@ -58,23 +24,53 @@ unaffected.
     equivalent to `first = "saltelli"` but more stable in finite samples
     because the f_0^2 cross-term is cancelled exactly through centering.
 
-* Added a new total-order estimator `total = "owen"` (Owen 2013): a replicated
+* One new total-order estimator, `total = "owen"` (Owen 2013): a replicated
   total-order estimator that averages the two equivalent Jansen estimates
   obtained from the `(A, A_B^(i))` and `(B, B_A^(i))` pairs, halving the
   variance of plain Jansen at the same total cost when both A_B and B_A
   matrices are already available. Requires the sampling design
   `c("A","B","AB","BA")`.
 
-* Updated the matrix/estimator concordance check in `sobol_boot()` to admit
-  the new estimators only on their valid sampling designs and to error
-  informatively otherwise.
+* The matrix/estimator concordance check in `sobol_boot()` now admits the new
+  estimators only on their valid sampling designs and errors informatively
+  otherwise. All four estimators integrate with the existing higher-order
+  (second, third, fourth), grouped and bootstrap workflows.
 
-* All four new estimators integrate with the existing higher-order (second,
-  third, fourth), grouped, and bootstrap workflows.
+## Sobol' sequence scrambling in `sobol_matrices()`
 
-* Added test coverage for the four new estimators: expectation agreement with
+* Two new arguments:
+
+  - `scrambling = c("none", "shift", "owen")`. The default `"none"`
+    reproduces the deterministic Sobol' sequence from `randtoolbox` as in
+    earlier releases. `"shift"` applies a Cranley-Patterson digital shift
+    (Cranley & Patterson 1976) on top of the `randtoolbox` output -- no new
+    dependency. `"owen"` switches to an **in-house** Sobol' generator
+    (Joe-Kuo direction numbers, Joe & Kuo 2008) with hash-based Owen
+    scrambling (Owen 1995; Burley 2020). The Owen path is independent of
+    `randtoolbox`, so the package keeps working if the upstream sampler
+    changes its API (as happened when `randtoolbox` disabled its own
+    `scrambling` argument). Supports up to 250 dimensions.
+  - `seed = NULL`. When supplied, the scrambling is fully reproducible across
+    runs; the user's global RNG state is preserved (set and restored
+    internally). When `NULL`, a fresh random scrambling is drawn from R's RNG
+    on each call.
+
+* Added `src/sobol_owen.cpp` and `src/sobol_direction_numbers.h` implementing
+  the in-house Sobol' generator (Antonov-Saleev recurrence on Joe-Kuo
+  direction numbers) and the Burley hash-based Owen scrambler (Laine-Karras
+  hash sandwiched between bit reversals). No new R dependencies introduced.
+  The Joe-Kuo direction-number table is public domain, sourced from
+  https://web.maths.unsw.edu.au/~fkuo/sobol/new-joe-kuo-6.21201 and subsetted
+  to the first 250 dimensions.
+
+## Tests
+
+* Added test coverage for the four new estimators (expectation agreement with
   established estimators, higher-order designs, grouped designs, bootstrap,
-  and error paths.
+  error paths) and for the new scrambling modes (regression for
+  `scrambling = "none"`, reproducibility, range/mean/variance convergence,
+  QMC integration error smaller than plain MC, integration with groups and
+  higher-order designs, RNG-state preservation, validation/error paths).
 
 # sensobol 1.1.9
 
