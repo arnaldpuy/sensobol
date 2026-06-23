@@ -63,6 +63,28 @@ default argument values.
   https://web.maths.unsw.edu.au/~fkuo/sobol/new-joe-kuo-6.21201 and subsetted
   to the first 250 dimensions.
 
+## Bug fixes
+
+* `sobol_convergence()` now correctly produces the third-order convergence
+  plot. The internal filter referred to the obsolete `"Sijk"` label instead
+  of `"Sijl"`, so `plot.order = "third"` previously returned an empty plot.
+
+* `sobol_indices()` no longer errors for a single parameter
+  (`params` of length one) or for a `groups` specification that resolves to a
+  single group. The conditional output matrices were being dropped to vectors,
+  which broke the downstream `Rfast` column operations.
+
+* `plot()` of higher-order indices (second, third, fourth) now works when the
+  `sensobol` object was produced without bootstrapping. Previously the plot
+  filtered on a confidence-interval column that only exists when
+  `boot = TRUE`, silently yielding an empty plot; point estimates are now
+  shown, with error bars added only when confidence intervals are available.
+
+* `discrepancy_ersatz()` no longer silently drops a sample point whose first
+  coordinate is exactly 0 (e.g. under Owen scrambling or user-transformed
+  inputs). The x-index now receives the same zero-guard already applied to the
+  y-index.
+
 ## Tests
 
 * Added test coverage for the four new estimators (expectation agreement with
@@ -71,6 +93,8 @@ default argument values.
   `scrambling = "none"`, reproducibility, range/mean/variance convergence,
   QMC integration error smaller than plain MC, integration with groups and
   higher-order designs, RNG-state preservation, validation/error paths).
+
+* Added regression tests for all four bug fixes above.
 
 # sensobol 1.1.9
 

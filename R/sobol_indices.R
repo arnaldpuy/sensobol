@@ -174,18 +174,18 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
   if (isTRUE(all.equal(matrices, c("A", "B", "AB")))) {
     Y_A <- m[, 1]
     Y_B <- m[, 2]
-    Y_AB <- m[, -c(1, 2)]
+    Y_AB <- m[, -c(1, 2), drop = FALSE]
 
   } else if (isTRUE(all.equal(matrices, c("A", "B", "BA")))) {
     Y_A <- m[, 1]
     Y_B <- m[, 2]
-    Y_BA <- m[, -c(1, 2)]
+    Y_BA <- m[, -c(1, 2), drop = FALSE]
 
   } else if (isTRUE(all.equal(matrices, c("A", "B", "AB", "BA")))) {
     Y_A <- m[, 1]
     Y_B <- m[, 2]
-    Y_AB <- m[, 3:(k + 2)]
-    Y_BA <- m[, (k + 3):ncol(m)]
+    Y_AB <- m[, 3:(k + 2), drop = FALSE]
+    Y_BA <- m[, (k + 3):ncol(m), drop = FALSE]
 
   } # A warning might be needed here
   if (isTRUE(all.equal(matrices, c("A", "B", "AB"))) |

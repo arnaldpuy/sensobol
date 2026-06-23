@@ -103,32 +103,51 @@ plot.sensobol <- function(x, order = "first", dummy = NULL, ...) {
 
   } else if (!order == "first") {
 
-    # Define for second and third-order indices
+    # Define for second, third and fourth-order indices
     # -----------------------------------------
 
     if (order == "second") {
-      dt <- data[sensitivity %in% "Sij"][low.ci > 0]
+      sens <- "Sij"
 
     } else if (order == "third") {
-      dt <- data[sensitivity %in% "Sijl"][low.ci > 0]
+      sens <- "Sijl"
 
     } else if (order == "fourth") {
-      dt <- data[sensitivity %in% "Sijlm"][low.ci > 0]
+      sens <- "Sijlm"
 
     } else {
-      stop("Order should be first, second or third")
+      stop("Order should be first, second, third or fourth")
     }
+
+    dt <- data[sensitivity %in% sens]
+
+    # Confidence intervals are only available when sobol_indices() was run
+    # with boot = TRUE. When present, restrict to interactions whose lower
+    # bound is positive and add error bars; otherwise plot all the
+    # available point estimates without error bars.
+    # -----------------------------------------
+
+    has.ci <- all(c("low.ci", "high.ci") %in% colNames)
+
+    if (has.ci == TRUE) {
+      dt <- dt[low.ci > 0]
+    }
+
     gg <- ggplot2::ggplot(dt, ggplot2::aes(stats::reorder(parameters, original),
                                            original)) +
       ggplot2::geom_point() +
-      ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
-                                          ymax = high.ci)) +
       ggplot2::labs(x = "",
                     y = "Sobol' index") +
       ggplot2::geom_hline(yintercept = 0,
                           lty = 2,
                           color = "red") +
       theme_AP()
+
+    if (has.ci == TRUE) {
+      gg <- gg +
+        ggplot2::geom_errorbar(ggplot2::aes(ymin = low.ci,
+                                            ymax = high.ci))
+    }
   }
   return(gg)
 }

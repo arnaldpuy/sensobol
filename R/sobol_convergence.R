@@ -160,7 +160,7 @@ sobol_convergence <- function(matrices, Y, N, sub.sample, params, first, total,
   }
 
   if (order == "third" & plot.order == "third") {
-    third.order <- final.dt[sensitivity == "Sijk"]
+    third.order <- final.dt[sensitivity == "Sijl"]
     gg3 <- plot_sobol_convergence(third.order) +
       ggplot2::scale_color_manual(values = "#C77CFF", name = "Sensitivity") +
       ggplot2::scale_fill_manual(values = "#C77CFF", name = "Sensitivity")

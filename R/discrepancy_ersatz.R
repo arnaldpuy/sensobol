@@ -16,6 +16,10 @@ s_ersatz <- function(mat) {
   # Compute index for x_i
   m <- ceiling(mat[, 1] * s)
 
+  # Turn x==0 to x == 1 (a point at exactly 0 would otherwise map to a
+  # zero subscript, which R silently drops, undercounting occupied cells)
+  m <- ifelse(m == 0, 1, m)
+
   # Compute index for y
   x <- mat[, 2]
   n_norm <- (x-min(x))/(max(x)-min(x)) # Scale y to 0, 1
