@@ -335,13 +335,15 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
     Vi3 <- Vi[(length(params) + length(com2) + 1):(length(params) + length(com2) + length(com3))] # Third order
     Vi1 <- lapply(com3, function(x) Vi[x])
 
-    # Pairs
+    # Pairs. Keys use a "_" separator so that, e.g., pair (1, 12) and pair
+    # (11, 2) map to distinct names ("1_12" vs "11_2") rather than colliding
+    # on "112", which would happen with an empty separator for >= 112 inputs.
     tmp <- do.call(rbind, com2)
-    Vij.vec <- as.numeric(paste(tmp[, 1], tmp[, 2], sep = ""))
+    Vij.vec <- paste(tmp[, 1], tmp[, 2], sep = "_")
     names(Vij) <- Vij.vec
-    Vi2.1 <- unname(Vij[paste(tmp3[, 1], tmp3[, 2], sep  = "")])
-    Vi2.2 <- unname(Vij[paste(tmp3[, 1], tmp3[, 3], sep  = "")])
-    Vi2.3 <- unname(Vij[paste(tmp3[, 2], tmp3[, 3], sep  = "")])
+    Vi2.1 <- unname(Vij[paste(tmp3[, 1], tmp3[, 2], sep  = "_")])
+    Vi2.2 <- unname(Vij[paste(tmp3[, 1], tmp3[, 3], sep  = "_")])
+    Vi2.3 <- unname(Vij[paste(tmp3[, 2], tmp3[, 3], sep  = "_")])
 
     mat3 <- cbind(Vi3, Vi2.1, Vi2.2, Vi2.3, do.call(rbind, Vi1))
     Vijk <- unname(apply(mat3, 1, function(x) Reduce("-", x)))
@@ -367,22 +369,23 @@ sobol_boot <- function(d, i, N, params, matrices, R, first, total, order, boot) 
                 (length(params) + length(com2) + length(com3) + length(com4))] # Fourth order
     Vi1 <- lapply(com4, function(x) Vi[x])
 
-    # triplets
+    # triplets. Same "_"-separated keying as for the pairs above, to avoid
+    # digit-concatenation collisions for large numbers of inputs.
     tmp <- do.call(rbind, com3)
-    Vijk.vec <- as.numeric(paste(tmp[, 1], tmp[, 2], tmp[, 3], sep = ""))
+    Vijk.vec <- paste(tmp[, 1], tmp[, 2], tmp[, 3], sep = "_")
     names(Vijk) <- Vijk.vec
-    Vi3.1 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 2], tmp4[, 3], sep  = "")])
-    Vi3.2 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 2], tmp4[, 4], sep  = "")])
-    Vi3.3 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 3], tmp4[, 4], sep  = "")])
-    Vi3.4 <- unname(Vijk[paste(tmp4[, 2], tmp4[, 3], tmp4[, 4], sep  = "")])
+    Vi3.1 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 2], tmp4[, 3], sep  = "_")])
+    Vi3.2 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 2], tmp4[, 4], sep  = "_")])
+    Vi3.3 <- unname(Vijk[paste(tmp4[, 1], tmp4[, 3], tmp4[, 4], sep  = "_")])
+    Vi3.4 <- unname(Vijk[paste(tmp4[, 2], tmp4[, 3], tmp4[, 4], sep  = "_")])
 
     # Pairs
-    Vi2.1 <- unname(Vij[paste(tmp4[, 1], tmp4[, 2], sep  = "")])
-    Vi2.2 <- unname(Vij[paste(tmp4[, 1], tmp4[, 3], sep  = "")])
-    Vi2.3 <- unname(Vij[paste(tmp4[, 1], tmp4[, 4], sep  = "")])
-    Vi2.4 <- unname(Vij[paste(tmp4[, 2], tmp4[, 3], sep  = "")])
-    Vi2.5 <- unname(Vij[paste(tmp4[, 2], tmp4[, 4], sep  = "")])
-    Vi2.6 <- unname(Vij[paste(tmp4[, 3], tmp4[, 4], sep  = "")])
+    Vi2.1 <- unname(Vij[paste(tmp4[, 1], tmp4[, 2], sep  = "_")])
+    Vi2.2 <- unname(Vij[paste(tmp4[, 1], tmp4[, 3], sep  = "_")])
+    Vi2.3 <- unname(Vij[paste(tmp4[, 1], tmp4[, 4], sep  = "_")])
+    Vi2.4 <- unname(Vij[paste(tmp4[, 2], tmp4[, 3], sep  = "_")])
+    Vi2.5 <- unname(Vij[paste(tmp4[, 2], tmp4[, 4], sep  = "_")])
+    Vi2.6 <- unname(Vij[paste(tmp4[, 3], tmp4[, 4], sep  = "_")])
 
     mat4 <- cbind(Vi4, Vi3.1, Vi3.2, Vi3.3,
                   Vi2.1, Vi2.2, Vi2.3, Vi2.4, Vi2.5,

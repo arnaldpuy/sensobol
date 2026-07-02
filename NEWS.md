@@ -85,6 +85,23 @@ default argument values.
   inputs). The x-index now receives the same zero-guard already applied to the
   y-index.
 
+## Robustness / hardening
+
+* Higher-order (`sobol_indices()`) interaction indices are now keyed with a
+  "_" separator (e.g. `"1_12"`) instead of bare digit concatenation. The old
+  scheme could confuse, for example, the pairs (1, 12) and (11, 2) once the
+  number of inputs reached 112, silently mis-assigning second-, third- and
+  fourth-order indices. The math is unchanged for typical input counts.
+
+* `vars_matrices()` now drops the star-centre point from each cross section
+  with a tolerance test (spacing `h/2`) instead of exact floating-point
+  equality, making the STAR-VARS construction robust for arbitrary centre
+  coordinates (e.g. `type = "R"`). Output is byte-identical to previous
+  versions for the default quasi-random centres.
+
+* `vars_to()` rounds the derived number of cross-section points, guarding the
+  internal slicing against floating-point drift in `1/h`.
+
 ## Tests
 
 * Added test coverage for the four new estimators (expectation agreement with

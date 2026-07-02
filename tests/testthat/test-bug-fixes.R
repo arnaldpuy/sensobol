@@ -96,3 +96,58 @@ test_that("discrepancy_ersatz handles an exact 0 in the first column", {
   val_nudged <- sensobol:::s_ersatz(cbind(x2, Y))
   expect_equal(val, val_nudged)
 })
+
+# ---- Hardening: higher-order interaction key collisions for many inputs ----
+
+test_that("higher-order indices do not collide for >= 12 inputs (additive model)", {
+  set.seed(1)
+  k <- 13
+  params <- paste0("X", 1:k)
+  N <- 2^11
+  mat <- sobol_matrices(N = N, params = params, order = "third")
+  Y <- rowSums(mat)                       # purely additive: no interactions
+  ind <- sobol_indices(Y = Y, N = N, params = params, order = "third")
+  # Every second- and third-order index must be (numerically) zero and finite.
+  expect_false(anyNA(ind$results$original))
+  expect_lt(max(abs(ind$results[sensitivity == "Sij",  original])), 1e-6)
+  expect_lt(max(abs(ind$results[sensitivity == "Sijl", original])), 1e-6)
+})
+
+test_that("a 3-way interaction is assigned to the correct triplet for >= 12 inputs", {
+  set.seed(1)
+  k <- 13
+  params <- paste0("X", 1:k)
+  N <- 2^12
+  mat <- sobol_matrices(N = N, params = params, order = "third")
+  # Pure interaction among X1, X12, X13 (centred so main effects vanish).
+  Y <- (mat[, 1] - 0.5) * (mat[, 12] - 0.5) * (mat[, 13] - 0.5) * 1000
+  ind <- sobol_indices(Y = Y, N = N, params = params, order = "third")
+  sijl <- ind$results[sensitivity == "Sijl"]
+  top <- sijl[order(-abs(sijl$original))][1, ]
+  expect_equal(top$parameters, "X1.X12.X13")
+})
+
+# ---- Hardening: VARS robustness with arbitrary (random) star centres ----
+
+test_that("vars_matrices / vars_to work with random centres across h values", {
+  params <- paste0("X", 1:3)
+  for (h in c(0.2, 0.1, 0.05, 0.02)) {
+    set.seed(7)
+    m <- vars_matrices(star.centers = 15, params = params, h = h, type = "R")
+    Y <- ishigami_Fun(m)
+    ind <- vars_to(Y = Y, star.centers = 15, params = params, h = h)
+    expect_equal(nrow(ind$results), length(params), info = paste("h =", h))
+    expect_false(anyNA(ind$results$Ti), info = paste("h =", h))
+  }
+})
+
+test_that("vars_matrices row count matches the STAR-VARS design formula", {
+  params <- paste0("X", 1:4)
+  star.centers <- 12
+  for (h in c(0.1, 0.05)) {
+    m <- vars_matrices(star.centers = star.centers, params = params, h = h)
+    # N_t = star.centers * (k * (1/h - 1) + 1)
+    expected <- star.centers * (length(params) * ((1 / h) - 1) + 1)
+    expect_equal(nrow(m), round(expected), info = paste("h =", h))
+  }
+})

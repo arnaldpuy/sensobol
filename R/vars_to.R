@@ -67,7 +67,9 @@ vars_to <- function(Y, star.centers, params, h, method = "all.step") {
   # Reorganize the points
   # -----------------------------------------------------------------
 
-  n.cross.points <- length(params) * ((1 / h) - 1) + 1
+  # n.cross.points is an integer by construction; round() guards against any
+  # floating-point drift in 1/h so that seq() below slices on integer strides.
+  n.cross.points <- round(length(params) * ((1 / h) - 1) + 1)
   index.centers <- seq(1, length(Y), n.cross.points)
   mat <- matrix(Y[-index.centers], ncol = star.centers)
   indices <- CutBySize(nrow(mat), nb = length(params))

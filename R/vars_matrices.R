@@ -77,8 +77,12 @@ vars_matrices <- function(star.centers, params, h = 0.1, type = "QRN",...) {
       all <- seq(x %% h, 1, h)
       non.zeros <- all[all!= 0]
     })
+    # Drop the star-centre point from each cross section. The grid spacing is
+    # h, so exactly one point lies within h/2 of the centre; a tolerance test
+    # is used instead of exact equality (%in%) to avoid floating-point misses
+    # for arbitrary (e.g. type = "R") centre coordinates.
     B[[i]] <- sapply(1:ncol(mat), function(x)
-      sections[[i]][, x][!sections[[i]][, x] %in% center[[i]][x]])
+      sections[[i]][, x][abs(sections[[i]][, x] - center[[i]][x]) > h / 2])
     A[[i]] <- matrix(center[[i]], nrow = nrow(B[[i]]),
                      ncol = length(center[[i]]), byrow = TRUE)
     X[[i]] <- rbind(A[[i]], B[[i]])
