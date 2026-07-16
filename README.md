@@ -194,8 +194,8 @@ H. Niederreiter, P. J.-S. Shiue (eds.), *Monte Carlo and Quasi-Monte Carlo
 Methods in Scientific Computing*, 299–317. Springer.
 
 Owen, A. B. (2013). Better estimation of small Sobol' sensitivity indices.
-*ACM Transactions on Modeling and Computer Simulation* 23(2), 11.
-doi:10.1145/2457575.2457580.
+*ACM Transactions on Modeling and Computer Simulation* 23(2), 1–17.
+doi:10.1145/2457459.2457460.
 
 Puy, A., Lo Piano, S., Saltelli, A., Levin, S. A. (2022). sensobol: an R
 package to compute variance-based sensitivity indices. *Journal of Statistical
